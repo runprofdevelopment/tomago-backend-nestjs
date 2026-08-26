@@ -1,0 +1,29 @@
+module.exports = [
+  require('./time'),
+  require('./date'),
+  require('./dateTime'),
+  require('./json'),
+  
+  require('./mediaGallery'),
+  require('./avatar'),
+  require('./file'),
+  require('./fileInput'),
+  
+  require('./autocompleteOption'),
+  require('./localization'),
+  require('./localizationInput'),
+  require('./normalizedFilterInput'),
+  require('./GeoPoint'),
+  require('./GeoPointInput'),
+  require('./paginationInput'),
+  require('./pagination'),
+  require('./hexColor'),
+  require('./filterInput'),
+
+  require('./appTypeEnum'),
+  require('./languageEnum'),
+  require('./currencyCodeEnum'),
+  require('./weekDaysStringEnum'),
+  require('./weekDaysNumberEnum'),
+  require('./genderEnum'),
+];

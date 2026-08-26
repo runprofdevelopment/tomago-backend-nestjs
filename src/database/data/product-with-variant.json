@@ -1,0 +1,274 @@
+{
+  "data": {
+    "sku": "447884545",
+    "brand_id": "1vRb0x1h9noxksgvJ0Wl",
+    "category_id": 6,
+    "title": {
+      "en": "PHILIPS LED Bulb Classic, Filament, Edison Vintage, 4 Watt",
+      "ar": "مصباح ليد كلاسيكي بفتيل، بنمط مصباح اديسون عتيق من فيليبس، 4 كيلو واط E27، حرارة 3000 كلفن، 380 لومن"
+    },
+    "description": {
+      "en": "<p>The LEDClassic 4-40W A60 E27 830 CL NDAPR is a pack of 6 LED bulbs that feature a classic heritage design. These bulbs combine the familiar shapes of classic incandescent bulbs with the benefits of long-lasting LED technology. They deliver beautiful, decorative warm-white light while saving around 90% on energy costs compared with traditional light bulbs. The color code is 830 which means it has a color temperature of 3000K which is warm white. The color rendering index (CRI) is 80 which means it has good color rendering properties. The bulbs are non-dimmable and have a power consumption of 4-40W</p>",
+      "ar": "<p>مصباح ليد كلاسيك 4-40 واط A60 E27 830 CL NDAPR عبارة عن عبوة من 6 مصابيح LED تتميز بتصميم تراثي كلاسيكي. تجمع هذه المصابيح بين الأشكال المألوفة للمصابيح المتوهجة الكلاسيكية وفوائد تقنية LED طويلة الأمد. توفر إضاءة بيضاء دافئة جميلة ومزخرفة مع توفير حوالي 90% من تكاليف الطاقة مقارنة بمصابيح الإضاءة التقليدية. رمز اللون هو 830 مما يعني أن درجة حرارة اللون 3000 كلفن وهو أبيض دافئ. مؤشر تجسيد اللون (سي ار اي) هو 80 مما يعني أنه يتمتع بخصائص جيدة في تجسيد الألوان. المصابيح غير قابلة للتعتيم وتستهلك طاقة 4-40 واط</p>"
+    },
+    "features": [
+      {
+        "en": "4 watt LED candle filament, warm light.",
+        "ar": "خيوط شمعة LED 4 واط، ضوء دافئ."
+      },
+      {
+        "en": "Over 88% energy-saving compared with GLS",
+        "ar": "أكثر من 88% موفرة للطاقة مقارنة بـ GLS"
+      },
+      {
+        "en": "Long lifetime of 25,000 hours.",
+        "ar": "خيوط شمعة LED 4 واط، ضوء دافئ."
+      }
+    ],
+    "product_images": [
+      {
+        "name": "71eo5EPdHUL._AC_SX679_.jpg",
+        "publicUrl": "https://firebasestorage.googleapis.com/v0/b/decoopa-50ce2.appspot.com/o/products%2F56523d8d-8490-4c73-8235-ad571724be87.jpg?alt=media&token=157e0e6d-cb74-4b72-b884-9976f5a18edc"
+      },
+      {
+        "name": "81Iz5u4pLrL._AC_SL1500_.jpg",
+        "publicUrl": "https://firebasestorage.googleapis.com/v0/b/decoopa-50ce2.appspot.com/o/products%2F5da9d08c-8126-403c-8a4a-6c6db0595506.jpg?alt=media&token=c95a8eba-0c83-4f5a-8d12-9473db484d1f"
+      },
+      {
+        "name": "71o7r2NWjbL._AC_SX679_.jpg",
+        "publicUrl": "https://firebasestorage.googleapis.com/v0/b/decoopa-50ce2.appspot.com/o/products%2F528913f1-ea29-400f-86a0-32dfaba28bcb.jpg?alt=media&token=b51cce93-c836-4eb7-8cde-31b57e74fa4b"
+      }
+    ],
+    "barcodes": [
+      "255478414"
+    ],
+    "status": "draft",
+    "variants_options": [
+      {
+        "id": "numberofpices",
+        "name": {
+          "en": "Number of Pices",
+          "ar": "عدد القطع"
+        },
+        "values": [
+          {
+            "en": "1 Pice",
+            "ar": "1 لمبة"
+          },
+          {
+            "en": "3 Pieces",
+            "ar": "3 لمبة"
+          },
+          {
+            "en": "6 Pieces",
+            "ar": "6 لمبة"
+          }
+        ]
+      },
+      {
+        "id": "color",
+        "name": {
+          "en": "Color",
+          "ar": "اللون"
+        },
+        "values": [
+          {
+            "en": "White",
+            "ar": "أبيض"
+          },
+          {
+            "en": "Warm",
+            "ar": "دافىء"
+          }
+        ]
+      }
+    ],
+    "warranty": 3,
+    "offer_note": {
+      "en": "Free shipping when you spend EGP 200 or above in express item",
+      "ar": "شحن مجاني عند إنفاق 200 جنيه مصري أو أكثر في السلعة السريعة"
+    },
+    "warranty_returns_eligible": true,
+    "warranty_returns_note": {
+      "en": "This Item can be exchanged or reserved.",
+      "ar": "يمكن استبدال هذا العنصر أو حجزه."
+    },
+    "country_of_origin": {
+      "en": "China",
+      "ar": "الصين"
+    },
+    "material": {
+      "en": "Glass",
+      "ar": "زجاج"
+    },
+    "model_name": {
+      "en": "LED-Classic- 4W",
+      "ar": "LED-Classic- 4W"
+    },
+    "model_number": {
+      "en": "PH-4WLEDE27",
+      "ar": "PH-4WLEDE27"
+    },
+    "what_in_box": {
+      "en": "2 Philips Bulbs 4 Watt",
+      "ar": "٢ لمبه فيليبس ٤ وات"
+    },
+    "product_length": 30,
+    "product_weight": 100,
+    "product_height": 20,
+    "product_width_Depth": 10,
+    "product_length_unit": "mm",
+    "product_weight_unit": "g",
+    "product_height_unit": "mm",
+    "product_width_unit": "mm",
+    "shipping_price": 10,
+    "shipping_length": 33,
+    "shipping_weight": 105,
+    "shipping_height": 22,
+    "shipping_width_Depth": 12,
+    "shipping_length_unit": "mm",
+    "shipping_weight_unit": "g",
+    "shipping_height_unit": "mm",
+    "shipping_width_unit": "mm",
+    "variants": [
+      {
+        "sku": "11455222",
+        "barcode": "0000001",
+        "variant_images": [],
+        "options_values": [
+          {
+            "en": "1 Pice",
+            "ar": "1 لمبة"
+          },
+          {
+            "en": "White",
+            "ar": "أبيض"
+          }
+        ],
+        "cost": 90,
+        "price": 100,
+        "currency": "EGP",
+        "sale_price": 0,
+        "sale_start_date": null,
+        "sale_end_date": null,
+        "inventory_quantity": 10,
+        "max_order_qty": 2
+      },
+      {
+        "sku": "11455333",
+        "barcode": "0000002",
+        "variant_images": [],
+        "options_values": [
+          {
+            "en": "1 Pice",
+            "ar": "1 لمبة"
+          },
+          {
+            "en": "Warm",
+            "ar": "دافىء"
+          }
+        ],
+        "cost": 90,
+        "price": 110,
+        "currency": "EGP",
+        "sale_price": 0,
+        "sale_start_date": null,
+        "sale_end_date": null,
+        "inventory_quantity": 10,
+        "max_order_qty": 2
+      },
+      {
+        "sku": "11455444",
+        "barcode": "0000003",
+        "variant_images": [],
+        "options_values": [
+          {
+            "en": "3 Pieces",
+            "ar": "3 لمبة"
+          },
+          {
+            "en": "White",
+            "ar": "أبيض"
+          }
+        ],
+        "cost": 90,
+        "price": 105,
+        "currency": "EGP",
+        "sale_price": 0,
+        "sale_start_date": null,
+        "sale_end_date": null,
+        "inventory_quantity": 10,
+        "max_order_qty": 2
+      },
+      {
+        "sku": "11455666",
+        "barcode": "0000004",
+        "variant_images": [],
+        "options_values": [
+          {
+            "en": "3 Pieces",
+            "ar": "3 لمبة"
+          },
+          {
+            "en": "Warm",
+            "ar": "دافىء"
+          }
+        ],
+        "cost": 90,
+        "price": 120,
+        "currency": "EGP",
+        "sale_price": 0,
+        "sale_start_date": null,
+        "sale_end_date": null,
+        "inventory_quantity": 10,
+        "max_order_qty": 2
+      },
+      {
+        "sku": "11455777",
+        "barcode": "0000005",
+        "variant_images": [],
+        "options_values": [
+          {
+            "en": "6 Pieces",
+            "ar": "6 لمبة"
+          },
+          {
+            "en": "White",
+            "ar": "أبيض"
+          }
+        ],
+        "cost": 90,
+        "price": 120,
+        "currency": "EGP",
+        "sale_price": 0,
+        "sale_start_date": null,
+        "sale_end_date": null,
+        "inventory_quantity": 10,
+        "max_order_qty": 2
+      },
+      {
+        "sku": "11455888",
+        "barcode": "0000006",
+        "variant_images": [],
+        "options_values": [
+          {
+            "en": "6 Pieces",
+            "ar": "6 لمبة"
+          },
+          {
+            "en": "Warm",
+            "ar": "دافىء"
+          }
+        ],
+        "cost": 90,
+        "price": 110,
+        "currency": "EGP",
+        "sale_price": 0,
+        "sale_start_date": null,
+        "sale_end_date": null,
+        "inventory_quantity": 10,
+        "max_order_qty": 2
+      }
+    ]
+  }
+}

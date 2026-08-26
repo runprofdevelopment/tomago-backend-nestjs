@@ -1,0 +1,10 @@
+{
+  "apiKey": "REPLACE_WITH_TOMAGO_PRODUCTION_WEB_API_KEY",
+  "authDomain": "tomago-fdaa6.firebaseapp.com",
+  "databaseURL": "https://tomago-fdaa6-default-rtdb.firebaseio.com",
+  "projectId": "tomago-fdaa6",
+  "storageBucket": "tomago-fdaa6.appspot.com",
+  "messagingSenderId": "649000455905",
+  "appId": "REPLACE_WITH_TOMAGO_PRODUCTION_APP_ID",
+  "measurementId": "REPLACE_WITH_TOMAGO_PRODUCTION_MEASUREMENT_ID"
+}

@@ -1,0 +1,37 @@
+{
+  // "editor.mouseWheelZoom": true,
+  // "compile-hero.disable-compile-files-on-did-save-code": false,
+  // "editor.fontSize": 14,
+  // "window.zoomLevel": 0,
+  // "editor.suggestFontSize": 6,
+  // "markdown.preview.fontSize": 0,
+  // "terminal.integrated.fontSize": 10,
+  // "workbench.sideBar.location": "left",
+  // "editor.fontLigatures": true,
+  // "javascript.updateImportsOnFileMove.enabled": "never",
+  // "javascript.preferences.importModuleSpecifier": "non-relative",
+  // "prettier.eslintIntegration": true,
+  // "vetur.format.defaultFormatterOptions": {
+  //   "prettyhtml": {
+  //     "sortAttributes": true
+  //   }
+  // },
+  // "customizeUI.fontSizeMap": {
+  //   "13px": "11px",
+  //   "12px": "11px",
+  //   "window-title": "12px", // Window title font when using custom titlebar
+  //   "tab-title": "12px",    // Used for editor tab titles
+  //   "monospace": "10.5px",  // Used for monospace fonts in user interface
+  //   "menu": "13px",         // Used for menu items (windows only)
+  // },
+  // "workbench.colorCustomizations": {
+  //   "statusBar.background": "#a8e6cf",
+  //   "statusBar.foreground": "#000",
+    
+  //   "titleBar.activeBackground": "#ffc600",
+  //   "titleBar.inactiveBackground": "#ffc600CC",
+
+  //   "titleBar.activeForeground": "#000",
+  //   "titleBar.inactiveForeground": "#000000CC",
+  // },
+}
