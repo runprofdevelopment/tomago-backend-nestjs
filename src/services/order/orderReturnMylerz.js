@@ -20,13 +20,7 @@ module.exports = class OrderShipment {
     );
   }
 
-  async orderReturnedMylerz(_data) {
-    throw new Error(
-      'Mylerz returns are disabled. Use orderReturnDecoopa instead.',
-    );
-  }
-
-  async __legacyOrderReturnedMylerz(data) {
+  async orderReturnedMylerz(data) {
     try {
       const returnRequest =
         await this.repository.findDocumentById(data.id);

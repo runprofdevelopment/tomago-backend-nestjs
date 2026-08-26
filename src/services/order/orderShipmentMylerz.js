@@ -159,13 +159,7 @@ module.exports = class OrderShipmentMylerz {
     }
   }
 
-  async orderShippedMylerz(_data) {
-    throw new Error(
-      'Mylerz shipping is disabled. Use orderShippedDecoopa instead.',
-    );
-  }
-
-  async __legacyOrderShippedMylerz(data) {
+  async orderShippedMylerz(data) {
     try {
       const order = await this.repository.findDocumentById(
         data.id,
