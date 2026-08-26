@@ -7,6 +7,7 @@ module.exports = class Category extends AbstractEntityModel {
       parent_id: new types.Number(0, null),
       level: new types.Number(1, null),
       position: new types.Number(1, null),
+      collection_id: new types.RelationToOne(),
 
       // nameEn: new types.String(),
       // nameAr: new types.String(),

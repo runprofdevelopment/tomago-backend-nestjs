@@ -8,9 +8,13 @@ module.exports = class WithdrawalRequest extends AbstractEntityModel {
       account_number: new types.String(),
       bank_name: new types.String(),
       swift_code: new types.String(),
-      status: new types.Enumerator(['pending', 'accepted', 'rejected', 'confirmed'], 'pending'),
+      status: new types.Enumerator(
+        ['pending', 'accepted', 'approved', 'rejected', 'confirmed'],
+        'pending',
+      ),
       withdrawal_amount: new types.Number(),
-      reason: new types.String(),
+      reason: new types.String(), // ERD examples: profit_withdrawal | monthly_payout | ...
+      rejection_reason: new types.String(),
       userID: new types.String(),
       referenceId: new types.String(),
       note: new types.String(),

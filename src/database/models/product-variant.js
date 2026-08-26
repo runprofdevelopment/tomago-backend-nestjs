@@ -57,6 +57,7 @@ module.exports = class Variants extends AbstractEntityModel {
       product_width_unit: new types.Enumerator(['mm', 'cm', 'm', 'in', 'ft']),
       inventory_quantity: new types.Number(),
       max_order_qty: new types.Number(),
+      product_limit: new types.Number(),
       //#endregion
     });
   }

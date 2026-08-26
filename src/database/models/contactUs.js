@@ -10,6 +10,7 @@ module.exports = class ContactUs extends AbstractEntityModel {
       email: new types.String(),
       phoneNumber: new types.String(),
       message: new types.String(),
+      orderId: new types.String(), // TODO: confirm — Order ID filter in admin UI
       attachFile: new types.File(),
     });
   }

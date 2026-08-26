@@ -6,6 +6,11 @@ module.exports = class Slider extends AbstractEntityModel {
     super('slider', 'slider', {
       imageEn: new types.Avatar(),
       imageAr: new types.Avatar(),
+      title: new types.String(),
+      content: new types.String(),
+      button_text: new types.String(),
+      button_color: new types.String(),
+      button_url: new types.String(),
       startDate: new types.DateTime(),
       endDate: new types.DateTime(),
       targetView: new types.Enumerator(['deal', 'ad']),

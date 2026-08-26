@@ -1,0 +1,616 @@
+// Tomoga Admin Dashboard ERD
+// Source: UI screenshots only (no backend code inspected)
+// Import into https://dbdiagram.io
+//
+// Firestore mapping (live app stays on Firestore — see src/database/erdCollectionMap.js):
+//   admins/customers → user | products → product + product-variants
+//   order_items → order.items[] | deal_products → deal.items[]
+//   faqs/about/terms/refund → staticPages (type) | platform_settings → settings
+//   collections → collection | projects → project | top_banners → topBanner
+//   Localization {en,ar} ⇔ *_en / *_ar columns below
+
+// ============================================================
+// Auth & Admins
+// ============================================================
+
+Table roles {
+  id int [pk, increment]
+  name varchar [not null, unique, note: 'e.g. superadmin, admin']
+  // TODO: confirm full role list and permissions model
+}
+
+Table admins {
+  id int [pk, increment]
+  role_id int [not null, ref: > roles.id]
+  first_name varchar
+  last_name varchar
+  email varchar [not null, unique]
+  phone varchar
+  phone_country_code varchar
+  avatar_url varchar
+  password_hash varchar [not null]
+  preferred_language varchar [note: 'ar | en']
+  dark_mode boolean [default: false]
+  status varchar [not null, note: 'Active | Detective (inactive)']
+  created_at datetime [not null]
+  updated_at datetime
+}
+
+Table otp_challenges {
+  id int [pk, increment]
+  admin_id int [not null, ref: > admins.id]
+  code varchar [not null, note: '6-digit TOTP']
+  expires_at datetime [not null]
+  created_at datetime [not null]
+  // TODO: confirm storage vs external authenticator app
+}
+
+Table password_resets {
+  id int [pk, increment]
+  admin_id int [not null, ref: > admins.id]
+  token varchar [not null, unique]
+  expires_at datetime [not null]
+  created_at datetime [not null]
+}
+
+// ============================================================
+// Customers
+// ============================================================
+
+Table customers {
+  id int [pk, increment]
+  full_name varchar [not null]
+  email varchar [not null, unique]
+  phone varchar
+  gender varchar
+  birth_date date
+  avatar_url varchar
+  status varchar [not null, note: 'activated | ...']
+  join_date datetime [not null]
+  created_at datetime
+  updated_at datetime
+}
+
+Table customer_addresses {
+  id int [pk, increment]
+  customer_id int [not null, ref: > customers.id]
+  first_name varchar
+  phone varchar
+  country varchar [note: 'Egypt | Saudi Arabia | UAE | Kuwait']
+  address_1 text
+  created_at datetime [not null]
+}
+
+Table customer_notifications {
+  id int [pk, increment]
+  customer_id int [not null, ref: > customers.id]
+  title_en varchar
+  title_ar varchar
+  body_en text
+  body_ar text
+  created_at datetime [not null]
+  // TODO: confirm read/sent status fields
+}
+
+// ============================================================
+// Catalog: Brands, Collections, Categories, Options
+// ============================================================
+
+Table brands {
+  id int [pk, increment]
+  name_en varchar
+  name_ar varchar
+  // TODO: confirm full brand fields (image, status)
+  created_at datetime
+}
+
+Table collections {
+  id int [pk, increment]
+  name_en varchar [not null]
+  name_ar varchar [not null]
+  image_url varchar
+  status varchar [not null, note: 'active | inactive']
+  created_at datetime [not null]
+}
+
+Table categories {
+  id int [pk, increment]
+  collection_id int [ref: > collections.id]
+  parent_id int [ref: > categories.id, note: 'self-ref hierarchy']
+  name_en varchar [not null]
+  name_ar varchar [not null]
+  status varchar [not null, note: 'Active | Inactive']
+  created_at datetime [not null]
+  updated_at datetime
+}
+
+Table product_options {
+  id int [pk, increment]
+  name_en varchar [not null]
+  name_ar varchar [not null]
+  value varchar [note: 'e.g. unit hint Cm — TODO: confirm meaning']
+}
+
+// ============================================================
+// Products
+// ============================================================
+
+Table products {
+  id int [pk, increment]
+  sku varchar [unique, note: 'FRN-OMS-001 | #PH789-78e | DX...']
+  type varchar [not null, note: 'single | variant']
+  brand_id int [ref: > brands.id]
+  category_id int [ref: > categories.id]
+  collection_id int [ref: > collections.id]
+
+  name_en varchar [not null]
+  name_ar varchar [not null]
+  model_name_en varchar
+  model_name_ar varchar
+  model_number_en varchar
+  model_number_ar varchar
+  whats_in_the_box_en text
+  whats_in_the_box_ar text
+  description_en text
+  description_ar text
+  country_of_origin_en varchar
+  country_of_origin_ar varchar
+  material_en varchar
+  material_ar varchar
+
+  cost decimal
+  price decimal
+  currency varchar [note: 'EGP']
+  stock int
+  max_order_quantity int
+  product_limit int
+  sale_start_date datetime
+  sale_end_date datetime
+
+  warranty_months int
+  warranty_returns_eligible boolean
+  shipping_note_en text
+  shipping_note_ar text
+  warranty_returns_note_en text
+  warranty_returns_note_ar text
+
+  shipping_price decimal
+  shipping_weight decimal
+  shipping_weight_unit varchar [note: 'kg | g']
+  shipping_width decimal
+  shipping_height decimal
+  shipping_depth decimal
+  shipping_dimension_unit varchar
+
+  product_weight decimal
+  product_weight_unit varchar
+  product_width decimal
+  product_height decimal
+  product_depth decimal
+  product_dimension_unit varchar
+
+  technical_width decimal
+  technical_height decimal
+  technical_depth decimal
+  technical_dimension_unit varchar [note: 'cm']
+  dimension_diagram_url varchar
+
+  status varchar
+  created_at datetime
+  updated_at datetime
+}
+
+Table product_images {
+  id int [pk, increment]
+  product_id int [not null, ref: > products.id]
+  image_url varchar [not null]
+  sort_order int
+}
+
+Table product_features {
+  id int [pk, increment]
+  product_id int [not null, ref: > products.id]
+  feature_en text
+  feature_ar text
+  sort_order int
+}
+
+Table product_materials {
+  id int [pk, increment]
+  product_id int [not null, ref: > products.id]
+  name varchar
+  image_url varchar
+}
+
+Table product_mechanisms {
+  id int [pk, increment]
+  product_id int [not null, ref: > products.id]
+  type varchar [note: 'reclining | folding | sliding | rotating']
+  name varchar
+  description text
+  image_url varchar
+}
+
+Table product_option_values {
+  id int [pk, increment]
+  product_id int [not null, ref: > products.id]
+  product_option_id int [not null, ref: > product_options.id]
+  value_en varchar
+  value_ar varchar
+  // TODO: confirm if variant SKUs / price / stock live here or in separate product_variants
+}
+
+// ============================================================
+// Reviews
+// ============================================================
+
+Table reviews {
+  id int [pk, increment]
+  customer_id int [ref: > customers.id]
+  product_id int [not null, ref: > products.id]
+  order_id int [ref: > orders.id]
+  title varchar
+  body text
+  rating int [not null, note: '1-5']
+  admin_response text [note: 'customers_answer in UI']
+  is_visible boolean [not null, default: true, note: 'Show | Hide']
+  created_at datetime [not null]
+}
+
+// ============================================================
+// Orders
+// ============================================================
+
+Table orders {
+  id int [pk, increment]
+  public_id varchar [unique, note: 'long numeric id or #ORD-20251201']
+  customer_id int [not null, ref: > customers.id]
+  voucher_id int [ref: > vouchers.id]
+  status varchar [not null, note: 'pending_acceptance | received | cancelled | completed | pending | processing']
+  payment_method varchar [note: 'cash_on_delivery | visa | installment | mada | apple_pay']
+  currency varchar [note: 'SAR | EGP']
+  subtotal decimal
+  cod_fees decimal
+  shipping_cost decimal
+  vat_amount decimal
+  total_discount decimal
+  grand_total decimal
+  shipping_company varchar
+  tracking_number varchar
+  tracking_link varchar
+  shipping_address text
+  shipping_note text
+  rejection_reason text
+  created_at datetime [not null]
+  updated_at datetime
+  // TODO: confirm voucher_id vs order_vouchers join
+}
+
+Table order_items {
+  id int [pk, increment]
+  order_id int [not null, ref: > orders.id]
+  product_id int [ref: > products.id]
+  product_title varchar
+  product_image_url varchar
+  sku varchar
+  variant_text varchar
+  unit_price decimal
+  quantity int [not null]
+  line_total decimal
+  status varchar [note: 'independent of order status, e.g. refunded']
+}
+
+Table customer_requests {
+  id int [pk, increment]
+  order_id int [ref: > orders.id]
+  product_id int [ref: > products.id]
+  customer_id int [ref: > customers.id]
+  product_description text
+  dimensions varchar
+  quantity int
+  additional_notes text
+  status varchar [not null, note: 'pending | replied | closed']
+  estimated_price decimal
+  estimated_delivery_time varchar
+  created_at datetime [not null]
+  updated_at datetime
+}
+
+Table request_messages {
+  id int [pk, increment]
+  customer_request_id int [not null, ref: > customer_requests.id]
+  sender_type varchar [not null, note: 'customer | seller']
+  sender_name varchar
+  body text [not null]
+  created_at datetime [not null]
+}
+
+Table shipping_partners {
+  id int [pk, increment]
+  name varchar [not null, unique, note: 'Tomoga | Maylerz']
+}
+
+Table return_requests {
+  id int [pk, increment]
+  public_id varchar [unique, note: 'RR-2026-00147']
+  order_id int [not null, ref: > orders.id]
+  order_item_id int [ref: > order_items.id]
+  shipping_partner_id int [ref: > shipping_partners.id]
+  quantity int
+  price decimal
+  status varchar [not null, note: 'accepted | refunded | ...']
+  rejection_reason text
+  created_at datetime [not null]
+}
+
+// ============================================================
+// Finance / Wallets
+// ============================================================
+
+Table wallets {
+  id int [pk, increment]
+  customer_id int [not null, unique, ref: > customers.id]
+  balance decimal [not null, default: 0]
+  recharged_balance decimal [default: 0]
+  voucher_balance decimal [default: 0]
+  currency varchar [not null, note: 'EGP (list) | SAR (customer profile) — TODO: confirm']
+  updated_at datetime
+}
+
+Table wallet_transactions {
+  id int [pk, increment]
+  wallet_id int [not null, ref: > wallets.id]
+  type varchar [not null, note: 'credit | debit']
+  amount decimal [not null]
+  note text
+  created_at datetime [not null]
+}
+
+Table platform_wallet {
+  id int [pk, increment]
+  total_balance decimal [not null, default: 0]
+  currency varchar [not null, note: 'EGP']
+  updated_at datetime
+  // TODO: confirm single-row table
+}
+
+Table platform_wallet_transactions {
+  id int [pk, increment]
+  platform_wallet_id int [not null, ref: > platform_wallet.id]
+  public_id varchar [note: 'long numeric id']
+  operation varchar [note: 'e.g. decoopa-account']
+  amount decimal [not null]
+  type varchar [not null, note: 'Account Debit | Account Credit']
+  note text
+  transaction_date datetime [not null]
+}
+
+Table transactions {
+  id int [pk, increment]
+  order_id int [ref: > orders.id]
+  customer_id int [ref: > customers.id]
+  payer_name varchar
+  payee_name varchar
+  amount decimal [not null]
+  type varchar [not null, note: 'accountDebit | accountCredit | walletPayment | codPayment']
+  created_at datetime [not null]
+}
+
+Table refunds {
+  id int [pk, increment]
+  public_id varchar [unique, note: 'TXN-001']
+  order_id int [ref: > orders.id]
+  customer_id int [ref: > customers.id]
+  return_request_id int [ref: > return_requests.id]
+  amount decimal [not null]
+  currency varchar [note: 'EGP']
+  status varchar [not null, note: 'completed | pending | processing | failed | approved']
+  type varchar [note: 'return']
+  reason text
+  created_at datetime [not null]
+}
+
+Table bank_accounts {
+  id int [pk, increment]
+  customer_id int [ref: > customers.id]
+  account_name varchar
+  account_number varchar
+  bank_name varchar
+  swift_code varchar
+  // TODO: confirm if bank details are embedded on withdrawals only
+}
+
+Table withdrawals {
+  id int [pk, increment]
+  customer_id int [ref: > customers.id]
+  bank_account_id int [ref: > bank_accounts.id]
+  account_name varchar
+  account_number varchar
+  bank_name varchar
+  swift_code varchar
+  amount decimal [not null]
+  reason varchar [note: 'profit_withdrawal | monthly_payout | balance_transfer | refund_payout']
+  status varchar [not null, note: 'approved | pending | rejected']
+  rejection_reason text
+  created_at datetime [not null]
+}
+
+// ============================================================
+// Projects
+// ============================================================
+
+Table projects {
+  id int [pk, increment]
+  public_id varchar [unique, note: 'PRJ-BGH-001']
+  name varchar [not null]
+  client_name varchar [note: 'TODO: confirm FK to customers vs free text']
+  start_date date
+  location varchar
+  scope text
+  description text
+  thumbnail_url varchar
+  status varchar [not null, note: 'Active | Draft | Inactive | Archived']
+  created_at datetime
+  updated_at datetime
+}
+
+Table project_images {
+  id int [pk, increment]
+  project_id int [not null, ref: > projects.id]
+  image_url varchar [not null]
+  sort_order int
+}
+
+Table show_rooms {
+  id int [pk, increment]
+  // TODO: confirm fields — only sidebar entry seen, no detail screen
+  name varchar
+  project_id int [ref: > projects.id]
+  status varchar
+  created_at datetime
+}
+
+// ============================================================
+// Marketing
+// ============================================================
+
+Table vouchers {
+  id int [pk, increment]
+  code varchar [not null, unique, note: 'VCH-SUMMER2024']
+  type varchar [not null, note: 'Percentage | Fixed Amount | Free Shipping']
+  amount decimal [not null]
+  usage_count int [default: 0]
+  user_count int [note: 'global usage limit']
+  max_usage_per_user int
+  start_date date
+  end_date date
+  status varchar [not null, note: 'Active | Expired | Detective']
+  created_at datetime
+}
+
+Table deals {
+  id varchar [pk, note: 'string id e.g. 4PZ5gD5IyNIvvayPtcH']
+  name varchar [not null]
+  status varchar [not null, note: 'Active | Detective']
+  discount_type varchar [note: 'Fixed | Percentage']
+  discount_amount decimal
+  ribbon_name varchar
+  ribbon_color varchar
+  ribbon_background varchar
+  currency varchar [note: 'EGP']
+  start_date datetime
+  end_date datetime
+  created_at datetime
+}
+
+Table deal_products {
+  id int [pk, increment]
+  deal_id varchar [not null, ref: > deals.id]
+  product_id int [not null, ref: > products.id]
+
+  indexes {
+    (deal_id, product_id) [unique]
+  }
+}
+
+Table sliders {
+  id int [pk, increment]
+  image_en_url varchar
+  image_ar_url varchar
+  title varchar
+  content text [note: 'rich text / HTML']
+  button_text varchar
+  button_color varchar [note: '#000000']
+  button_url varchar
+  start_date datetime
+  end_date datetime
+  created_at datetime
+}
+
+Table top_banners {
+  id int [pk, increment]
+  content text
+  content_color varchar
+  button_label varchar
+  redirection_type varchar [note: 'Redirect to Deal']
+  deal_id varchar [ref: > deals.id]
+  visibility varchar [note: 'Public']
+  is_active boolean [default: true]
+  ribbon_color varchar
+  // TODO: confirm polymorphic redirect targets beyond deals
+}
+
+Table ads {
+  id varchar [pk, note: 'e.g. OMTYLDALReVmniQ']
+  title varchar
+  content text [note: 'rich text / HTML']
+  created_at datetime
+}
+
+Table video_ads {
+  id int [pk, increment]
+  // TODO: confirm fields — only sidebar entry seen, no detail screen
+  name varchar
+  video_url varchar
+  created_at datetime
+}
+
+// ============================================================
+// Settings & CMS
+// ============================================================
+
+Table platform_settings {
+  id int [pk, increment]
+  vat decimal [note: 'e.g. 0.14']
+  cash_on_delivery_fees decimal [note: 'e.g. 10']
+  updated_at datetime
+  // TODO: confirm single-row vs key-value store
+}
+
+Table faqs {
+  id int [pk, increment]
+  language varchar [not null, note: 'ar | en']
+  title varchar
+  content text [note: 'rich text / HTML']
+  created_at datetime
+  updated_at datetime
+}
+
+Table about_us {
+  id int [pk, increment]
+  language varchar [not null, note: 'ar | en']
+  title varchar
+  content text
+  image_url varchar
+  updated_at datetime
+}
+
+Table terms_and_conditions {
+  id int [pk, increment]
+  language varchar [not null, note: 'ar | en']
+  title varchar
+  content text
+  updated_at datetime
+}
+
+Table refund_policy {
+  id int [pk, increment]
+  language varchar [not null, note: 'ar | en']
+  title varchar
+  content text
+  updated_at datetime
+}
+
+// ============================================================
+// Contact Us
+// ============================================================
+
+Table contact_messages {
+  id int [pk, increment]
+  full_name varchar [not null]
+  phone varchar
+  email varchar
+  message text
+  order_id int [ref: > orders.id, note: 'TODO: confirm — Order ID filter only in UI']
+  created_at datetime [not null]
+}

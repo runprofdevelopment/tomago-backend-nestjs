@@ -1,0 +1,3128 @@
+openapi: 3.0.3
+info:
+  title: Tomoga Admin API Contract
+  description: |
+    API contract inferred from admin dashboard UI screenshots + `erd.dbml`.
+    Not reverse-engineered from the live GraphQL backend.
+    Localization uses `{ en, ar }` objects (Firestore shape) equivalent to ERD `*_en` / `*_ar`.
+  version: 1.0.0
+
+servers:
+  - url: /api/v1
+    description: Admin API base (path placeholder)
+
+tags:
+  - name: Auth
+  - name: Dashboard
+  - name: Orders
+  - name: CustomerRequests
+  - name: Returns
+  - name: Customers
+  - name: Finance
+  - name: Products
+  - name: Catalog
+  - name: Reviews
+  - name: Projects
+  - name: Marketing
+  - name: Settings
+  - name: ContactUs
+
+paths:
+  # ========================= Auth =========================
+  /auth/sign-in:
+    post:
+      tags: [Auth]
+      summary: Admin sign in (email + password)
+      operationId: authSignIn
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+      responses:
+        '200':
+          description: Credentials accepted; may require 2FA
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignInResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/verify-2fa:
+    post:
+      tags: [Auth]
+      summary: Verify 6-digit TOTP / OTP
+      operationId: authVerify2fa
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Verify2faRequest'
+      responses:
+        '200':
+          description: Session issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthSession'
+
+  /auth/resend-2fa:
+    post:
+      tags: [Auth]
+      summary: Resend OTP
+      operationId: authResend2fa
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [challenge_id]
+              properties:
+                challenge_id: { type: string }
+      responses:
+        '204':
+          description: Resent
+
+  /auth/forgot-password:
+    post:
+      tags: [Auth]
+      summary: Request password reset
+      operationId: authForgotPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+      responses:
+        '204':
+          description: Reset email sent if account exists
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Current admin profile
+      operationId: authMe
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+
+  # ========================= Dashboard =========================
+  /dashboard/kpis:
+    get:
+      tags: [Dashboard]
+      summary: Dashboard KPI cards
+      operationId: dashboardKpis
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/PeriodFilter'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardKpis'
+
+  # ========================= Orders =========================
+  /orders:
+    get:
+      tags: [Orders]
+      summary: List catalog orders
+      operationId: listOrders
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/PeriodFilter'
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/OrderStatus'
+        - name: payment_method
+          in: query
+          schema:
+            $ref: '#/components/schemas/PaymentMethod'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOrders'
+
+  /orders/{orderId}:
+    get:
+      tags: [Orders]
+      summary: Order details (items, shipping, totals)
+      operationId: getOrder
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderDetail'
+
+  /orders/{orderId}/accept:
+    post:
+      tags: [Orders]
+      summary: Accept pending order
+      operationId: acceptOrder
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+
+  /orders/{orderId}/reject:
+    post:
+      tags: [Orders]
+      summary: Reject order with reason
+      operationId: rejectOrder
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rejection_reason]
+              properties:
+                rejection_reason: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+
+  /orders/{orderId}/cancel:
+    post:
+      tags: [Orders]
+      summary: Cancel order (confirm)
+      operationId: cancelOrder
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cancel_reason: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+
+  /orders/{orderId}/shipping:
+    patch:
+      tags: [Orders]
+      summary: Update shipping company / tracking
+      operationId: updateOrderShipping
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderShippingUpdate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+
+  /orders/export:
+    get:
+      tags: [Orders]
+      summary: Export orders
+      operationId: exportOrders
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: File download
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+  # ========================= Customer Requests =========================
+  /customer-requests:
+    get:
+      tags: [CustomerRequests]
+      summary: List custom quote / customer requests
+      operationId: listCustomerRequests
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Search'
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/CustomerRequestStatus'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCustomerRequests'
+
+  /customer-requests/{requestId}:
+    get:
+      tags: [CustomerRequests]
+      summary: Request detail + messages
+      operationId: getCustomerRequest
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerRequestDetail'
+
+  /customer-requests/{requestId}/reply:
+    post:
+      tags: [CustomerRequests]
+      summary: Reply with estimated price and delivery time
+      operationId: replyCustomerRequest
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequestReply'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerRequestDetail'
+
+  /customer-requests/{requestId}/accept:
+    post:
+      tags: [CustomerRequests]
+      operationId: acceptCustomerRequest
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerRequest'
+
+  /customer-requests/{requestId}/cancel:
+    post:
+      tags: [CustomerRequests]
+      operationId: cancelCustomerRequest
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerRequest'
+
+  /customer-requests/{requestId}/close:
+    post:
+      tags: [CustomerRequests]
+      operationId: closeCustomerRequest
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerRequest'
+
+  # ========================= Returns =========================
+  /return-requests:
+    get:
+      tags: [Returns]
+      summary: List return requests
+      operationId: listReturnRequests
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Search'
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/ReturnRequestStatus'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReturnRequests'
+
+  /return-requests/{returnId}:
+    get:
+      tags: [Returns]
+      operationId: getReturnRequest
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: returnId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnRequest'
+
+  /return-requests/{returnId}/accept:
+    post:
+      tags: [Returns]
+      operationId: acceptReturnRequest
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: returnId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnRequest'
+
+  /return-requests/{returnId}/reject:
+    post:
+      tags: [Returns]
+      operationId: rejectReturnRequest
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: returnId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rejection_reason: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnRequest'
+
+  # ========================= Customers =========================
+  /customers:
+    get:
+      tags: [Customers]
+      summary: List customers
+      operationId: listCustomers
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/PeriodFilter'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCustomers'
+    post:
+      tags: [Customers]
+      summary: Create customer (if UI supports)
+      operationId: createCustomer
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerWrite'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+
+  /customers/export:
+    get:
+      tags: [Customers]
+      operationId: exportCustomers
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+  /customers/{customerId}:
+    get:
+      tags: [Customers]
+      summary: Customer profile
+      operationId: getCustomer
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDetail'
+    patch:
+      tags: [Customers]
+      operationId: updateCustomer
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerWrite'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+
+  /customers/{customerId}/addresses:
+    get:
+      tags: [Customers]
+      operationId: listCustomerAddresses
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomerAddress'
+
+  /customers/{customerId}/orders:
+    get:
+      tags: [Customers]
+      operationId: listCustomerOrders
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOrders'
+
+  /customers/{customerId}/reviews:
+    get:
+      tags: [Customers]
+      operationId: listCustomerReviews
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Review'
+
+  /customers/{customerId}/wallet/add-fund:
+    post:
+      tags: [Customers]
+      summary: Add funds to customer wallet
+      operationId: addCustomerWalletFund
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalletAmountNote'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+
+  /customers/{customerId}/wallet/withdraw:
+    post:
+      tags: [Customers]
+      summary: Deduct / withdraw from customer wallet
+      operationId: withdrawCustomerWallet
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalletAmountNote'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+
+  /customers/{customerId}/notifications:
+    post:
+      tags: [Customers]
+      summary: Send notification (EN + AR)
+      operationId: sendCustomerNotification
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerNotificationWrite'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerNotification'
+
+  # ========================= Finance =========================
+  /finance/platform-wallet:
+    get:
+      tags: [Finance]
+      summary: Tomoga / platform wallet balance
+      operationId: getPlatformWallet
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformWallet'
+
+  /finance/platform-wallet/transactions:
+    get:
+      tags: [Finance]
+      operationId: listPlatformWalletTransactions
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPlatformWalletTransactions'
+
+  /finance/platform-wallet/recharge:
+    post:
+      tags: [Finance]
+      operationId: rechargePlatformWallet
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount]
+              properties:
+                amount: { type: number }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformWallet'
+
+  /finance/platform-wallet/deduct:
+    post:
+      tags: [Finance]
+      operationId: deductPlatformWallet
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalletAmountNote'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformWallet'
+
+  /finance/wallets:
+    get:
+      tags: [Finance]
+      summary: List customer wallets
+      operationId: listWallets
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWallets'
+
+  /finance/transactions:
+    get:
+      tags: [Finance]
+      operationId: listTransactions
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Search'
+        - name: order_id
+          in: query
+          schema: { type: string }
+        - name: type
+          in: query
+          schema:
+            $ref: '#/components/schemas/TransactionType'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTransactions'
+
+  /finance/refunds:
+    get:
+      tags: [Finance]
+      operationId: listRefunds
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/RefundStatus'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRefunds'
+
+  /finance/withdrawals:
+    get:
+      tags: [Finance]
+      operationId: listWithdrawals
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/WithdrawalStatus'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWithdrawals'
+
+  /finance/withdrawals/{withdrawalId}/approve:
+    post:
+      tags: [Finance]
+      operationId: approveWithdrawal
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: withdrawalId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Withdrawal'
+
+  /finance/withdrawals/{withdrawalId}/reject:
+    post:
+      tags: [Finance]
+      operationId: rejectWithdrawal
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: withdrawalId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rejection_reason]
+              properties:
+                rejection_reason: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Withdrawal'
+
+  # ========================= Products / Inventory =========================
+  /products:
+    get:
+      tags: [Products]
+      summary: Inventory / product list
+      operationId: listProducts
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Search'
+        - name: type
+          in: query
+          schema:
+            $ref: '#/components/schemas/ProductType'
+        - name: status
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProducts'
+    post:
+      tags: [Products]
+      summary: Add new product (single or variant)
+      operationId: createProduct
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductWrite'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+
+  /products/{productId}:
+    get:
+      tags: [Products]
+      operationId: getProduct
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+    put:
+      tags: [Products]
+      operationId: updateProduct
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductWrite'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+    delete:
+      tags: [Products]
+      operationId: deleteProduct
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        '204':
+          description: Deleted
+
+  /products/export:
+    get:
+      tags: [Products]
+      operationId: exportProducts
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+  # ========================= Catalog =========================
+  /brands:
+    get:
+      tags: [Catalog]
+      operationId: listBrands
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Brand'
+    post:
+      tags: [Catalog]
+      operationId: createBrand
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandWrite'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+
+  /collections:
+    get:
+      tags: [Catalog]
+      operationId: listCollections
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCollections'
+    post:
+      tags: [Catalog]
+      operationId: createCollection
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionWrite'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+
+  /collections/{collectionId}:
+    put:
+      tags: [Catalog]
+      operationId: updateCollection
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: collectionId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionWrite'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+    patch:
+      tags: [Catalog]
+      summary: Activate / deactivate collection
+      operationId: setCollectionStatus
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: collectionId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [active, inactive]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+
+  /categories:
+    get:
+      tags: [Catalog]
+      operationId: listCategories
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCategories'
+    post:
+      tags: [Catalog]
+      operationId: createCategory
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryWrite'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+
+  /categories/{categoryId}:
+    put:
+      tags: [Catalog]
+      operationId: updateCategory
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryWrite'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+    patch:
+      tags: [Catalog]
+      summary: Activate / deactivate category
+      operationId: setCategoryStatus
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [active, inactive]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+
+  /product-options:
+    get:
+      tags: [Catalog]
+      operationId: listProductOptions
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProductOptions'
+    post:
+      tags: [Catalog]
+      operationId: createProductOption
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductOptionWrite'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductOption'
+
+  /product-options/{optionId}:
+    put:
+      tags: [Catalog]
+      operationId: updateProductOption
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: optionId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductOptionWrite'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductOption'
+
+  # ========================= Reviews =========================
+  /reviews:
+    get:
+      tags: [Reviews]
+      operationId: listReviews
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Search'
+        - name: order_id
+          in: query
+          schema: { type: string }
+        - name: product_id
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReviews'
+
+  /reviews/{reviewId}/visibility:
+    patch:
+      tags: [Reviews]
+      summary: Show / hide review
+      operationId: setReviewVisibility
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: reviewId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [is_visible]
+              properties:
+                is_visible: { type: boolean }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+
+  /reviews/{reviewId}/answer:
+    post:
+      tags: [Reviews]
+      summary: Admin answer on review
+      operationId: answerReview
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: reviewId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [admin_response]
+              properties:
+                admin_response: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+
+  /reviews/export:
+    get:
+      tags: [Reviews]
+      operationId: exportReviews
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+  # ========================= Projects =========================
+  /projects:
+    get:
+      tags: [Projects]
+      operationId: listProjects
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Search'
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/ProjectStatus'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProjects'
+    post:
+      tags: [Projects]
+      operationId: createProject
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectWrite'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+
+  /projects/{projectId}:
+    get:
+      tags: [Projects]
+      operationId: getProject
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+    put:
+      tags: [Projects]
+      operationId: updateProject
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectWrite'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+    patch:
+      tags: [Projects]
+      summary: Change project status
+      operationId: setProjectStatus
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  $ref: '#/components/schemas/ProjectStatus'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+
+  /show-rooms:
+    get:
+      tags: [Projects]
+      summary: List show rooms (fields TODO from UI)
+      operationId: listShowRooms
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShowRoom'
+    post:
+      tags: [Projects]
+      operationId: createShowRoom
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShowRoomWrite'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShowRoom'
+
+  # ========================= Marketing =========================
+  /vouchers:
+    get:
+      tags: [Marketing]
+      operationId: listVouchers
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedVouchers'
+    post:
+      tags: [Marketing]
+      operationId: createVoucher
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoucherWrite'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Voucher'
+
+  /vouchers/{voucherId}:
+    put:
+      tags: [Marketing]
+      operationId: updateVoucher
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: voucherId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoucherWrite'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Voucher'
+    delete:
+      tags: [Marketing]
+      operationId: deleteVoucher
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: voucherId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '204':
+          description: Deleted
+    patch:
+      tags: [Marketing]
+      summary: Activate / deactivate voucher
+      operationId: setVoucherStatus
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: voucherId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  $ref: '#/components/schemas/VoucherStatus'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Voucher'
+
+  /deals:
+    get:
+      tags: [Marketing]
+      operationId: listDeals
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDeals'
+    post:
+      tags: [Marketing]
+      operationId: createDeal
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DealWrite'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deal'
+
+  /deals/{dealId}:
+    get:
+      tags: [Marketing]
+      summary: Deal details + selected products
+      operationId: getDeal
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: dealId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DealDetail'
+    put:
+      tags: [Marketing]
+      operationId: updateDeal
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: dealId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DealWrite'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deal'
+    delete:
+      tags: [Marketing]
+      operationId: deleteDeal
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: dealId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '204':
+          description: Deleted
+
+  /deals/{dealId}/products:
+    put:
+      tags: [Marketing]
+      summary: Set selected products on deal
+      operationId: setDealProducts
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: dealId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [product_ids]
+              properties:
+                product_ids:
+                  type: array
+                  items: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DealDetail'
+
+  /sliders:
+    get:
+      tags: [Marketing]
+      operationId: listSliders
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSliders'
+    post:
+      tags: [Marketing]
+      operationId: createSlider
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SliderWrite'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slider'
+
+  /sliders/{sliderId}:
+    put:
+      tags: [Marketing]
+      operationId: updateSlider
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: sliderId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SliderWrite'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slider'
+    delete:
+      tags: [Marketing]
+      operationId: deleteSlider
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: sliderId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '204':
+          description: Deleted
+
+  /top-banners:
+    get:
+      tags: [Marketing]
+      operationId: getTopBanner
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopBanner'
+    put:
+      tags: [Marketing]
+      summary: Save top banner config
+      operationId: saveTopBanner
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopBannerWrite'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopBanner'
+
+  /ads:
+    get:
+      tags: [Marketing]
+      operationId: listAds
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAds'
+    post:
+      tags: [Marketing]
+      operationId: createAd
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdWrite'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ad'
+
+  /ads/{adId}:
+    put:
+      tags: [Marketing]
+      operationId: updateAd
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: adId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdWrite'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ad'
+    delete:
+      tags: [Marketing]
+      operationId: deleteAd
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: adId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '204':
+          description: Deleted
+
+  /video-ads:
+    get:
+      tags: [Marketing]
+      summary: List video ads (fields TODO)
+      operationId: listVideoAds
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/VideoAd'
+    post:
+      tags: [Marketing]
+      operationId: createVideoAd
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VideoAdWrite'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoAd'
+
+  # ========================= Settings =========================
+  /settings/platform:
+    get:
+      tags: [Settings]
+      operationId: getPlatformSettings
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformSettings'
+    put:
+      tags: [Settings]
+      operationId: savePlatformSettings
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlatformSettings'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformSettings'
+
+  /settings/admins:
+    get:
+      tags: [Settings]
+      operationId: listAdmins
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAdmins'
+    post:
+      tags: [Settings]
+      summary: Invite / create admin
+      operationId: createAdmin
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminWrite'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+
+  /settings/admins/{adminId}:
+    put:
+      tags: [Settings]
+      operationId: updateAdmin
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: adminId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminWrite'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+    delete:
+      tags: [Settings]
+      operationId: deleteAdmin
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: adminId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '204':
+          description: Deleted
+    patch:
+      tags: [Settings]
+      summary: Activate / deactivate admin
+      operationId: setAdminStatus
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: adminId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [active, inactive]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+
+  /settings/static-pages/{type}:
+    get:
+      tags: [Settings]
+      summary: Get FAQ / About / Terms / Refund policy by language
+      operationId: getStaticPage
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/StaticPageType'
+        - name: language
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [ar, en]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticPage'
+    put:
+      tags: [Settings]
+      operationId: saveStaticPage
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/StaticPageType'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaticPageWrite'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticPage'
+
+  # ========================= Contact Us =========================
+  /contact-messages:
+    get:
+      tags: [ContactUs]
+      operationId: listContactMessages
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/PeriodFilter'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedContactMessages'
+
+  /contact-messages/export:
+    get:
+      tags: [ContactUs]
+      operationId: exportContactMessages
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 1, default: 1 }
+    PerPage:
+      name: per_page
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 10 }
+    Search:
+      name: q
+      in: query
+      schema: { type: string }
+    PeriodFilter:
+      name: period
+      in: query
+      schema:
+        type: string
+        enum: [daily, weekly, monthly, yearly]
+        default: monthly
+    OrderId:
+      name: orderId
+      in: path
+      required: true
+      schema: { type: string }
+    CustomerId:
+      name: customerId
+      in: path
+      required: true
+      schema: { type: string }
+    ProductId:
+      name: productId
+      in: path
+      required: true
+      schema: { type: string }
+
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        message: { type: string }
+        code: { type: string }
+
+    LocalizedString:
+      type: object
+      properties:
+        en: { type: string }
+        ar: { type: string }
+
+    PaginationMeta:
+      type: object
+      properties:
+        page: { type: integer }
+        per_page: { type: integer }
+        total: { type: integer }
+        total_pages: { type: integer }
+
+    # ----- Auth / Admin -----
+    SignInRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, format: password }
+
+    SignInResponse:
+      type: object
+      properties:
+        requires_2fa: { type: boolean }
+        challenge_id: { type: string }
+        phone_hint: { type: string }
+        session:
+          $ref: '#/components/schemas/AuthSession'
+
+    Verify2faRequest:
+      type: object
+      required: [challenge_id, code]
+      properties:
+        challenge_id: { type: string }
+        code:
+          type: string
+          pattern: '^[0-9]{6}$'
+
+    AuthSession:
+      type: object
+      properties:
+        access_token: { type: string }
+        refresh_token: { type: string }
+        admin:
+          $ref: '#/components/schemas/Admin'
+
+    Admin:
+      type: object
+      properties:
+        id: { type: string }
+        first_name: { type: string }
+        last_name: { type: string }
+        email: { type: string, format: email }
+        phone: { type: string }
+        phone_country_code: { type: string }
+        avatar_url: { type: string, nullable: true }
+        role: { type: string, example: admin }
+        preferred_language: { type: string, enum: [ar, en] }
+        dark_mode: { type: boolean }
+        status: { type: string, enum: [active, inactive] }
+        join_date: { type: string, format: date-time }
+
+    AdminWrite:
+      type: object
+      required: [email]
+      properties:
+        first_name: { type: string }
+        last_name: { type: string }
+        email: { type: string, format: email }
+        phone: { type: string }
+        phone_country_code: { type: string }
+        avatar_url: { type: string, nullable: true }
+        role: { type: string }
+
+    PaginatedAdmins:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Admin'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    DashboardKpis:
+      type: object
+      properties:
+        order_items_count: { type: number }
+        units_count: { type: number }
+        sales_total: { type: number }
+        pending_orders: { type: integer }
+        pending_returns: { type: integer }
+        canceled_orders: { type: integer }
+        currency: { type: string, enum: [EGP, SAR, AED, USD] }
+
+    # ----- Orders -----
+    OrderStatus:
+      type: string
+      enum:
+        - pending_acceptance
+        - pending_delivery
+        - shipped
+        - received
+        - cancelled
+        - completed
+        - pending
+        - processing
+        - waiting_payment_confirmation
+
+    PaymentMethod:
+      type: string
+      enum:
+        - cash_on_delivery
+        - visa
+        - installment
+        - mada
+        - apple_pay
+        - e_wallet
+        - wallet
+
+    OrderItemStatus:
+      type: string
+      description: May differ from parent order status
+      enum: [pending, shipped, received, refunded, cancelled]
+
+    OrderItem:
+      type: object
+      properties:
+        id: { type: string }
+        product_id: { type: string }
+        product_title: { type: string }
+        product_image_url: { type: string }
+        sku: { type: string }
+        variant_text: { type: string }
+        unit_price: { type: number }
+        quantity: { type: integer }
+        line_total: { type: number }
+        status:
+          $ref: '#/components/schemas/OrderItemStatus'
+
+    Order:
+      type: object
+      properties:
+        id: { type: string }
+        public_id: { type: string }
+        customer_id: { type: string }
+        customer_name: { type: string }
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        payment_method:
+          $ref: '#/components/schemas/PaymentMethod'
+        currency: { type: string, enum: [EGP, SAR, AED, USD] }
+        subtotal: { type: number }
+        cod_fees: { type: number }
+        shipping_cost: { type: number }
+        vat_amount: { type: number }
+        total_discount: { type: number }
+        grand_total: { type: number }
+        items_count: { type: integer }
+        created_at: { type: string, format: date-time }
+
+    OrderDetail:
+      allOf:
+        - $ref: '#/components/schemas/Order'
+        - type: object
+          properties:
+            shipping_company: { type: string }
+            tracking_number: { type: string }
+            tracking_link: { type: string }
+            shipping_address: { type: string }
+            shipping_note: { type: string }
+            rejection_reason: { type: string, nullable: true }
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/OrderItem'
+
+    OrderShippingUpdate:
+      type: object
+      properties:
+        shipping_company: { type: string }
+        tracking_number: { type: string }
+        tracking_link: { type: string }
+        shipping_note: { type: string }
+
+    PaginatedOrders:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # ----- Customer requests -----
+    CustomerRequestStatus:
+      type: string
+      enum: [pending, replied, closed]
+
+    CustomerRequest:
+      type: object
+      properties:
+        id: { type: string }
+        order_id: { type: string }
+        product_id: { type: string }
+        customer_id: { type: string }
+        product_description: { type: string }
+        dimensions: { type: string }
+        quantity: { type: integer }
+        additional_notes: { type: string }
+        status:
+          $ref: '#/components/schemas/CustomerRequestStatus'
+        estimated_price: { type: number, nullable: true }
+        estimated_delivery_time: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+
+    RequestMessage:
+      type: object
+      properties:
+        id: { type: string }
+        sender_type: { type: string, enum: [customer, seller] }
+        sender_name: { type: string }
+        body: { type: string }
+        created_at: { type: string, format: date-time }
+
+    CustomerRequestDetail:
+      allOf:
+        - $ref: '#/components/schemas/CustomerRequest'
+        - type: object
+          properties:
+            messages:
+              type: array
+              items:
+                $ref: '#/components/schemas/RequestMessage'
+
+    CustomerRequestReply:
+      type: object
+      required: [body, estimated_price]
+      properties:
+        body: { type: string }
+        estimated_price: { type: number }
+        estimated_delivery_time: { type: string }
+
+    PaginatedCustomerRequests:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerRequest'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # ----- Returns -----
+    ReturnRequestStatus:
+      type: string
+      enum: [pending, accepted, rejected, refunded]
+
+    ReturnRequest:
+      type: object
+      properties:
+        id: { type: string }
+        public_id: { type: string, example: RR-2026-00147 }
+        order_id: { type: string }
+        order_item_id: { type: string }
+        sku: { type: string }
+        quantity: { type: integer }
+        price: { type: number }
+        shipping_partner: { type: string, enum: [Tomoga, Maylerz] }
+        status:
+          $ref: '#/components/schemas/ReturnRequestStatus'
+        rejection_reason: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+
+    PaginatedReturnRequests:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnRequest'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # ----- Customers -----
+    Customer:
+      type: object
+      properties:
+        id: { type: string }
+        full_name: { type: string }
+        email: { type: string, format: email }
+        phone: { type: string }
+        gender: { type: string, enum: [male, female] }
+        birth_date: { type: string, format: date }
+        avatar_url: { type: string, nullable: true }
+        status: { type: string, example: activated }
+        wallet_balance: { type: number }
+        currency: { type: string }
+        join_date: { type: string, format: date-time }
+
+    CustomerWrite:
+      type: object
+      properties:
+        full_name: { type: string }
+        email: { type: string, format: email }
+        phone: { type: string }
+        gender: { type: string, enum: [male, female] }
+        birth_date: { type: string, format: date }
+        avatar_url: { type: string }
+
+    CustomerDetail:
+      allOf:
+        - $ref: '#/components/schemas/Customer'
+        - type: object
+          properties:
+            addresses:
+              type: array
+              items:
+                $ref: '#/components/schemas/CustomerAddress'
+
+    CustomerAddress:
+      type: object
+      properties:
+        id: { type: string }
+        first_name: { type: string }
+        phone: { type: string }
+        country:
+          type: string
+          enum: [Egypt, Saudi Arabia, UAE, Kuwait]
+        address_1: { type: string }
+        created_at: { type: string, format: date-time }
+
+    CustomerNotificationWrite:
+      type: object
+      required: [title, body]
+      properties:
+        title:
+          $ref: '#/components/schemas/LocalizedString'
+        body:
+          $ref: '#/components/schemas/LocalizedString'
+
+    CustomerNotification:
+      allOf:
+        - $ref: '#/components/schemas/CustomerNotificationWrite'
+        - type: object
+          properties:
+            id: { type: string }
+            customer_id: { type: string }
+            created_at: { type: string, format: date-time }
+
+    PaginatedCustomers:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Customer'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # ----- Finance -----
+    Wallet:
+      type: object
+      properties:
+        id: { type: string }
+        customer_id: { type: string }
+        customer_name: { type: string }
+        balance: { type: number }
+        recharged_balance: { type: number }
+        voucher_balance: { type: number }
+        currency: { type: string, enum: [EGP, SAR, AED] }
+
+    WalletAmountNote:
+      type: object
+      required: [amount]
+      properties:
+        amount: { type: number }
+        note: { type: string }
+
+    PlatformWallet:
+      type: object
+      properties:
+        total_balance: { type: number }
+        currency: { type: string, enum: [EGP] }
+
+    PlatformWalletTransaction:
+      type: object
+      properties:
+        id: { type: string }
+        public_id: { type: string }
+        operation: { type: string }
+        amount: { type: number }
+        type: { type: string, enum: [Account Debit, Account Credit] }
+        note: { type: string }
+        transaction_date: { type: string, format: date-time }
+
+    TransactionType:
+      type: string
+      enum:
+        - accountDebit
+        - accountCredit
+        - walletPayment
+        - codPayment
+        - visaPayment
+        - voucherRecharge
+        - walletRefund
+
+    Transaction:
+      type: object
+      properties:
+        id: { type: string }
+        order_id: { type: string, nullable: true }
+        customer_id: { type: string }
+        payer_name: { type: string }
+        payee_name: { type: string, nullable: true }
+        amount: { type: number }
+        type:
+          $ref: '#/components/schemas/TransactionType'
+        created_at: { type: string, format: date-time }
+
+    RefundStatus:
+      type: string
+      enum: [completed, pending, processing, failed, approved]
+
+    Refund:
+      type: object
+      properties:
+        id: { type: string }
+        public_id: { type: string, example: TXN-001 }
+        order_id: { type: string }
+        customer_name: { type: string }
+        amount: { type: number }
+        currency: { type: string }
+        status:
+          $ref: '#/components/schemas/RefundStatus'
+        type: { type: string, example: return }
+        reason: { type: string }
+        created_at: { type: string, format: date-time }
+
+    WithdrawalStatus:
+      type: string
+      enum: [pending, approved, rejected, accepted, confirmed]
+
+    Withdrawal:
+      type: object
+      properties:
+        id: { type: string }
+        account_name: { type: string }
+        account_number: { type: string }
+        bank_name: { type: string }
+        swift_code: { type: string }
+        amount: { type: number }
+        reason: { type: string }
+        status:
+          $ref: '#/components/schemas/WithdrawalStatus'
+        rejection_reason: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+
+    PaginatedWallets:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Wallet'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    PaginatedTransactions:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    PaginatedRefunds:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Refund'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    PaginatedWithdrawals:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Withdrawal'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    PaginatedPlatformWalletTransactions:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlatformWalletTransaction'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # ----- Products -----
+    ProductType:
+      type: string
+      enum: [single, variant]
+
+    ProductMaterial:
+      type: object
+      properties:
+        name: { type: string }
+        image_url: { type: string }
+
+    ProductMechanism:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [reclining, folding, sliding, rotating]
+        name: { type: string }
+        description: { type: string }
+        image_url: { type: string }
+
+    ProductOptionValue:
+      type: object
+      properties:
+        product_option_id: { type: string }
+        value:
+          $ref: '#/components/schemas/LocalizedString'
+
+    Product:
+      type: object
+      properties:
+        id: { type: string }
+        sku: { type: string }
+        type:
+          $ref: '#/components/schemas/ProductType'
+        brand_id: { type: string, nullable: true }
+        category_id: { type: string, nullable: true }
+        collection_id: { type: string, nullable: true }
+        name:
+          $ref: '#/components/schemas/LocalizedString'
+        model_name:
+          $ref: '#/components/schemas/LocalizedString'
+        model_number:
+          $ref: '#/components/schemas/LocalizedString'
+        whats_in_the_box:
+          $ref: '#/components/schemas/LocalizedString'
+        description:
+          $ref: '#/components/schemas/LocalizedString'
+        country_of_origin:
+          $ref: '#/components/schemas/LocalizedString'
+        material:
+          $ref: '#/components/schemas/LocalizedString'
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocalizedString'
+        materials:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductMaterial'
+        mechanisms:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductMechanism'
+        option_values:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductOptionValue'
+        cost: { type: number }
+        price: { type: number }
+        currency: { type: string }
+        stock: { type: integer }
+        max_order_quantity: { type: integer }
+        product_limit: { type: integer }
+        sale_start_date: { type: string, format: date-time, nullable: true }
+        sale_end_date: { type: string, format: date-time, nullable: true }
+        warranty_months: { type: integer }
+        warranty_returns_eligible: { type: boolean }
+        shipping_note:
+          $ref: '#/components/schemas/LocalizedString'
+        warranty_returns_note:
+          $ref: '#/components/schemas/LocalizedString'
+        shipping_price: { type: number }
+        shipping_weight: { type: number }
+        shipping_weight_unit: { type: string, enum: [kg, g] }
+        shipping_width: { type: number }
+        shipping_height: { type: number }
+        shipping_depth: { type: number }
+        product_weight: { type: number }
+        product_width: { type: number }
+        product_height: { type: number }
+        product_depth: { type: number }
+        technical_width: { type: number }
+        technical_height: { type: number }
+        technical_depth: { type: number }
+        technical_dimension_unit: { type: string, example: cm }
+        dimension_diagram_url: { type: string, nullable: true }
+        image_urls:
+          type: array
+          items: { type: string }
+        status: { type: string }
+        created_at: { type: string, format: date-time }
+
+    ProductWrite:
+      $ref: '#/components/schemas/Product'
+
+    PaginatedProducts:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    Brand:
+      type: object
+      properties:
+        id: { type: string }
+        name:
+          $ref: '#/components/schemas/LocalizedString'
+        image_url: { type: string }
+        is_active: { type: boolean }
+
+    BrandWrite:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/LocalizedString'
+        image_url: { type: string }
+        is_active: { type: boolean }
+
+    Collection:
+      type: object
+      properties:
+        id: { type: string }
+        name:
+          $ref: '#/components/schemas/LocalizedString'
+        image_url: { type: string }
+        status: { type: string, enum: [active, inactive] }
+        created_at: { type: string, format: date-time }
+
+    CollectionWrite:
+      type: object
+      required: [name]
+      properties:
+        name:
+          $ref: '#/components/schemas/LocalizedString'
+        image_url: { type: string }
+        status: { type: string, enum: [active, inactive] }
+
+    Category:
+      type: object
+      properties:
+        id: { type: string }
+        collection_id: { type: string, nullable: true }
+        parent_id: { type: string, nullable: true }
+        path: { type: string, example: 'Dining & Kitchen > Dining Sets' }
+        name:
+          $ref: '#/components/schemas/LocalizedString'
+        status: { type: string, enum: [active, inactive] }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    CategoryWrite:
+      type: object
+      required: [name]
+      properties:
+        name:
+          $ref: '#/components/schemas/LocalizedString'
+        collection_id: { type: string }
+        parent_id: { type: string, nullable: true }
+        status: { type: string, enum: [active, inactive] }
+
+    ProductOption:
+      type: object
+      properties:
+        id: { type: string }
+        name:
+          $ref: '#/components/schemas/LocalizedString'
+        value: { type: string, description: Unit/hint e.g. Cm }
+
+    ProductOptionWrite:
+      type: object
+      required: [name]
+      properties:
+        name:
+          $ref: '#/components/schemas/LocalizedString'
+        value: { type: string }
+
+    PaginatedCollections:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Collection'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    PaginatedCategories:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    PaginatedProductOptions:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductOption'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # ----- Reviews -----
+    Review:
+      type: object
+      properties:
+        id: { type: string }
+        customer_id: { type: string }
+        customer_name: { type: string }
+        customer_email: { type: string }
+        product_id: { type: string }
+        order_id: { type: string, nullable: true }
+        title: { type: string }
+        body: { type: string }
+        rating: { type: integer, minimum: 1, maximum: 5 }
+        admin_response: { type: string, nullable: true }
+        is_visible: { type: boolean }
+        created_at: { type: string, format: date-time }
+
+    PaginatedReviews:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # ----- Projects -----
+    ProjectStatus:
+      type: string
+      enum: [active, draft, inactive, archived]
+
+    Project:
+      type: object
+      properties:
+        id: { type: string }
+        public_id: { type: string, example: PRJ-BGH-001 }
+        name: { type: string }
+        client_name: { type: string }
+        start_date: { type: string, format: date }
+        location: { type: string }
+        scope: { type: string }
+        description: { type: string }
+        thumbnail_url: { type: string }
+        image_urls:
+          type: array
+          items: { type: string }
+        status:
+          $ref: '#/components/schemas/ProjectStatus'
+        created_at: { type: string, format: date-time }
+
+    ProjectWrite:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string }
+        client_name: { type: string }
+        start_date: { type: string, format: date }
+        location: { type: string }
+        scope: { type: string }
+        description: { type: string }
+        thumbnail_url: { type: string }
+        image_urls:
+          type: array
+          items: { type: string }
+        status:
+          $ref: '#/components/schemas/ProjectStatus'
+
+    ShowRoom:
+      type: object
+      description: TODO confirm full fields from UI
+      properties:
+        id: { type: string }
+        name:
+          $ref: '#/components/schemas/LocalizedString'
+        project_id: { type: string, nullable: true }
+        image_url: { type: string }
+        location: { type: string }
+        is_active: { type: boolean }
+
+    ShowRoomWrite:
+      $ref: '#/components/schemas/ShowRoom'
+
+    PaginatedProjects:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # ----- Marketing -----
+    VoucherType:
+      type: string
+      enum: [Percentage, Fixed Amount, Free Shipping]
+
+    VoucherStatus:
+      type: string
+      enum: [active, expired, inactive]
+
+    Voucher:
+      type: object
+      properties:
+        id: { type: string }
+        code: { type: string, example: VCH-SUMMER2024 }
+        type:
+          $ref: '#/components/schemas/VoucherType'
+        amount: { type: number }
+        usage_count: { type: integer }
+        user_count: { type: integer }
+        max_usage_per_user: { type: integer }
+        start_date: { type: string, format: date }
+        end_date: { type: string, format: date }
+        status:
+          $ref: '#/components/schemas/VoucherStatus'
+
+    VoucherWrite:
+      type: object
+      required: [code, type, amount]
+      properties:
+        code: { type: string }
+        type:
+          $ref: '#/components/schemas/VoucherType'
+        amount: { type: number }
+        user_count: { type: integer }
+        max_usage_per_user: { type: integer }
+        start_date: { type: string, format: date }
+        end_date: { type: string, format: date }
+        status:
+          $ref: '#/components/schemas/VoucherStatus'
+
+    Deal:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        status: { type: string, enum: [active, inactive] }
+        discount_type: { type: string, enum: [fixed, percent] }
+        discount_amount: { type: number }
+        ribbon_name: { type: string }
+        ribbon_color: { type: string }
+        ribbon_background: { type: string }
+        currency: { type: string, enum: [EGP, SAR, AED, USD] }
+        start_date: { type: string, format: date-time }
+        end_date: { type: string, format: date-time }
+
+    DealWrite:
+      $ref: '#/components/schemas/Deal'
+
+    DealDetail:
+      allOf:
+        - $ref: '#/components/schemas/Deal'
+        - type: object
+          properties:
+            product_ids:
+              type: array
+              items: { type: string }
+            products:
+              type: array
+              items:
+                type: object
+                properties:
+                  id: { type: string }
+                  sku: { type: string }
+                  name: { type: string }
+                  image_url: { type: string }
+
+    Slider:
+      type: object
+      properties:
+        id: { type: string }
+        image_en_url: { type: string }
+        image_ar_url: { type: string }
+        title: { type: string }
+        content: { type: string }
+        button_text: { type: string }
+        button_color: { type: string, example: '#000000' }
+        button_url: { type: string }
+        start_date: { type: string, format: date-time }
+        end_date: { type: string, format: date-time }
+
+    SliderWrite:
+      $ref: '#/components/schemas/Slider'
+
+    TopBanner:
+      type: object
+      properties:
+        id: { type: string }
+        content: { type: string }
+        content_color: { type: string }
+        button_label: { type: string }
+        redirection_type: { type: string, example: Redirect to Deal }
+        deal_id: { type: string, nullable: true }
+        visibility: { type: string, enum: [public, private] }
+        is_active: { type: boolean }
+        ribbon_color: { type: string }
+
+    TopBannerWrite:
+      $ref: '#/components/schemas/TopBanner'
+
+    Ad:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        content: { type: string, description: Rich text / HTML }
+        created_at: { type: string, format: date-time }
+
+    AdWrite:
+      type: object
+      required: [title]
+      properties:
+        title: { type: string }
+        content: { type: string }
+
+    VideoAd:
+      type: object
+      description: TODO confirm full fields from UI
+      properties:
+        id: { type: string }
+        title: { type: string }
+        video_url: { type: string }
+        thumbnail_url: { type: string }
+        is_active: { type: boolean }
+
+    VideoAdWrite:
+      $ref: '#/components/schemas/VideoAd'
+
+    PaginatedVouchers:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Voucher'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    PaginatedDeals:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deal'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    PaginatedSliders:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Slider'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    PaginatedAds:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ad'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # ----- Settings / CMS -----
+    PlatformSettings:
+      type: object
+      properties:
+        vat: { type: number, example: 0.14 }
+        cash_on_delivery_fees: { type: number, example: 10 }
+
+    StaticPageType:
+      type: string
+      enum: [faq, about_us, terms, refund_policy]
+
+    StaticPage:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/StaticPageType'
+        language: { type: string, enum: [ar, en] }
+        title: { type: string }
+        content: { type: string, description: Rich text / HTML }
+        image_url: { type: string, nullable: true }
+
+    StaticPageWrite:
+      type: object
+      required: [language, title, content]
+      properties:
+        language: { type: string, enum: [ar, en] }
+        title: { type: string }
+        content: { type: string }
+        image_url: { type: string, nullable: true }
+
+    # ----- Contact -----
+    ContactMessage:
+      type: object
+      properties:
+        id: { type: string }
+        full_name: { type: string }
+        phone: { type: string }
+        email: { type: string, format: email }
+        message: { type: string }
+        order_id: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+
+    PaginatedContactMessages:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactMessage'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'

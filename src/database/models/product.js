@@ -9,10 +9,13 @@ module.exports = class Product extends AbstractEntityModel {
     super('product', 'product', {
       id: new types.String(),
       productNo: new types.Number(),
+      type: new types.Enumerator(['single', 'variant'], 'single'),
 
       main_title: new types.Localization(),
       description: new types.Localization(),  // Long Description / Highlights
       features: new types.JsonArray(['en', 'ar']),
+      materials: new types.JsonArray(['name', 'image_url']),
+      mechanisms: new types.JsonArray(['type', 'name', 'description', 'image_url']),
 
       variants_options: new types.JsonArray(['id', 'name', 'values'], null, {
         id: 'default',
@@ -42,11 +45,18 @@ module.exports = class Product extends AbstractEntityModel {
       product_weight_unit: new types.Enumerator(WEIGHT_UNIT),
       product_height_unit: new types.Enumerator(DIMENSION_UNIT),
       product_width_unit: new types.Enumerator(DIMENSION_UNIT),
+
+      technical_width: new types.Number(),
+      technical_height: new types.Number(),
+      technical_depth: new types.Number(),
+      technical_dimension_unit: new types.Enumerator(DIMENSION_UNIT, 'cm'),
+      dimension_diagram: new types.String(),
     //#endregion
 
     //#region [ Relationship ]
       brand_id: new types.RelationToOne(),
       category_id: new types.RelationToOne(),
+      collection_id: new types.RelationToOne(),
       category_ids: new types.StringArray(),
       categories: new types.JsonArray(['en', 'ar']),
       brand: new types.Localization(),

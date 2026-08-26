@@ -15,7 +15,16 @@ module.exports = class Voucher extends AbstractEntityModel {
       search: new types.Number(), // extra field to be able to filter/search by amount since amount is encrypted
       startDate: new types.Date(),
       endDate: new types.Date(),
-      voucher_amount_type: new types.Enumerator(['percent', 'fixed']),
+      // ERD: Percentage | Fixed Amount | Free Shipping — keep legacy percent/fixed
+      voucher_amount_type: new types.Enumerator([
+        'percent',
+        'fixed',
+        'free_shipping',
+      ]),
+      status: new types.Enumerator(
+        ['active', 'expired', 'inactive'],
+        'active',
+      ),
       total_uses: new types.Number()
     });
   }

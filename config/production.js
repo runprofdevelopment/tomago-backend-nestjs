@@ -12,7 +12,7 @@ module.exports = {
   bundleId: '',
   packageName: '',
   dynamicLinkDomain: '',
-  baseUrl: 'https://decoopa-335317890504.europe-west3.run.app',
+  baseUrl: 'https://tomago-649000455905.europe-west3.run.app',
   storageBucketName: 'gs://tomago-fdaa6.appspot.com',
   databaseId: 'default',
   // TODO: replace with Web API key from Firebase Console → Project settings → Your apps
@@ -30,21 +30,14 @@ module.exports = {
    * - More info: https://nodemailer.com
    */
   email: {
-    from: 'Decoopa <no-reply@decoopa.com>', 
-    host: 'smtp.office365.com',
-    port: 587,
-    secure: false, // Use TLS
+    from: 'Tomago <mohamedelnemr.runprof@gmail.com>',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
-      user: 'no-reply@decoopa.com',     // Your Microsoft account email
-      pass: 'wbcxsdpjxzkfbpxq',         // App password generated
-      // pass: 'Decoopa@2020',          // Your Microsoft account password
+      user: 'mohamedelnemr.runprof@gmail.com',
+      pass: 'rwkm vuqx plce wppq',
     },
-    tls: {
-      ciphers: 'SSLv3',
-      rejectUnauthorized: false       // Optional: Handle self-signed certificates if needed
-    },
-    // debug: true,
-    // logger: true,
   },
 
   /** Enables GraphiQL See: https://github.com/graphql/graphiql */

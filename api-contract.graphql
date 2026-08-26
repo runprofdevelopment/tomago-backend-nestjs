@@ -1,0 +1,1281 @@
+# Tomoga Admin GraphQL API Contract
+# Source: admin UI screenshots + erd.dbml (same scope as api-contract.openapi.yaml)
+# Not reverse-engineered from the live backend schema under src/api/
+# Endpoint: POST /graphql
+# Localization uses LocalizedString { en, ar } ⇔ ERD *_en / *_ar
+
+# ============================================================
+# Scalars & shared
+# ============================================================
+
+scalar Date
+scalar DateTime
+scalar Upload
+
+type LocalizedString {
+  en: String
+  ar: String
+}
+
+input LocalizedStringInput {
+  en: String
+  ar: String
+}
+
+type PaginationMeta {
+  page: Int!
+  perPage: Int!
+  total: Int!
+  totalPages: Int!
+}
+
+input PaginationInput {
+  page: Int = 1
+  perPage: Int = 10
+}
+
+enum PeriodFilter {
+  daily
+  weekly
+  monthly
+  yearly
+}
+
+type ExportFile {
+  url: String
+  contentBase64: String
+  mimeType: String
+  fileName: String
+}
+
+# ============================================================
+# Auth / Admin
+# ============================================================
+
+enum AdminStatus {
+  active
+  inactive
+}
+
+enum Language {
+  ar
+  en
+}
+
+type Admin {
+  id: ID!
+  firstName: String
+  lastName: String
+  email: String!
+  phone: String
+  phoneCountryCode: String
+  avatarUrl: String
+  role: String
+  preferredLanguage: Language
+  darkMode: Boolean
+  status: AdminStatus
+  joinDate: DateTime
+}
+
+input AdminWriteInput {
+  firstName: String
+  lastName: String
+  email: String!
+  phone: String
+  phoneCountryCode: String
+  avatarUrl: String
+  role: String
+}
+
+type AdminPage {
+  data: [Admin!]!
+  meta: PaginationMeta!
+}
+
+input SignInInput {
+  email: String!
+  password: String!
+}
+
+type SignInPayload {
+  requires2fa: Boolean!
+  challengeId: ID
+  phoneHint: String
+  session: AuthSession
+}
+
+input Verify2faInput {
+  challengeId: ID!
+  code: String!
+}
+
+type AuthSession {
+  accessToken: String!
+  refreshToken: String
+  admin: Admin!
+}
+
+# ============================================================
+# Dashboard
+# ============================================================
+
+type DashboardKpis {
+  orderItemsCount: Float
+  unitsCount: Float
+  salesTotal: Float
+  pendingOrders: Int
+  pendingReturns: Int
+  canceledOrders: Int
+  currency: Currency
+}
+
+# ============================================================
+# Orders
+# ============================================================
+
+enum Currency {
+  EGP
+  SAR
+  AED
+  USD
+}
+
+enum OrderStatus {
+  pending_acceptance
+  pending_delivery
+  shipped
+  received
+  cancelled
+  completed
+  pending
+  processing
+  waiting_payment_confirmation
+}
+
+enum PaymentMethod {
+  cash_on_delivery
+  visa
+  installment
+  mada
+  apple_pay
+  e_wallet
+  wallet
+}
+
+enum OrderItemStatus {
+  pending
+  shipped
+  received
+  refunded
+  cancelled
+}
+
+type OrderItem {
+  id: ID
+  productId: ID
+  productTitle: String
+  productImageUrl: String
+  sku: String
+  variantText: String
+  unitPrice: Float
+  quantity: Int!
+  lineTotal: Float
+  status: OrderItemStatus
+}
+
+type Order {
+  id: ID!
+  publicId: String
+  customerId: ID
+  customerName: String
+  status: OrderStatus!
+  paymentMethod: PaymentMethod
+  currency: Currency
+  subtotal: Float
+  codFees: Float
+  shippingCost: Float
+  vatAmount: Float
+  totalDiscount: Float
+  grandTotal: Float
+  itemsCount: Int
+  createdAt: DateTime
+}
+
+type OrderDetail {
+  id: ID!
+  publicId: String
+  customerId: ID
+  customerName: String
+  status: OrderStatus!
+  paymentMethod: PaymentMethod
+  currency: Currency
+  subtotal: Float
+  codFees: Float
+  shippingCost: Float
+  vatAmount: Float
+  totalDiscount: Float
+  grandTotal: Float
+  itemsCount: Int
+  createdAt: DateTime
+  shippingCompany: String
+  trackingNumber: String
+  trackingLink: String
+  shippingAddress: String
+  shippingNote: String
+  rejectionReason: String
+  items: [OrderItem!]!
+}
+
+input OrderFilterInput {
+  status: OrderStatus
+  paymentMethod: PaymentMethod
+  q: String
+  period: PeriodFilter
+}
+
+input OrderShippingUpdateInput {
+  shippingCompany: String
+  trackingNumber: String
+  trackingLink: String
+  shippingNote: String
+}
+
+type OrderPage {
+  data: [Order!]!
+  meta: PaginationMeta!
+}
+
+# ============================================================
+# Customer requests (custom quotes)
+# ============================================================
+
+enum CustomerRequestStatus {
+  pending
+  replied
+  closed
+}
+
+type RequestMessage {
+  id: ID!
+  senderType: String!
+  senderName: String
+  body: String!
+  createdAt: DateTime!
+}
+
+type CustomerRequest {
+  id: ID!
+  orderId: ID
+  productId: ID
+  customerId: ID
+  productDescription: String
+  dimensions: String
+  quantity: Int
+  additionalNotes: String
+  status: CustomerRequestStatus!
+  estimatedPrice: Float
+  estimatedDeliveryTime: String
+  createdAt: DateTime
+}
+
+type CustomerRequestDetail {
+  id: ID!
+  orderId: ID
+  productId: ID
+  customerId: ID
+  productDescription: String
+  dimensions: String
+  quantity: Int
+  additionalNotes: String
+  status: CustomerRequestStatus!
+  estimatedPrice: Float
+  estimatedDeliveryTime: String
+  createdAt: DateTime
+  messages: [RequestMessage!]!
+}
+
+input CustomerRequestReplyInput {
+  body: String!
+  estimatedPrice: Float!
+  estimatedDeliveryTime: String
+}
+
+type CustomerRequestPage {
+  data: [CustomerRequest!]!
+  meta: PaginationMeta!
+}
+
+# ============================================================
+# Returns
+# ============================================================
+
+enum ReturnRequestStatus {
+  pending
+  accepted
+  rejected
+  refunded
+}
+
+enum ShippingPartnerName {
+  Tomoga
+  Maylerz
+}
+
+type ReturnRequest {
+  id: ID!
+  publicId: String
+  orderId: ID!
+  orderItemId: ID
+  sku: String
+  quantity: Int
+  price: Float
+  shippingPartner: ShippingPartnerName
+  status: ReturnRequestStatus!
+  rejectionReason: String
+  createdAt: DateTime
+}
+
+type ReturnRequestPage {
+  data: [ReturnRequest!]!
+  meta: PaginationMeta!
+}
+
+# ============================================================
+# Customers
+# ============================================================
+
+enum Gender {
+  male
+  female
+}
+
+enum AddressCountry {
+  Egypt
+  Saudi_Arabia
+  UAE
+  Kuwait
+}
+
+type Customer {
+  id: ID!
+  fullName: String!
+  email: String!
+  phone: String
+  gender: Gender
+  birthDate: Date
+  avatarUrl: String
+  status: String
+  walletBalance: Float
+  currency: String
+  joinDate: DateTime
+}
+
+input CustomerWriteInput {
+  fullName: String
+  email: String
+  phone: String
+  gender: Gender
+  birthDate: Date
+  avatarUrl: String
+}
+
+type CustomerAddress {
+  id: ID!
+  firstName: String
+  phone: String
+  country: String
+  address1: String
+  createdAt: DateTime
+}
+
+type CustomerDetail {
+  id: ID!
+  fullName: String!
+  email: String!
+  phone: String
+  gender: Gender
+  birthDate: Date
+  avatarUrl: String
+  status: String
+  walletBalance: Float
+  currency: String
+  joinDate: DateTime
+  addresses: [CustomerAddress!]!
+}
+
+type CustomerNotification {
+  id: ID!
+  customerId: ID!
+  title: LocalizedString
+  body: LocalizedString
+  createdAt: DateTime!
+}
+
+input CustomerNotificationInput {
+  title: LocalizedStringInput!
+  body: LocalizedStringInput!
+}
+
+input WalletAmountNoteInput {
+  amount: Float!
+  note: String
+}
+
+type CustomerPage {
+  data: [Customer!]!
+  meta: PaginationMeta!
+}
+
+# ============================================================
+# Finance
+# ============================================================
+
+type Wallet {
+  id: ID!
+  customerId: ID
+  customerName: String
+  balance: Float
+  rechargedBalance: Float
+  voucherBalance: Float
+  currency: Currency
+}
+
+type PlatformWallet {
+  totalBalance: Float!
+  currency: Currency!
+}
+
+type PlatformWalletTransaction {
+  id: ID!
+  publicId: String
+  operation: String
+  amount: Float!
+  type: String
+  note: String
+  transactionDate: DateTime!
+}
+
+enum TransactionType {
+  accountDebit
+  accountCredit
+  walletPayment
+  codPayment
+  visaPayment
+  voucherRecharge
+  walletRefund
+}
+
+type Transaction {
+  id: ID!
+  orderId: ID
+  customerId: ID
+  payerName: String
+  payeeName: String
+  amount: Float!
+  type: TransactionType!
+  createdAt: DateTime!
+}
+
+enum RefundStatus {
+  completed
+  pending
+  processing
+  failed
+  approved
+}
+
+type Refund {
+  id: ID!
+  publicId: String
+  orderId: ID
+  customerName: String
+  amount: Float!
+  currency: Currency
+  status: RefundStatus!
+  type: String
+  reason: String
+  createdAt: DateTime
+}
+
+enum WithdrawalStatus {
+  pending
+  approved
+  rejected
+  accepted
+  confirmed
+}
+
+type Withdrawal {
+  id: ID!
+  accountName: String
+  accountNumber: String
+  bankName: String
+  swiftCode: String
+  amount: Float!
+  reason: String
+  status: WithdrawalStatus!
+  rejectionReason: String
+  createdAt: DateTime
+}
+
+type WalletPage {
+  data: [Wallet!]!
+  meta: PaginationMeta!
+}
+
+type TransactionPage {
+  data: [Transaction!]!
+  meta: PaginationMeta!
+}
+
+type RefundPage {
+  data: [Refund!]!
+  meta: PaginationMeta!
+}
+
+type WithdrawalPage {
+  data: [Withdrawal!]!
+  meta: PaginationMeta!
+}
+
+type PlatformWalletTransactionPage {
+  data: [PlatformWalletTransaction!]!
+  meta: PaginationMeta!
+}
+
+# ============================================================
+# Products & catalog
+# ============================================================
+
+enum ProductType {
+  single
+  variant
+}
+
+enum MechanismType {
+  reclining
+  folding
+  sliding
+  rotating
+}
+
+enum ActiveStatus {
+  active
+  inactive
+}
+
+type ProductMaterial {
+  name: String
+  imageUrl: String
+}
+
+input ProductMaterialInput {
+  name: String
+  imageUrl: String
+}
+
+type ProductMechanism {
+  type: MechanismType
+  name: String
+  description: String
+  imageUrl: String
+}
+
+input ProductMechanismInput {
+  type: MechanismType
+  name: String
+  description: String
+  imageUrl: String
+}
+
+type ProductOptionValue {
+  productOptionId: ID
+  value: LocalizedString
+}
+
+input ProductOptionValueInput {
+  productOptionId: ID
+  value: LocalizedStringInput
+}
+
+type Product {
+  id: ID!
+  sku: String
+  type: ProductType!
+  brandId: ID
+  categoryId: ID
+  collectionId: ID
+  name: LocalizedString
+  modelName: LocalizedString
+  modelNumber: LocalizedString
+  whatsInTheBox: LocalizedString
+  description: LocalizedString
+  countryOfOrigin: LocalizedString
+  material: LocalizedString
+  features: [LocalizedString!]
+  materials: [ProductMaterial!]
+  mechanisms: [ProductMechanism!]
+  optionValues: [ProductOptionValue!]
+  cost: Float
+  price: Float
+  currency: Currency
+  stock: Int
+  maxOrderQuantity: Int
+  productLimit: Int
+  saleStartDate: DateTime
+  saleEndDate: DateTime
+  warrantyMonths: Int
+  warrantyReturnsEligible: Boolean
+  shippingNote: LocalizedString
+  warrantyReturnsNote: LocalizedString
+  shippingPrice: Float
+  shippingWeight: Float
+  shippingWeightUnit: String
+  shippingWidth: Float
+  shippingHeight: Float
+  shippingDepth: Float
+  productWeight: Float
+  productWidth: Float
+  productHeight: Float
+  productDepth: Float
+  technicalWidth: Float
+  technicalHeight: Float
+  technicalDepth: Float
+  technicalDimensionUnit: String
+  dimensionDiagramUrl: String
+  imageUrls: [String!]
+  status: String
+  createdAt: DateTime
+}
+
+input ProductWriteInput {
+  sku: String
+  type: ProductType!
+  brandId: ID
+  categoryId: ID
+  collectionId: ID
+  name: LocalizedStringInput
+  modelName: LocalizedStringInput
+  modelNumber: LocalizedStringInput
+  whatsInTheBox: LocalizedStringInput
+  description: LocalizedStringInput
+  countryOfOrigin: LocalizedStringInput
+  material: LocalizedStringInput
+  features: [LocalizedStringInput!]
+  materials: [ProductMaterialInput!]
+  mechanisms: [ProductMechanismInput!]
+  optionValues: [ProductOptionValueInput!]
+  cost: Float
+  price: Float
+  currency: Currency
+  stock: Int
+  maxOrderQuantity: Int
+  productLimit: Int
+  saleStartDate: DateTime
+  saleEndDate: DateTime
+  warrantyMonths: Int
+  warrantyReturnsEligible: Boolean
+  shippingNote: LocalizedStringInput
+  warrantyReturnsNote: LocalizedStringInput
+  shippingPrice: Float
+  shippingWeight: Float
+  shippingWeightUnit: String
+  shippingWidth: Float
+  shippingHeight: Float
+  shippingDepth: Float
+  productWeight: Float
+  productWidth: Float
+  productHeight: Float
+  productDepth: Float
+  technicalWidth: Float
+  technicalHeight: Float
+  technicalDepth: Float
+  technicalDimensionUnit: String
+  dimensionDiagramUrl: String
+  imageUrls: [String!]
+  status: String
+}
+
+type ProductPage {
+  data: [Product!]!
+  meta: PaginationMeta!
+}
+
+type Brand {
+  id: ID!
+  name: LocalizedString
+  imageUrl: String
+  isActive: Boolean
+}
+
+input BrandWriteInput {
+  name: LocalizedStringInput
+  imageUrl: String
+  isActive: Boolean
+}
+
+type Collection {
+  id: ID!
+  name: LocalizedString!
+  imageUrl: String
+  status: ActiveStatus!
+  createdAt: DateTime
+}
+
+input CollectionWriteInput {
+  name: LocalizedStringInput!
+  imageUrl: String
+  status: ActiveStatus
+}
+
+type CollectionPage {
+  data: [Collection!]!
+  meta: PaginationMeta!
+}
+
+type Category {
+  id: ID!
+  collectionId: ID
+  parentId: ID
+  path: String
+  name: LocalizedString!
+  status: ActiveStatus!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input CategoryWriteInput {
+  name: LocalizedStringInput!
+  collectionId: ID
+  parentId: ID
+  status: ActiveStatus
+}
+
+type CategoryPage {
+  data: [Category!]!
+  meta: PaginationMeta!
+}
+
+type ProductOption {
+  id: ID!
+  name: LocalizedString!
+  value: String
+}
+
+input ProductOptionWriteInput {
+  name: LocalizedStringInput!
+  value: String
+}
+
+type ProductOptionPage {
+  data: [ProductOption!]!
+  meta: PaginationMeta!
+}
+
+# ============================================================
+# Reviews
+# ============================================================
+
+type Review {
+  id: ID!
+  customerId: ID
+  customerName: String
+  customerEmail: String
+  productId: ID!
+  orderId: ID
+  title: String
+  body: String
+  rating: Int!
+  adminResponse: String
+  isVisible: Boolean!
+  createdAt: DateTime!
+}
+
+type ReviewPage {
+  data: [Review!]!
+  meta: PaginationMeta!
+}
+
+# ============================================================
+# Projects
+# ============================================================
+
+enum ProjectStatus {
+  active
+  draft
+  inactive
+  archived
+}
+
+type Project {
+  id: ID!
+  publicId: String
+  name: String!
+  clientName: String
+  startDate: Date
+  location: String
+  scope: String
+  description: String
+  thumbnailUrl: String
+  imageUrls: [String!]
+  status: ProjectStatus!
+  createdAt: DateTime
+}
+
+input ProjectWriteInput {
+  name: String!
+  clientName: String
+  startDate: Date
+  location: String
+  scope: String
+  description: String
+  thumbnailUrl: String
+  imageUrls: [String!]
+  status: ProjectStatus
+}
+
+type ProjectPage {
+  data: [Project!]!
+  meta: PaginationMeta!
+}
+
+# TODO: confirm full fields from UI
+type ShowRoom {
+  id: ID!
+  name: LocalizedString
+  projectId: ID
+  imageUrl: String
+  location: String
+  isActive: Boolean
+}
+
+input ShowRoomWriteInput {
+  name: LocalizedStringInput
+  projectId: ID
+  imageUrl: String
+  location: String
+  isActive: Boolean
+}
+
+# ============================================================
+# Marketing
+# ============================================================
+
+enum VoucherType {
+  Percentage
+  Fixed_Amount
+  Free_Shipping
+}
+
+enum VoucherStatus {
+  active
+  expired
+  inactive
+}
+
+type Voucher {
+  id: ID!
+  code: String!
+  type: VoucherType!
+  amount: Float!
+  usageCount: Int
+  userCount: Int
+  maxUsagePerUser: Int
+  startDate: Date
+  endDate: Date
+  status: VoucherStatus!
+}
+
+input VoucherWriteInput {
+  code: String!
+  type: VoucherType!
+  amount: Float!
+  userCount: Int
+  maxUsagePerUser: Int
+  startDate: Date
+  endDate: Date
+  status: VoucherStatus
+}
+
+type VoucherPage {
+  data: [Voucher!]!
+  meta: PaginationMeta!
+}
+
+enum DiscountType {
+  fixed
+  percent
+}
+
+type Deal {
+  id: ID!
+  name: String!
+  status: ActiveStatus!
+  discountType: DiscountType
+  discountAmount: Float
+  ribbonName: String
+  ribbonColor: String
+  ribbonBackground: String
+  currency: Currency
+  startDate: DateTime
+  endDate: DateTime
+}
+
+input DealWriteInput {
+  name: String!
+  status: ActiveStatus
+  discountType: DiscountType
+  discountAmount: Float
+  ribbonName: String
+  ribbonColor: String
+  ribbonBackground: String
+  currency: Currency
+  startDate: DateTime
+  endDate: DateTime
+}
+
+type DealProductPreview {
+  id: ID!
+  sku: String
+  name: String
+  imageUrl: String
+}
+
+type DealDetail {
+  id: ID!
+  name: String!
+  status: ActiveStatus!
+  discountType: DiscountType
+  discountAmount: Float
+  ribbonName: String
+  ribbonColor: String
+  ribbonBackground: String
+  currency: Currency
+  startDate: DateTime
+  endDate: DateTime
+  productIds: [ID!]!
+  products: [DealProductPreview!]!
+}
+
+type DealPage {
+  data: [Deal!]!
+  meta: PaginationMeta!
+}
+
+type Slider {
+  id: ID!
+  imageEnUrl: String
+  imageArUrl: String
+  title: String
+  content: String
+  buttonText: String
+  buttonColor: String
+  buttonUrl: String
+  startDate: DateTime
+  endDate: DateTime
+}
+
+input SliderWriteInput {
+  imageEnUrl: String
+  imageArUrl: String
+  title: String
+  content: String
+  buttonText: String
+  buttonColor: String
+  buttonUrl: String
+  startDate: DateTime
+  endDate: DateTime
+}
+
+type SliderPage {
+  data: [Slider!]!
+  meta: PaginationMeta!
+}
+
+enum BannerVisibility {
+  public
+  private
+}
+
+type TopBanner {
+  id: ID
+  content: String
+  contentColor: String
+  buttonLabel: String
+  redirectionType: String
+  dealId: ID
+  visibility: BannerVisibility
+  isActive: Boolean
+  ribbonColor: String
+}
+
+input TopBannerWriteInput {
+  content: String
+  contentColor: String
+  buttonLabel: String
+  redirectionType: String
+  dealId: ID
+  visibility: BannerVisibility
+  isActive: Boolean
+  ribbonColor: String
+}
+
+type Ad {
+  id: ID!
+  title: String
+  content: String
+  createdAt: DateTime
+}
+
+input AdWriteInput {
+  title: String!
+  content: String
+}
+
+type AdPage {
+  data: [Ad!]!
+  meta: PaginationMeta!
+}
+
+# TODO: confirm full fields from UI
+type VideoAd {
+  id: ID!
+  title: String
+  videoUrl: String
+  thumbnailUrl: String
+  isActive: Boolean
+}
+
+input VideoAdWriteInput {
+  title: String
+  videoUrl: String
+  thumbnailUrl: String
+  isActive: Boolean
+}
+
+# ============================================================
+# Settings / CMS
+# ============================================================
+
+type PlatformSettings {
+  vat: Float
+  cashOnDeliveryFees: Float
+}
+
+input PlatformSettingsInput {
+  vat: Float
+  cashOnDeliveryFees: Float
+}
+
+enum StaticPageType {
+  faq
+  about_us
+  terms
+  refund_policy
+}
+
+type StaticPage {
+  type: StaticPageType!
+  language: Language!
+  title: String
+  content: String
+  imageUrl: String
+}
+
+input StaticPageWriteInput {
+  language: Language!
+  title: String!
+  content: String!
+  imageUrl: String
+}
+
+# ============================================================
+# Contact Us
+# ============================================================
+
+type ContactMessage {
+  id: ID!
+  fullName: String!
+  phone: String
+  email: String
+  message: String
+  orderId: ID
+  createdAt: DateTime!
+}
+
+type ContactMessagePage {
+  data: [ContactMessage!]!
+  meta: PaginationMeta!
+}
+
+# ============================================================
+# Query
+# ============================================================
+
+type Query {
+  # Auth
+  authMe: Admin!
+
+  # Dashboard
+  dashboardKpis(period: PeriodFilter = monthly): DashboardKpis!
+
+  # Orders
+  orders(filter: OrderFilterInput, pagination: PaginationInput): OrderPage!
+  order(id: ID!): OrderDetail!
+  exportOrders(filter: OrderFilterInput): ExportFile!
+
+  # Customer requests
+  customerRequests(status: CustomerRequestStatus, q: String, pagination: PaginationInput): CustomerRequestPage!
+  customerRequest(id: ID!): CustomerRequestDetail!
+
+  # Returns
+  returnRequests(status: ReturnRequestStatus, q: String, pagination: PaginationInput): ReturnRequestPage!
+  returnRequest(id: ID!): ReturnRequest!
+
+  # Customers
+  customers(q: String, period: PeriodFilter, pagination: PaginationInput): CustomerPage!
+  customer(id: ID!): CustomerDetail!
+  customerAddresses(customerId: ID!): [CustomerAddress!]!
+  customerOrders(customerId: ID!, pagination: PaginationInput): OrderPage!
+  customerReviews(customerId: ID!): [Review!]!
+  exportCustomers(q: String, period: PeriodFilter): ExportFile!
+
+  # Finance
+  platformWallet: PlatformWallet!
+  platformWalletTransactions(pagination: PaginationInput): PlatformWalletTransactionPage!
+  wallets(q: String, pagination: PaginationInput): WalletPage!
+  transactions(orderId: ID, type: TransactionType, q: String, pagination: PaginationInput): TransactionPage!
+  refunds(status: RefundStatus, pagination: PaginationInput): RefundPage!
+  withdrawals(status: WithdrawalStatus, pagination: PaginationInput): WithdrawalPage!
+
+  # Products
+  products(type: ProductType, status: String, q: String, pagination: PaginationInput): ProductPage!
+  product(id: ID!): Product!
+  exportProducts(q: String): ExportFile!
+
+  # Catalog
+  brands: [Brand!]!
+  collections(q: String, pagination: PaginationInput): CollectionPage!
+  categories(q: String, pagination: PaginationInput): CategoryPage!
+  productOptions(q: String, pagination: PaginationInput): ProductOptionPage!
+
+  # Reviews
+  reviews(orderId: ID, productId: ID, q: String, pagination: PaginationInput): ReviewPage!
+  exportReviews(q: String): ExportFile!
+
+  # Projects
+  projects(status: ProjectStatus, q: String, pagination: PaginationInput): ProjectPage!
+  project(id: ID!): Project!
+  showRooms: [ShowRoom!]!
+
+  # Marketing
+  vouchers(q: String, pagination: PaginationInput): VoucherPage!
+  deals(q: String, pagination: PaginationInput): DealPage!
+  deal(id: ID!): DealDetail!
+  sliders(pagination: PaginationInput): SliderPage!
+  topBanner: TopBanner
+  ads(q: String, pagination: PaginationInput): AdPage!
+  videoAds: [VideoAd!]!
+
+  # Settings
+  platformSettings: PlatformSettings!
+  admins(q: String, pagination: PaginationInput): AdminPage!
+  staticPage(type: StaticPageType!, language: Language!): StaticPage!
+
+  # Contact
+  contactMessages(q: String, period: PeriodFilter, pagination: PaginationInput): ContactMessagePage!
+  exportContactMessages(q: String, period: PeriodFilter): ExportFile!
+}
+
+# ============================================================
+# Mutation
+# ============================================================
+
+type Mutation {
+  # Auth
+  authSignIn(input: SignInInput!): SignInPayload!
+  authVerify2fa(input: Verify2faInput!): AuthSession!
+  authResend2fa(challengeId: ID!): Boolean!
+  authForgotPassword(email: String!): Boolean!
+
+  # Orders
+  acceptOrder(id: ID!): Order!
+  rejectOrder(id: ID!, rejectionReason: String!): Order!
+  cancelOrder(id: ID!, cancelReason: String): Order!
+  updateOrderShipping(id: ID!, input: OrderShippingUpdateInput!): Order!
+
+  # Customer requests
+  replyCustomerRequest(id: ID!, input: CustomerRequestReplyInput!): CustomerRequestDetail!
+  acceptCustomerRequest(id: ID!): CustomerRequest!
+  cancelCustomerRequest(id: ID!): CustomerRequest!
+  closeCustomerRequest(id: ID!): CustomerRequest!
+
+  # Returns
+  acceptReturnRequest(id: ID!): ReturnRequest!
+  rejectReturnRequest(id: ID!, rejectionReason: String): ReturnRequest!
+
+  # Customers
+  createCustomer(input: CustomerWriteInput!): Customer!
+  updateCustomer(id: ID!, input: CustomerWriteInput!): Customer!
+  addCustomerWalletFund(customerId: ID!, input: WalletAmountNoteInput!): Wallet!
+  withdrawCustomerWallet(customerId: ID!, input: WalletAmountNoteInput!): Wallet!
+  sendCustomerNotification(customerId: ID!, input: CustomerNotificationInput!): CustomerNotification!
+
+  # Finance
+  rechargePlatformWallet(amount: Float!): PlatformWallet!
+  deductPlatformWallet(input: WalletAmountNoteInput!): PlatformWallet!
+  approveWithdrawal(id: ID!): Withdrawal!
+  rejectWithdrawal(id: ID!, rejectionReason: String!): Withdrawal!
+
+  # Products
+  createProduct(input: ProductWriteInput!): Product!
+  updateProduct(id: ID!, input: ProductWriteInput!): Product!
+  deleteProduct(id: ID!): Boolean!
+
+  # Catalog
+  createBrand(input: BrandWriteInput!): Brand!
+  createCollection(input: CollectionWriteInput!): Collection!
+  updateCollection(id: ID!, input: CollectionWriteInput!): Collection!
+  setCollectionStatus(id: ID!, status: ActiveStatus!): Collection!
+  createCategory(input: CategoryWriteInput!): Category!
+  updateCategory(id: ID!, input: CategoryWriteInput!): Category!
+  setCategoryStatus(id: ID!, status: ActiveStatus!): Category!
+  createProductOption(input: ProductOptionWriteInput!): ProductOption!
+  updateProductOption(id: ID!, input: ProductOptionWriteInput!): ProductOption!
+
+  # Reviews
+  setReviewVisibility(id: ID!, isVisible: Boolean!): Review!
+  answerReview(id: ID!, adminResponse: String!): Review!
+
+  # Projects
+  createProject(input: ProjectWriteInput!): Project!
+  updateProject(id: ID!, input: ProjectWriteInput!): Project!
+  setProjectStatus(id: ID!, status: ProjectStatus!): Project!
+  createShowRoom(input: ShowRoomWriteInput!): ShowRoom!
+
+  # Marketing
+  createVoucher(input: VoucherWriteInput!): Voucher!
+  updateVoucher(id: ID!, input: VoucherWriteInput!): Voucher!
+  deleteVoucher(id: ID!): Boolean!
+  setVoucherStatus(id: ID!, status: VoucherStatus!): Voucher!
+  createDeal(input: DealWriteInput!): Deal!
+  updateDeal(id: ID!, input: DealWriteInput!): Deal!
+  deleteDeal(id: ID!): Boolean!
+  setDealProducts(id: ID!, productIds: [ID!]!): DealDetail!
+  createSlider(input: SliderWriteInput!): Slider!
+  updateSlider(id: ID!, input: SliderWriteInput!): Slider!
+  deleteSlider(id: ID!): Boolean!
+  saveTopBanner(input: TopBannerWriteInput!): TopBanner!
+  createAd(input: AdWriteInput!): Ad!
+  updateAd(id: ID!, input: AdWriteInput!): Ad!
+  deleteAd(id: ID!): Boolean!
+  createVideoAd(input: VideoAdWriteInput!): VideoAd!
+
+  # Settings
+  savePlatformSettings(input: PlatformSettingsInput!): PlatformSettings!
+  createAdmin(input: AdminWriteInput!): Admin!
+  updateAdmin(id: ID!, input: AdminWriteInput!): Admin!
+  deleteAdmin(id: ID!): Boolean!
+  setAdminStatus(id: ID!, status: AdminStatus!): Admin!
+  saveStaticPage(type: StaticPageType!, input: StaticPageWriteInput!): StaticPage!
+}

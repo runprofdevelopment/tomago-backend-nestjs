@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Cloud Run Deployment Script for Tomago Production
+# Cloud Run Deployment Script for Tomago Staging
 set -e
 
-PROJECT_ID="tomago-fdaa6"
-SERVICE_NAME="tomago"
+PROJECT_ID="tomago-staging"
+SERVICE_NAME="tomago-staging"
 REGION="europe-west3"
 
 echo "Starting Cloud Run deployment: ${SERVICE_NAME} -> ${PROJECT_ID} (${REGION})"
@@ -24,7 +24,7 @@ gcloud run deploy "$SERVICE_NAME" \
   --platform managed \
   --allow-unauthenticated \
   --quiet \
-  --set-env-vars "^|^NODE_ENV=production|ENV=production|WALLET_BALANCE_KEY=JaQqWoh88onGaq+m5AfUu9TtddQULIYz|MYLERZ_USERNAME=Decoopa|MYLERZ_PASSWORD=CVBIUfWj8YG\$1a|EMAIL_PROVIDER=nodemailer|EMAIL_SMTP_HOST=smtp.gmail.com|EMAIL_SMTP_PORT=465|EMAIL_SECURE=true|EMAIL_FROM=Tomago <mohamedelnemr.runprof@gmail.com>|EMAIL_USER=mohamedelnemr.runprof@gmail.com|EMAIL_PASSWORD=rwkm vuqx plce wppq" \
+  --set-env-vars "^|^NODE_ENV=staging|ENV=staging|WALLET_BALANCE_KEY=JaQqWoh88onGaq+m5AfUu9TtddQULIYz|MYLERZ_USERNAME=Decoopa|MYLERZ_PASSWORD=CVBIUfWj8YG\$1a|EMAIL_PROVIDER=nodemailer|EMAIL_SMTP_HOST=smtp.gmail.com|EMAIL_SMTP_PORT=465|EMAIL_SECURE=true|EMAIL_FROM=Tomago <mohamedelnemr.runprof@gmail.com>|EMAIL_USER=mohamedelnemr.runprof@gmail.com|EMAIL_PASSWORD=rwkm vuqx plce wppq" \
   --memory 1Gi \
   --cpu 1 \
   --max-instances 5 \

@@ -24,7 +24,7 @@ module.exports = class EmailSender {
 
   async send() {
     if (!EmailSender.isConfigured) {
-      console.error(`Email provider is not configured. Please configure it at backend/config/<environment>.json.`,);
+      console.error(`Email provider is not configured. Please configure it at backend/config/<environment>.js or EMAIL_* env vars.`,);
       return;
     }
 
@@ -57,7 +57,7 @@ module.exports = class EmailSender {
         'EMAIL SENDER FAILED: Nodemailer was unable to send the email.',
       );
       console.error(
-        'This is likely due to incorrect SMTP credentials in your backend/config/<environment>.js file.',
+        'This is likely due to incorrect SMTP credentials in EMAIL_* env or config/<environment>.js.',
       );
       console.error('Error details:', error);
       console.error(
@@ -67,30 +67,56 @@ module.exports = class EmailSender {
         'Failed to send email. Please check server logs for details.',
       );
     }
-    // return transporter.sendMail(mailOptions, (err, info) => {
-    //   err 
-    //     ? console.log('Email Sender Error : ', err) 
-    //     : console.log(`...Send Email To (${info.envelope.to}) Successfully`);
-    //   // if (err) throw err
-    // })
+  }
+
+  static getEmailTransportFromEnv() {
+    const host = process.env.EMAIL_SMTP_HOST;
+    const user = process.env.EMAIL_USER;
+    const pass = process.env.EMAIL_PASSWORD;
+
+    if (!host || !user || !pass) {
+      return null;
+    }
+
+    const port = Number(process.env.EMAIL_SMTP_PORT || 465);
+    const secure =
+      String(process.env.EMAIL_SECURE || 'true').toLowerCase() === 'true';
+
+    return {
+      from:
+        process.env.EMAIL_FROM ||
+        `Tomago <${user}>`,
+      host,
+      port,
+      secure,
+      auth: {
+        user,
+        pass,
+      },
+    };
+  }
+
+  static get resolvedEmailConfig() {
+    return EmailSender.getEmailTransportFromEnv() || config.email || null;
   }
 
   static get isConfigured() {
-    return (!!config.email && !!config.email.host);
+    const emailConfig = EmailSender.resolvedEmailConfig;
+    return !!(emailConfig && emailConfig.host);
   }
 
   get transportConfig() {
-    return config.email;
+    return EmailSender.resolvedEmailConfig;
   }
 
   get from() {
-    return config.email.from;
+    return EmailSender.resolvedEmailConfig.from;
   }
 
   static _verifyEmailSenderConfigured() {
     if (!EmailSender.isConfigured) {
       throw new Error(
-        `Email provider is not configured. Please configure it at backend/config/<environment>.json.`,
+        `Email provider is not configured. Please configure EMAIL_* env vars or backend/config/<environment>.js.`,
       );
     } 
   }
