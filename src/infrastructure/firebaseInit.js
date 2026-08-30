@@ -10,7 +10,8 @@ function normalizeBucketName(name) {
 try {
   const config = require('../../config')();
   const serviceAccount = require(`../../service-accounts/${config.env}.json`);
-  
+  const databaseId = config.databaseId || 'default';
+
   if (!admin.apps.length) {
     const storageBucket = normalizeBucketName(config.storageBucketName) || 'tomago-staging.appspot.com';
     console.log('Initializing Firebase Admin with config:', {
@@ -18,26 +19,44 @@ try {
       storageBucket: storageBucket,
       env: config.env,
       storageBucketName: config.storageBucketName,
-      databaseId: config.databaseId || 'default',
+      databaseId,
     });
-    
+
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
       storageBucket: storageBucket,
-      databaseURL: `https://${config.projectId}.firebaseio.com`
+      databaseURL: `https://${config.projectId}.firebaseio.com`,
     });
 
-    const databaseId = config.databaseId || 'default';
-    admin.firestore = () => {
-      const db = getFirestore(admin.app(), databaseId);
-      db.settings({ ignoreUndefinedProperties: true });
-      return db;
-    };
-    
     console.log('Firebase Admin initialized successfully with bucket:', storageBucket);
   } else {
     console.log('Firebase Admin already initialized');
   }
+
+  let firestoreDb;
+
+  const firestoreStatics = {};
+  for (const key of Object.keys(admin.firestore)) {
+    firestoreStatics[key] = admin.firestore[key];
+  }
+
+  const firestoreFactory = () => {
+    if (!firestoreDb) {
+      firestoreDb = getFirestore(admin.app(), databaseId);
+      firestoreDb.settings({ ignoreUndefinedProperties: true });
+    }
+    return firestoreDb;
+  };
+
+  Object.assign(firestoreFactory, firestoreStatics);
+
+  // Always bind Firestore to the configured named database (e.g. "default").
+  // Simple assignment does not override firebase-admin's firestore getter after init.
+  Object.defineProperty(admin, 'firestore', {
+    configurable: true,
+    writable: true,
+    value: firestoreFactory,
+  });
 } catch (error) {
   console.error('Failed to initialize Firebase Admin:', error);
   console.error('This may cause storage operations to fail.');

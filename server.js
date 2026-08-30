@@ -159,45 +159,17 @@ async function startServer() {
 
     // Firebase initialization step-by-step approach
     console.log('🔥 Preparing for Firebase Admin SDK initialization...');
-    
-    // Step 1: Try to initialize Firebase Admin SDK only (no client SDK)
+
+    // Step 1: Initialize Firebase Admin SDK (includes named Firestore database binding)
     setTimeout(() => {
-      console.log('🔥 Step 1: Attempting minimal Firebase Admin initialization...');
-      
+      console.log('🔥 Step 1: Initializing Firebase Admin via firebaseInit...');
+
       try {
-        const admin = require('firebase-admin');
-        const config = require('./config')();
-        const normalizeBucketName = (name) => (name ? String(name).replace(/^gs:\/\//, '') : undefined);
-        
-        // Check if service account file exists
-        let serviceAccount;
-        try {
-          serviceAccount = require(`./service-accounts/${config.env}.json`);
-          console.log('✅ Service account loaded for environment:', config.env);
-        } catch (err) {
-          console.error('❌ Failed to load service account:', err.message);
-          return;
-        }
-        
-        // Try to initialize only Admin SDK
-        if (admin.apps.length === 0) {
-          admin.initializeApp({
-            credential: admin.credential.cert(serviceAccount),
-            projectId: serviceAccount.project_id,
-            storageBucket: normalizeBucketName(config.storageBucketName) || `${serviceAccount.project_id}.appspot.com`,
-          });
-          console.log('✅ Firebase Admin SDK initialized successfully (minimal config)');
-          
-          // Step 2: Replace simplified GraphQL schema with real application schema
-          console.log('🔄 Replacing GraphQL schema with full application schema...');
-          replaceGraphQLSchema();
-          
-        } else {
-          console.log('✅ Firebase Admin SDK already initialized');
-          console.log('🔄 Replacing GraphQL schema with full application schema...');
-          replaceGraphQLSchema();
-        }
-        
+        require('./src/infrastructure/firebaseInit');
+        console.log('✅ Firebase Admin SDK initialized successfully');
+
+        console.log('🔄 Replacing GraphQL schema with full application schema...');
+        replaceGraphQLSchema();
       } catch (error) {
         console.error('❌ Firebase Admin initialization failed:');
         console.error('  - Message:', error.message);
