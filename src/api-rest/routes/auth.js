@@ -32,6 +32,86 @@ const generateTokens = (user) => {
   return { accessToken, refreshToken };
 };
 
+// Mint a Firebase ID token from a uid
+router.post('/token', multParse.none(), async (req, res) => {
+  try {
+    const uid = req.body.uid || req.query.uid;
+
+    if (!uid) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'auth/uid-required',
+          message: 'uid is required',
+        },
+      });
+    }
+
+    const tokens = await AuthService.createTokenForUid(uid);
+
+    res.json({
+      success: true,
+      data: tokens,
+    });
+  } catch (error) {
+    console.error('Create token error:', error);
+
+    const code = error.code || error.errorInfo?.code || 'auth/internal-error';
+    const status =
+      code === 'auth/user-not-found' ? 404 :
+      code === 'auth/user-disabled' ? 401 :
+      code === 'auth/uid-required' ? 400 :
+      500;
+
+    res.status(status).json({
+      success: false,
+      error: {
+        code,
+        message: error.message || 'Failed to create token',
+      },
+    });
+  }
+});
+
+router.get('/token/:uid', async (req, res) => {
+  try {
+    const { uid } = req.params;
+
+    if (!uid) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'auth/uid-required',
+          message: 'uid is required',
+        },
+      });
+    }
+
+    const tokens = await AuthService.createTokenForUid(uid);
+
+    res.json({
+      success: true,
+      data: tokens,
+    });
+  } catch (error) {
+    console.error('Create token error:', error);
+
+    const code = error.code || error.errorInfo?.code || 'auth/internal-error';
+    const status =
+      code === 'auth/user-not-found' ? 404 :
+      code === 'auth/user-disabled' ? 401 :
+      500;
+
+    res.status(status).json({
+      success: false,
+      error: {
+        code,
+        message: error.message || 'Failed to create token',
+      },
+    });
+  }
+});
+
 // Signup endpoint
 router.post('/signup', multParse.none(), async (req, res) => {
   try {

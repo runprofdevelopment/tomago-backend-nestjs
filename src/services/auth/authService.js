@@ -198,6 +198,73 @@ class AuthService {
     }
   }
 
+  /**
+   * Mints a Firebase custom token for the given uid and exchanges it
+   * for an ID token that can be used as Authorization: Bearer.
+   * @param {String} uid
+   */
+  static async createTokenForUid(uid) {
+    assert(uid, 'uid is required');
+
+    let authUser;
+    try {
+      authUser = await AuthFirebaseService.getUser(uid);
+    } catch (error) {
+      if (error.code === 'auth/user-not-found') {
+        throw new ErrorHandler({
+          errorCode: 'auth/user-not-found',
+          message: 'User not found',
+        });
+      }
+      throw error;
+    }
+
+    if (!authUser) {
+      throw new ErrorHandler({
+        errorCode: 'auth/user-not-found',
+        message: 'User not found',
+      });
+    }
+
+    if (authUser.disabled) {
+      throw new ErrorHandler({
+        errorCode: 'auth/user-disabled',
+        message: 'User account is disabled',
+      });
+    }
+
+    const customToken = await AuthFirebaseService.createCustomToken(uid);
+    const apiKey = config.firebaseConfig.apiKey || config.apiKey;
+
+    const response = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: customToken,
+          returnSecureToken: true,
+        }),
+      },
+    );
+
+    const result = await response.json();
+    if (!response.ok || !result.idToken) {
+      throw new ErrorHandler({
+        errorCode: result.error?.message || 'auth/token-exchange-failed',
+        message: result.error?.message || 'Failed to exchange custom token for ID token',
+      });
+    }
+
+    return {
+      uid: authUser.uid,
+      customToken,
+      idToken: result.idToken,
+      refreshToken: result.refreshToken || null,
+      expiresIn: Number(result.expiresIn) || 3600,
+    };
+  }
+
   static async createOwner(data) {
     try {
       const authUser = await AuthFirebaseService.createUser({

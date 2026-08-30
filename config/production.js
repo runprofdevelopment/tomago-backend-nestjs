@@ -15,8 +15,7 @@ module.exports = {
   baseUrl: 'https://tomago-649000455905.europe-west3.run.app',
   storageBucketName: 'gs://tomago-fdaa6.appspot.com',
   databaseId: 'default',
-  // TODO: replace with Web API key from Firebase Console → Project settings → Your apps
-  apiKey: 'REPLACE_WITH_TOMAGO_PRODUCTION_WEB_API_KEY',
+  apiKey: 'AIzaSyCLROlQt7yb6cVJItzwoY_nO15UlrGyM4Q',
 
   // Webhook endpoints for Kashier callbacks (Google Cloud Functions - 2nd gen)
   orderWebhook: 'https://europe-west3-decoopa-50ce2.cloudfunctions.net/webhooks-order',

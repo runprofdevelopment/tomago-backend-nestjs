@@ -1,10 +1,9 @@
 {
-  "apiKey": "REPLACE_WITH_TOMAGO_STAGING_WEB_API_KEY",
+  "apiKey": "AIzaSyDwk10UHl0H6pF4I9UqSCV9MlwAIueSa7w",
   "authDomain": "tomago-staging.firebaseapp.com",
   "databaseURL": "https://tomago-staging-default-rtdb.firebaseio.com",
   "projectId": "tomago-staging",
   "storageBucket": "tomago-staging.appspot.com",
   "messagingSenderId": "7125900076",
-  "appId": "REPLACE_WITH_TOMAGO_STAGING_APP_ID",
-  "measurementId": "REPLACE_WITH_TOMAGO_STAGING_MEASUREMENT_ID"
+  "appId": "1:7125900076:web:d0cf265dad593c8f116a89"
 }

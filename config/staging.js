@@ -16,8 +16,7 @@ module.exports = {
     'https://tomago-staging-7125900076.europe-west3.run.app',
   storageBucketName: 'gs://tomago-staging.appspot.com',
   databaseId: 'default',
-  // TODO: replace with Web API key from Firebase Console → Project settings → Your apps
-  apiKey: 'REPLACE_WITH_TOMAGO_STAGING_WEB_API_KEY',
+  apiKey: 'AIzaSyDwk10UHl0H6pF4I9UqSCV9MlwAIueSa7w',
   orderWebhook:
     'https://webhooks-order-ux7zuoslvq-ey.a.run.app',
   walletWebhook:
