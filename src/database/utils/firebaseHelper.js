@@ -24,6 +24,29 @@ module.exports = class FirebaseHelper {
     throw new Error('Not implemented');
   }
 
+  static isSoftDeleted(record) {
+    return !!(record && record.deletedAt != null);
+  }
+
+  static appendSoftDeleteFilter(filter = [], { includeDeleted = false } = {}) {
+    if (includeDeleted) {
+      return filter || [];
+    }
+
+    const filters = [...(filter || [])];
+    const hasDeletedFilter = filters.some((item) => item.field === 'deletedAt');
+
+    if (!hasDeletedFilter) {
+      filters.push({ field: 'deletedAt', operator: 'equal', value: null });
+    }
+
+    return filters;
+  }
+
+  static filterSoftDeletedRecords(records = []) {
+    return records.filter((record) => !this.isSoftDeleted(record));
+  }
+
   /**
    * Returns a Firestore DocumentReference.
    * @param {String} collectionName The name of the collection.
@@ -307,10 +330,16 @@ module.exports = class FirebaseHelper {
    * @param {String} collectionPath
    * @param {String} id
    */
-  static async findDocument(collectionPath, id) {
-    return this.mapDocument(
+  static async findDocument(collectionPath, id, options = {}) {
+    const record = this.mapDocument(
       await admin.firestore().doc(`${collectionPath}/${id}`).get()
     );
+
+    if (!options.includeDeleted && this.isSoftDeleted(record)) {
+      return null;
+    }
+
+    return record;
   }
 
   /**
@@ -319,9 +348,9 @@ module.exports = class FirebaseHelper {
    * @param {String[]} ids
    * @returns {Promise<JSON[]>}
    */
-  static async findDocuments(collectionPath, ids) {
+  static async findDocuments(collectionPath, ids, options = {}) {
     const documents = await Promise.all(
-      ids.map(id => this.findDocument(collectionPath, id))
+      ids.map(id => this.findDocument(collectionPath, id, options))
     );
     return documents.filter(document => document != null)
   } 
@@ -367,8 +396,8 @@ module.exports = class FirebaseHelper {
 
     const collection = FirebaseHelper.mapCollection(
       await admin.firestore().collection(collectionPath).where('id', 'in', ids).get()
-    )      
-    return collection
+    )
+    return this.filterSoftDeletedRecords(collection)
   }
 
   /**
@@ -711,9 +740,9 @@ module.exports = class FirebaseHelper {
    * @param {'single'|'group'} param.queryType 
    * @returns 
    */
-  static async listWithPagination({ collectionPath, filter, orderBy, pagination, queryType }) {
+  static async listWithPagination({ collectionPath, filter, orderBy, pagination, queryType, includeDeleted = false }) {
     try {
-      const filters = filter || []
+      const filters = this.appendSoftDeleteFilter(filter, { includeDeleted })
       const GROUP_TYPE = queryType || 'single'
       pagination = new Pagination().cast(pagination)
       let collection, paginationModel
@@ -776,8 +805,8 @@ module.exports = class FirebaseHelper {
    * @param {'single'|'group'} [queryType] 
    * @returns {Promise<JSON[]>}
    */
-  static async listCollection(collectionPath, filter, orderBy, sortBy, queryType) {
-    const filters = filter || []
+  static async listCollection(collectionPath, filter, orderBy, sortBy, queryType, includeDeleted = false) {
+    const filters = this.appendSoftDeleteFilter(filter, { includeDeleted })
     const SORT_BY = sortBy || 'asc'
     const GROUP_TYPE = queryType || 'single'
 
@@ -816,7 +845,9 @@ module.exports = class FirebaseHelper {
     }
 
     const query = getQuery()
-    const collection = FirebaseHelper.mapCollection(await query.get())
+    const collection = this.filterSoftDeletedRecords(
+      FirebaseHelper.mapCollection(await query.get())
+    );
     return collection.map((record) => ({
       id: record.id,
       label: lang ? record[fieldName][lang] : record[fieldName],

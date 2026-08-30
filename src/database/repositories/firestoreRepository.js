@@ -39,6 +39,8 @@ class FirestoreRepository {
       createdAt: FirebaseHelper.serverTimestamp(),
       updatedBy: FirebaseHelper.getCurrentUser(options).id,
       updatedAt: FirebaseHelper.serverTimestamp(),
+      deletedAt: null,
+      deletedBy: null,
     };
 
     // const COLLECTION_PATH = (options && options.collectionPath) || this._collectionName;
@@ -133,48 +135,54 @@ class FirestoreRepository {
   async destroyDocument(id, { currentUser, language, batch, collectionPath }) {
     const options = { currentUser, language, batch, collectionPath };
 
-    // const COLLECTION_PATH = (options && options.collectionPath) || this._collectionName;
     this._collectionName = (options && options.collectionPath) || this._collectionName;
+    const record = {
+      deletedAt: FirebaseHelper.serverTimestamp(),
+      deletedBy: FirebaseHelper.getCurrentUser(options).id,
+      updatedBy: FirebaseHelper.getCurrentUser(options).id,
+      updatedAt: FirebaseHelper.serverTimestamp(),
+    };
+
     await FirebaseHelper.executeOrAddToBatch(
-      'delete',
+      'update',
       admin.firestore().doc(`${this._collectionName}/${id}`),
-      null,
+      record,
       options,
     );
 
     await this._auditLogs(
       AuditLogRepository.DELETE,
       id,
-      null,
+      record,
       options,
     );
     // await this.destroyFromRelations(id, options);
   }
 
-  async findDocumentById(id) {
-    const record = await FirebaseHelper.findDocument(this._collectionName, id);
+  async findDocumentById(id, options = {}) {
+    const record = await FirebaseHelper.findDocument(this._collectionName, id, options);
     return record
   }
 
-  async listCollection({ filter, orderBy, pagination }) {
+  async listCollection({ filter, orderBy, pagination, includeDeleted = false }) {
     return await FirebaseHelper.listWithPagination({
-      // filter: this.generateFilter(), 
       collectionPath: this._collectionName,
-      filter: filter, 
-      orderBy, 
+      filter: filter,
+      orderBy,
       pagination,
       queryType: 'single',
+      includeDeleted,
     })
   }
 
-  async listCollectionGroup(collectionName, { filter, orderBy, pagination }) {
+  async listCollectionGroup(collectionName, { filter, orderBy, pagination, includeDeleted = false }) {
     return await FirebaseHelper.listWithPagination({
-      // filter: this.generateFilter(), 
       collectionPath: collectionName,
-      filter: filter, 
-      orderBy, 
+      filter: filter,
+      orderBy,
       pagination,
       queryType: 'group',
+      includeDeleted,
     })
   }
   

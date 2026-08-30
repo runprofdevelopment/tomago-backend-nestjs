@@ -29,8 +29,8 @@ module.exports = class IamDestroyer {
         batch: batch,
       })
       
-      // [2] Delete the user from the firebase authentication table
-      await AuthFirebaseService.deleteUser(uid);
+      // [2] Disable the user in firebase authentication
+      await AuthFirebaseService.disable(uid);
       await FirebaseHelper.commitBatch(batch);
     } catch (error) {
       throw error;
@@ -56,8 +56,8 @@ module.exports = class IamDestroyer {
         batch: batch,
       })
       
-      // [2] Delete the user from the firebase authentication table
-      await AuthFirebaseService.deleteUser(uid);
+      // [2] Disable the user in firebase authentication
+      await AuthFirebaseService.disable(uid);
       await FirebaseHelper.commitBatch(batch);
     } catch (error) {
       throw error;
@@ -83,8 +83,8 @@ module.exports = class IamDestroyer {
           currentUser: this.currentUser,
         });
 
-        // [2] Delete the user from the firebase authentication table
-        await AuthFirebaseService.deleteUser(uid);
+        // [2] Disable the user in firebase authentication
+        await AuthFirebaseService.disable(uid);
       }
 
       await FirebaseHelper.commitBatch(batch);

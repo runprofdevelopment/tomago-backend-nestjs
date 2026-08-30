@@ -1,6 +1,5 @@
 const FirestoreRepository = require('../../database/repositories/firestoreRepository');
 const Voucher = require('../../database/models/voucher');
-const admin = require('firebase-admin');
 
 module.exports = class VoucherEditor {
   constructor(context) {
@@ -71,7 +70,10 @@ module.exports = class VoucherEditor {
 
   async deleteVoucher(id) {
     try {
-      await admin.firestore().collection(this.collectionName).doc(id).delete()
+      await this.repository.destroyDocument(id, {
+        currentUser: this.currentUser,
+        language: this.language,
+      });
       return true
     }
     catch (e) {

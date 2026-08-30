@@ -27,7 +27,6 @@ module.exports = class Inventory extends AbstractEntityModel {
     super('inventory', 'inventory', {
       productId: new types.RelationToOne(),
       tracked: new types.Boolean(true),
-      isRemoved: new types.Boolean(false),
 
       onHand_quantity: new types.Number(0, null, 0),
       available_quantity: new types.Number(0, null, 0),

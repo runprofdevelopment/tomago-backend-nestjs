@@ -135,6 +135,8 @@ module.exports = class UserRepository {
       createdAt: FirebaseHelper.serverTimestamp(),
       updatedBy: FirebaseHelper.getCurrentUser(options).id || data.id || null,
       updatedAt: FirebaseHelper.serverTimestamp(),
+      deletedAt: null,
+      deletedBy: null,
     };
 
     await FirebaseHelper.executeOrAddToBatch(
@@ -291,17 +293,24 @@ module.exports = class UserRepository {
 
   static async destroy(id, { currentUser, batch }) {
     const options = { currentUser, batch };
+    const record = {
+      deletedAt: FirebaseHelper.serverTimestamp(),
+      deletedBy: FirebaseHelper.getCurrentUser(options).id,
+      updatedBy: FirebaseHelper.getCurrentUser(options).id,
+      updatedAt: FirebaseHelper.serverTimestamp(),
+    };
+
     await FirebaseHelper.executeOrAddToBatch(
-      'delete',
+      'update',
       admin.firestore().doc(`${new User().collectionName}/${id}`),
-      null,
+      record,
       options,
     );
 
     await this._auditLogs(
       AuditLogRepository.DELETE,
       id,
-      null,
+      record,
       options
     );
     // await this.destroyFromRelations(id, options);
@@ -324,8 +333,8 @@ module.exports = class UserRepository {
   }
 
 //#region [ Queries ]  
-  static async findById(id) {
-    const record = await FirebaseHelper.findDocument('user', id);
+  static async findById(id, options = {}) {
+    const record = await FirebaseHelper.findDocument('user', id, options);
     return record
   }
 
@@ -334,7 +343,7 @@ module.exports = class UserRepository {
    * @param {String} uid The Authentication Uid
    * @returns {Promise<JSON|null>}
    */
-  static async findByAuthenticationUid(uid) {
+  static async findByAuthenticationUid(uid, options = {}) {
     const users = FirebaseHelper.mapCollection(
       await admin.firestore().collection(`user`)
         .where('authenticationUid', '==', uid)
@@ -343,7 +352,11 @@ module.exports = class UserRepository {
     );
 
     if (users.length > 0) {
-      return users[0];
+      const user = users[0];
+      if (!options.includeDeleted && FirebaseHelper.isSoftDeleted(user)) {
+        return null;
+      }
+      return user;
     }
 
     return null;
@@ -354,7 +367,7 @@ module.exports = class UserRepository {
    * @param {String} email 
    * @returns {Promise<JSON|null>}
    */
-  static async findByEmail(email) {
+  static async findByEmail(email, options = {}) {
     if (!email) return null
 
     const users = FirebaseHelper.mapCollection(
@@ -365,7 +378,11 @@ module.exports = class UserRepository {
     );
 
     if (users.length) {
-      return users[0];
+      const user = users[0];
+      if (!options.includeDeleted && FirebaseHelper.isSoftDeleted(user)) {
+        return null;
+      }
+      return user;
     }
 
     return null;
@@ -376,7 +393,7 @@ module.exports = class UserRepository {
    * @param {String} phoneNumber 
    * @returns {Promise<JSON|null>}
    */
-  static async findByPhoneNumber(phoneNumber) {
+  static async findByPhoneNumber(phoneNumber, options = {}) {
     if (!phoneNumber) return null
 
     const users = FirebaseHelper.mapCollection(
@@ -387,14 +404,18 @@ module.exports = class UserRepository {
     );
 
     if (users.length) {
-      return users[0];
+      const user = users[0];
+      if (!options.includeDeleted && FirebaseHelper.isSoftDeleted(user)) {
+        return null;
+      }
+      return user;
     }
 
     return null;
   }
 
-  static async findByEmailOrPhone(email, phoneNumber) {
-    const user = await this.findByEmail(email) || await this.findByPhoneNumber(phoneNumber)
+  static async findByEmailOrPhone(email, phoneNumber, options = {}) {
+    const user = await this.findByEmail(email, options) || await this.findByPhoneNumber(phoneNumber, options)
     return user;
   }
 
@@ -416,11 +437,13 @@ module.exports = class UserRepository {
   }
 
   static async findAllWithUsers({ filter, orderBy }) {
-    const users = FirebaseHelper.mapCollection(
-      await admin
-        .firestore()
-        .collection(`user`)
-        .get(),
+    const users = FirebaseHelper.filterSoftDeletedRecords(
+      FirebaseHelper.mapCollection(
+        await admin
+          .firestore()
+          .collection(`user`)
+          .get(),
+      )
     );
   
     const roles = [
@@ -447,10 +470,12 @@ module.exports = class UserRepository {
   }
   
   static async findAllUsersByRole(role) {
-    const users = FirebaseHelper.mapCollection(
-      await admin.firestore().collection(`user`)
-        .where('roles', 'array-contains', role)
-        .get(),
+    const users = FirebaseHelper.filterSoftDeletedRecords(
+      FirebaseHelper.mapCollection(
+        await admin.firestore().collection(`user`)
+          .where('roles', 'array-contains', role)
+          .get(),
+      )
     );
   
     return users;

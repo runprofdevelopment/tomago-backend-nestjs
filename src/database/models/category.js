@@ -14,7 +14,6 @@ module.exports = class Category extends AbstractEntityModel {
       name: new types.Localization(),
       image: new types.Avatar(),
       isActive: new types.Boolean(true),
-      isRemoved: new types.Boolean(false),
       
       // order: new types.Number(),
       // product_count: : new types.Number(),

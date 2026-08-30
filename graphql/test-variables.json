@@ -1,0 +1,932 @@
+{
+  "_readme": "Use one key at a time in GraphiQL Query Variables panel",
+  "_headers": {
+    "Authorization": "Bearer <FIREBASE_ID_TOKEN>",
+    "Accept-Language": "en",
+    "platform": "dashboard",
+    "appid": "331d9376652d7ad1f2bcfd"
+  },
+  "query_auditLogList": {
+    "filter": "REPLACE_ME",
+    "limit": 10,
+    "offset": 0,
+    "orderBy": "REPLACE_ME"
+  },
+  "query_authCustomToken": {
+    "uid": "REPLACE_WITH_FIREBASE_UID"
+  },
+  "query_iamFind": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "query_adminList": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_customerList": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_customerFind": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "query_addressList": {
+    "customerId": "seed_customer_ahmed_ali",
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "sortBy": "REPLACE_ME"
+  },
+  "query_addressFind": {
+    "customerId": "seed_customer_ahmed_ali",
+    "addressId": "seed_address_home"
+  },
+  "query_addressAutocomplete": {
+    "customerId": "seed_customer_ahmed_ali",
+    "fieldName": "REPLACE_ME",
+    "search": "REPLACE_ME",
+    "limit": 10,
+    "lang": "REPLACE_ME"
+  },
+  "query_listMyAddresses": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "sortBy": "REPLACE_ME"
+  },
+  "query_listCustomerAddresses": {
+    "customerId": "seed_customer_ahmed_ali",
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "sortBy": "REPLACE_ME"
+  },
+  "query_wishlistFindById": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "query_isExistsInMyWishlist": {
+    "variant_id": "seed_variant_opal_default"
+  },
+  "query_wishlistByShareToken": {
+    "token": "REPLACE_ME"
+  },
+  "query_myBillingHistory": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_myCustomRequests": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_customRequestList": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_sliderFind": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "query_notificationFind": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "query_listMyNotifications": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_notificationUnread": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "query_brandFind": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "query_brandList": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_categoryFind": {
+    "id": 1,
+    "withChildren": true
+  },
+  "query_categoryList": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_optionFind": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "query_optionList": {
+    "orderBy": "REPLACE_ME",
+    "sortBy": "REPLACE_ME"
+  },
+  "query_verifyBarcodeUsage": {
+    "barcode": "REPLACE_ME"
+  },
+  "query_verifySkuUsage": {
+    "sku": "REPLACE_ME"
+  },
+  "query_inventoryFind": {
+    "variant_id": "seed_variant_opal_default"
+  },
+  "query_inventoryList": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_inventoryListArchivedItems": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_reviewFind": {
+    "productId": "seed_product_opal_sofa",
+    "reviewId": "seed_customer_ahmed_ali"
+  },
+  "query_reviewList": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_reviewAutocomplete": {
+    "entityName": "REPLACE_ME",
+    "entityId": "seed_customer_ahmed_ali",
+    "search": "REPLACE_ME",
+    "limit": 10,
+    "lang": "REPLACE_ME"
+  },
+  "query_findProductReviews": {
+    "productId": "seed_product_opal_sofa",
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "sortBy": "REPLACE_ME"
+  },
+  "query_listCustomerReviews": {
+    "customerId": "seed_customer_ahmed_ali",
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_contactUsFind": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "query_contactUsList": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_orderFind": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "query_orderList": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_orderFindUser": {
+    "userID": "seed_customer_ahmed_ali"
+  },
+  "query_orderTimelineFetch": {
+    "orderId": "seed_order_csr_2024_0832"
+  },
+  "query_listCustomerOrders": {
+    "customerId": "seed_customer_ahmed_ali",
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_fetchCheckoutDetails": {
+    "cashOnDelivery": true
+  },
+  "query_viewWalletById": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "query_walletList": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_viewVoucher": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "query_voucherList": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_withdrawalRequestsList": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_viewTransactionById": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "query_transactionList": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_listMyTransactions": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_listDecoopaAccountTransactions": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_findShipment": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "query_viewReturnRequests": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_dealFind": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "query_dealList": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_dealListAll": {
+    "status": "REPLACE_ME"
+  },
+  "query_dealListItems": {
+    "dealId": "REPLACE_WITH_DEAL_ID",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_inventoryWithoutDealItems": {
+    "id": "seed_customer_ahmed_ali",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_adFind": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "query_adList": {
+    "filter": "REPLACE_ME",
+    "orderBy": "REPLACE_ME",
+    "pagination": {
+      "page": 1,
+      "perPage": 10
+    }
+  },
+  "query_fetchGeneralReport": {
+    "filter": "REPLACE_ME"
+  },
+  "query_exportExcel": {
+    "collection": "order",
+    "fields": "REPLACE_ME",
+    "ids": "REPLACE_ME"
+  },
+  "mutation_authSendPasswordResetEmail": {
+    "email": "test@example.com"
+  },
+  "mutation_authSendSignInWithEmailLink": {
+    "email": "test@example.com"
+  },
+  "mutation_authUpdateProfile": {
+    "profile": "REPLACE_ME"
+  },
+  "mutation_changeMyPassword": {
+    "oldPassword": "REPLACE_ME",
+    "newPassword": "REPLACE_ME"
+  },
+  "mutation_createAppCheckToken": {
+    "appId": "seed_customer_ahmed_ali"
+  },
+  "mutation_customerCreateAccount": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_adminInvite": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_iamEdit": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_iamImport": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    },
+    "importHash": "REPLACE_ME"
+  },
+  "mutation_iamCreate": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_iamDestroy": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_iamRemove": {
+    "emails": "REPLACE_ME",
+    "roles": "REPLACE_ME",
+    "all": false
+  },
+  "mutation_iamChangeStatus": {
+    "ids": "REPLACE_ME",
+    "disabled": false
+  },
+  "mutation_addDeviceToken": {
+    "token": "REPLACE_ME"
+  },
+  "mutation_removeDeviceToken": {
+    "token": "REPLACE_ME"
+  },
+  "mutation_addressCreate": {
+    "customerId": "seed_customer_ahmed_ali",
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_addressUpdate": {
+    "customerId": "seed_customer_ahmed_ali",
+    "id": "seed_customer_ahmed_ali",
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_addressDestroy": {
+    "customerId": "seed_customer_ahmed_ali",
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_setMyDefaultAddress": {
+    "addressId": "seed_address_home"
+  },
+  "mutation_verifyMyPhoneNumber": {
+    "addressId": "seed_address_home"
+  },
+  "mutation_wishlistAddProduct": {
+    "variantIds": [
+      "seed_variant_opal_default"
+    ]
+  },
+  "mutation_wishlistRemoveProduct": {
+    "variantIds": "REPLACE_ME"
+  },
+  "mutation_moveItemToCart": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_updateMyCustomerSettings": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_paymentMethodCreate": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_paymentMethodUpdate": {
+    "id": "seed_customer_ahmed_ali",
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_paymentMethodDestroy": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_setMyDefaultPaymentMethod": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_customRequestCreate": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_sliderCreate": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_sliderUpdate": {
+    "id": "seed_customer_ahmed_ali",
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_sliderDestroy": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_notificationDestroy": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_markAsRead": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_notifyUser": {
+    "usersId": "seed_customer_ahmed_ali",
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_sendToUsers": {
+    "usersIds": "REPLACE_ME",
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_sendToAll": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_brandCreate": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_brandUpdate": {
+    "id": "seed_customer_ahmed_ali",
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_brandDestroy": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_brandActivate": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_brandDeactivate": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_categoryCreate": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_subcategoryCreate": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_categoryUpdate": {
+    "id": 1,
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_categoryDestroy": {
+    "id": 1
+  },
+  "mutation_categoryRemove": {
+    "id": 1
+  },
+  "mutation_categoryActivate": {
+    "id": 1
+  },
+  "mutation_categoryDeactivate": {
+    "id": 1
+  },
+  "mutation_categoryMove": {
+    "id": 1,
+    "parentId": "seed_customer_ahmed_ali",
+    "position": 1
+  },
+  "mutation_optionCreate": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_optionUpdate": {
+    "id": "seed_customer_ahmed_ali",
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_productCreate": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_productChangeStatus": {
+    "variant_id": "seed_variant_opal_default",
+    "status": "REPLACE_ME"
+  },
+  "mutation_productVariantUpdate": {
+    "variant_id": "seed_variant_opal_default",
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_inventoryUpdate": {
+    "variant_id": "seed_variant_opal_default",
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_reviewCreate": {
+    "productId": "seed_product_opal_sofa",
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_reviewUpdate": {
+    "productId": "seed_product_opal_sofa",
+    "reviewId": "seed_customer_ahmed_ali",
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_reviewDestroy": {
+    "productId": "seed_product_opal_sofa",
+    "reviewId": "seed_customer_ahmed_ali"
+  },
+  "mutation_contactUsCreate": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_contactUsDestroy": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_orderCreate": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_orderUpdate": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_userCancelOrder": {
+    "id": "seed_customer_ahmed_ali",
+    "cancelReason": "REPLACE_ME",
+    "itemsID": "seed_customer_ahmed_ali"
+  },
+  "mutation_orderReceivedCOD": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_orderReceivedVisa": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_orderPendingDelivery": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_orderShippedDecoopa": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_adminCancelOrder": {
+    "id": "seed_customer_ahmed_ali",
+    "cancelReason": "REPLACE_ME",
+    "itemsID": "seed_customer_ahmed_ali"
+  },
+  "mutation_generateKashierOrderHash": {
+    "amount": "REPLACE_ME",
+    "currency": "REPLACE_ME",
+    "merchantOrderId": "seed_order_csr_2024_0832",
+    "customerId": "seed_customer_ahmed_ali"
+  },
+  "mutation_calculateOrderPricing": {
+    "paymentMethod": "cash_on_delivery"
+  },
+  "mutation_orderReturnDecoopa": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_returnReceivedRequest": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_orderShippedMylerz": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_orderReturnMylerz": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_cartAddItem": {
+    "item": {
+      "variantId": "seed_variant_opal_default",
+      "quantity": 1
+    }
+  },
+  "mutation_cartRemoveItem": {
+    "data": {
+      "variantId": "seed_variant_opal_default"
+    }
+  },
+  "mutation_cartEditQuantity": {
+    "item": {
+      "variantId": "seed_variant_opal_default",
+      "quantity": 2
+    }
+  },
+  "mutation_clearUserCart": {
+    "userId": "seed_customer_ahmed_ali"
+  },
+  "mutation_cartMoveToWishlist": {
+    "variantId": "seed_variant_opal_default"
+  },
+  "mutation_applyVoucherToCart": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_mergeAnonymousCartToUserCart": {
+    "anonymousCartId": "seed_customer_ahmed_ali"
+  },
+  "mutation_saveTermsAndConditions": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_saveReturnAndRefund": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_saveAboutUs": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_saveFAQs": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_savePrivacyPolicy": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_addBalanceCard": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_addBalanceVoucher": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_createEmptyWallet": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_adminWalletDeduction": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_adminWalletTopUp": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_initiateWalletRecharge": {
+    "walletId": "seed_customer_ahmed_ali",
+    "amount": 0,
+    "currency": "REPLACE_ME"
+  },
+  "mutation_testCancel": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_voucherCreate": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_voucherDelete": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_createWithdrawalRequest": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_rejectWithdrawalRequest": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_acceptWithdrawalRequest": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_confirmWithdrawalRequest": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_createTransaction": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_createReturnRequest": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_acceptReturnRequest": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_confirmReturnRequest": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_rejectReturnRequest": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_createFullyRefundRequest": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_refundReturnOrder": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_settingsSave": {
+    "settings": "REPLACE_ME"
+  },
+  "mutation_dealCreate": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_addItemsToDeal": {
+    "id": "seed_customer_ahmed_ali",
+    "items": "REPLACE_ME"
+  },
+  "mutation_removeItemsFromDeal": {
+    "id": "seed_customer_ahmed_ali",
+    "items": "REPLACE_ME"
+  },
+  "mutation_dealUpdate": {
+    "id": "seed_customer_ahmed_ali",
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_dealDestroy": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_bannerContainerSave": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_videoContainerSave": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_adCreate": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_adUpdate": {
+    "id": "seed_customer_ahmed_ali",
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_adDestroy": {
+    "id": "seed_customer_ahmed_ali"
+  },
+  "mutation_accountAddFunds": {
+    "amount": 0
+  },
+  "mutation_accountDeductFunds": {
+    "amount": 0,
+    "note": "REPLACE_ME"
+  },
+  "mutation_sendOTP": {
+    "data": {
+      "_replace": "Fill required input fields from schema"
+    }
+  },
+  "mutation_verifyOTP": {
+    "otp": "REPLACE_ME"
+  },
+  "mutation_getPackageStatus": {
+    "trackingNumber": "REPLACE_ME"
+  },
+  "mutation_getTrackingLink": {
+    "trackingNumber": "REPLACE_ME"
+  },
+  "mutation_getTrackingNumber": {
+    "orderId": "seed_order_csr_2024_0832"
+  },
+  "mutation_getPackageStatusMylerz": {
+    "trackingNumber": "REPLACE_ME"
+  },
+  "mutation_getPackageStatusByOrderId": {
+    "orderId": "seed_order_csr_2024_0832"
+  },
+  "mutation_getDetailedTrackingHistory": {
+    "trackingNumber": "REPLACE_ME"
+  },
+  "mutation_savePackageStatus": {
+    "trackingNumber": "REPLACE_ME",
+    "statusData": "REPLACE_ME"
+  },
+  "mutation_authCustomToken": {
+    "uid": "REPLACE_WITH_FIREBASE_UID"
+  }
+}

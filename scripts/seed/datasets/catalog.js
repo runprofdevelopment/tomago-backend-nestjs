@@ -116,7 +116,6 @@ function buildCategories() {
         position: 1,
         image: { publicUrl: IMG.sofa, name: 'sofas.jpg' },
         isActive: true,
-        isRemoved: false,
       },
     },
     {
@@ -130,7 +129,6 @@ function buildCategories() {
         position: 2,
         image: { publicUrl: IMG.table, name: 'coffee-tables.jpg' },
         isActive: true,
-        isRemoved: false,
       },
     },
     {
@@ -144,7 +142,6 @@ function buildCategories() {
         position: 1,
         image: { publicUrl: IMG.armchair, name: 'armchairs.jpg' },
         isActive: true,
-        isRemoved: false,
       },
     },
   ];
@@ -410,7 +407,6 @@ function buildInventory() {
       data: {
         productId: IDS.productOpalSofa,
         tracked: true,
-        isRemoved: false,
         onHand_quantity: 25,
         available_quantity: 20,
         unavailable_quantity: 2,
@@ -423,7 +419,6 @@ function buildInventory() {
       data: {
         productId: IDS.productAaltoTable,
         tracked: true,
-        isRemoved: false,
         onHand_quantity: 15,
         available_quantity: 12,
         unavailable_quantity: 1,
@@ -436,7 +431,6 @@ function buildInventory() {
       data: {
         productId: IDS.productEliasArmchair,
         tracked: true,
-        isRemoved: false,
         onHand_quantity: 30,
         available_quantity: 28,
         unavailable_quantity: 0,

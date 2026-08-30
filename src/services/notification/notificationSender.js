@@ -16,8 +16,10 @@ module.exports = class NotificationSender {
 
   async sendNotificationToAllCustomers(notification) {
     try {
-      const recipients = FirebaseHelper.mapCollection(
-        await admin.firestore().collection('user').where('accountType', '==', 'customer').get()
+      const recipients = FirebaseHelper.filterSoftDeletedRecords(
+        FirebaseHelper.mapCollection(
+          await admin.firestore().collection('user').where('accountType', '==', 'customer').get()
+        )
       );
       
       const recipients_ids = recipients.map(user => user.id);

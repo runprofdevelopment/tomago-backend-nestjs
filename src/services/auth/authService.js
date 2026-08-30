@@ -3,6 +3,7 @@ const config = require('../../../config')();
 const Roles = require('../../security/roles');
 const AuthFirebaseService = require('../../infrastructure/auth/authFirebaseService');
 const UserRepository = require('../../database/repositories/userRepository');
+const FirebaseHelper = require('../../database/utils/firebaseHelper');
 const ErrorHandler = require('../../errors/errorHandler');
 
 /** Handles all the Auth operations of the user. */
@@ -19,6 +20,16 @@ class AuthService {
     
     const appType = APP_IDS[appId];
     return appType;
+  }
+
+  static _assertUserNotDeleted(user, language = 'en') {
+    if (user && FirebaseHelper.isSoftDeleted(user)) {
+      throw new ErrorHandler({
+        errorCode: 'ACCOUNT_DELETED',
+        message: 'This account has been deleted',
+        language,
+      });
+    }
   }
 
 
@@ -51,15 +62,17 @@ class AuthService {
     }
 
     const { email, phoneNumber } = authUser;
+    const lookupOptions = { includeDeleted: true, ...options };
     const databaseUser =
-      await UserRepository.findByEmailOrPhone(email, phoneNumber) ||
-      await UserRepository.findByAuthenticationUid(uid);
+      await UserRepository.findByEmailOrPhone(email, phoneNumber, lookupOptions) ||
+      await UserRepository.findByAuthenticationUid(uid, lookupOptions);
 
     /**
      * If the user exists on the database, updates the authentication uid
      * to ensure that it's aligned with the one in the authentication provider
      */
     if (databaseUser) {
+      this._assertUserNotDeleted(databaseUser, options.language);
       if (databaseUser.disabled && !authUser.disabled) {
         await AuthFirebaseService.disable(authUser.uid);
       }
@@ -132,10 +145,11 @@ class AuthService {
     }
     
     const databaseUser = email
-      ? await UserRepository.findByEmail(email)
-      : await UserRepository.findByAuthenticationUid(uid);
+      ? await UserRepository.findByEmail(email, { includeDeleted: true })
+      : await UserRepository.findByAuthenticationUid(uid, { includeDeleted: true });
 
     if (databaseUser) {
+      this._assertUserNotDeleted(databaseUser);
       if (databaseUser.disabled && !authUser.disabled) {
         await AuthFirebaseService.disable(authUser.uid);
       }

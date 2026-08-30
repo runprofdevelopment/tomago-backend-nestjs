@@ -44,7 +44,6 @@ module.exports = class CategoryViewer {
    */
   async listWithPagination(args) {
     args['filter'] = args.filter || [];
-    args['filter'].push({ field: 'isRemoved', operator: 'equal', value: false });
     const response = await this.repository.listCollection(args);
     response.rows = await this.populateAll(response.rows); // Find Relations
     return response
@@ -95,8 +94,10 @@ module.exports = class CategoryViewer {
   }
 
   async fetchChildren(parentId, children = []) {
-    const nodes = FirebaseHelper.mapCollection(
-      await admin.firestore().collection(this.collectionName).where('parent_id', '==', parentId).get()
+    const nodes = FirebaseHelper.filterSoftDeletedRecords(
+      FirebaseHelper.mapCollection(
+        await admin.firestore().collection(this.collectionName).where('parent_id', '==', parentId).get()
+      )
     )
 
     if (nodes.length === 0) return [];
@@ -112,8 +113,10 @@ module.exports = class CategoryViewer {
   async fetchTree(root, listOfNodes) {
     const children = listOfNodes && listOfNodes.length 
       ? listOfNodes.filter(child => child.parent_id === root.id)
-      : FirebaseHelper.mapCollection(
-        await admin.firestore().collection(this.collectionName).where('parent_id', '==', root.id).orderBy('position', 'asc').get()
+      : FirebaseHelper.filterSoftDeletedRecords(
+        FirebaseHelper.mapCollection(
+          await admin.firestore().collection(this.collectionName).where('parent_id', '==', root.id).orderBy('position', 'asc').get()
+        )
       );
 
     root['children'] = children;
@@ -135,7 +138,7 @@ module.exports = class CategoryViewer {
     try {
       const categories = FirebaseHelper.mapCollection(
         await admin.firestore().collection(this.collectionName)
-          .where('isRemoved', '==', false).orderBy('position', 'asc').get()
+          .where('deletedAt', '==', null).orderBy('position', 'asc').get()
       )
 
       const roots = categories.filter(category => category.parent_id === 0)

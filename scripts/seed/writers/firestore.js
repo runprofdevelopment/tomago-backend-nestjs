@@ -58,6 +58,8 @@ class FirestoreSeedWriter {
     });
     if (!merge) {
       payload.createdAt = admin.firestore.FieldValue.serverTimestamp();
+      payload.deletedAt = null;
+      payload.deletedBy = null;
     }
     this.pending.push({ ref, data: payload, merge });
     if (this.pending.length >= BATCH_LIMIT) {
@@ -74,6 +76,8 @@ class FirestoreSeedWriter {
     });
     if (!merge) {
       payload.createdAt = admin.firestore.FieldValue.serverTimestamp();
+      payload.deletedAt = null;
+      payload.deletedBy = null;
     }
     this.pending.push({ ref, data: payload, merge });
     if (this.pending.length >= BATCH_LIMIT) {

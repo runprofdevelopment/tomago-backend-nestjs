@@ -1,10 +1,15 @@
 const lodash = require('lodash');
+const types = require('./types');
 
 module.exports = class AbstractEntityModel {
   constructor(modelName, collectionName, fields) {
     this.modelName = modelName;
     this.collectionName = collectionName;
-    this.fields = fields;
+    this.fields = {
+      ...fields,
+      deletedAt: new types.DateTime(),
+      deletedBy: new types.String(),
+    };
   }
   
   cast(data) {

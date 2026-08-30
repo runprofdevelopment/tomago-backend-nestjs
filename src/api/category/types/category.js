@@ -4,7 +4,8 @@ const schema = `
     name: Localization
     image: Avatar
     isActive: Boolean
-    isRemoved: Boolean
+    deletedAt: DateTime
+    deletedBy: String
 
     parent_id: Int
     level: Int

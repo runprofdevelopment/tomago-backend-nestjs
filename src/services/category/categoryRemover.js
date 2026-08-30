@@ -31,11 +31,9 @@ module.exports = class CategoryRemover {
   }
 
   async flagDocumentsAsDeleted(ids) {
-    const data = { isRemoved: true };
-
     const batch = await FirebaseHelper.createBatch();
     await Promise.allSettled(
-      ids.map(id => this.repository.updateDocument(id, data, {
+      ids.map(id => this.repository.destroyDocument(id, {
         batch,
         currentUser: this.currentUser,
         language: this.language,
@@ -45,70 +43,10 @@ module.exports = class CategoryRemover {
   }
 
   /**
-   * Permanently delete the item (Delete immediately)
+   * Soft delete the item and its children.
    * @param {*} id 
    */
   async deletePermanently(id) {
-    try {
-      const children = [];
-      await this.categoryViewer.fetchChildren(id, children);
-      const ids = children.map(category => category.id);
-      ids.unshift(id);
-
-      await this.#destroyAll(ids);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  /**
-   * Permanently delete the category item by ID (Delete immediately)
-   * @param {String} id Category ID (Required) 
-   */
-  async #destroy(id) {
-    try {
-      const batch = await FirebaseHelper.createBatch();
-      await this.repository.destroyDocument(id, {
-        batch,
-        currentUser: this.currentUser,
-        language: this.language,
-      });
-      await FirebaseHelper.commitBatch(batch);
-
-      AlgoliaService.pushTreeOfCategoriesToAlgolia();
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  /**
-   * Permanently delete the categories items by Ids (Delete immediately)
-   * @param {String[]} ids categories Ids (Required) 
-   */
-  async #destroyAll(ids) {
-    try {
-      const maximumWritesPerBatch = 500;
-      const numOfRequests = Math.ceil(ids.length / maximumWritesPerBatch);
-
-      for (let index = 0; index < numOfRequests; index++) {
-        const Start = maximumWritesPerBatch * index;
-        const End = maximumWritesPerBatch * (index + 1);
-        const Chunks = ids.slice(Start, End);
-        
-        const batch = await FirebaseHelper.createBatch();
-        await Promise.allSettled(
-          Chunks.map((id) => this.repository.destroyDocument(id, {
-            batch,
-            currentUser: this.currentUser,
-            language: this.language,
-          }))
-        );
-        await FirebaseHelper.commitBatch(batch);
-      }
-
-      AlgoliaService.pushTreeOfCategoriesToAlgolia();
-    } catch (error) {
-      throw error;
-    }
+    return this.markAsDeleted(id);
   }
 };

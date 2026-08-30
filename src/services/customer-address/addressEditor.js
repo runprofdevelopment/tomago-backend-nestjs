@@ -188,18 +188,12 @@ module.exports = class AddressEditor {
         message: `There is no document related to this ID {"${this.customerId}"}`,
       });
     }
-    if (user.isRemoved) {
-      throw new ErrorHandler({
-        errorCode: 'NOT_FOUND',
-        message: `This user has been removed from the system`,
-      });
-    }
 
     const address = await FirebaseHelper.findDocument(
       this.collectionPath,
       addressId,
     );
-    if (!address || address.isRemoved) {
+    if (!address) {
       throw new ErrorHandler({
         errorCode: 'NOT_FOUND',
         message: `Address not found`,

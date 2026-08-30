@@ -1,0 +1,1182 @@
+# Tomago GraphQL Test Operations
+# Generated from live schema (src/api/). Regenerate: node scripts/generate-apollo-test-file.js
+#
+# ── How to use in Apollo Server / GraphiQL ─────────────────────────────────────
+# 1. Start server:  npm run start:staging
+# 2. Open:         http://localhost:8080/graphql
+# 3. HTTP Headers (bottom panel in GraphiQL):
+#    {
+#      "Authorization": "Bearer <FIREBASE_ID_TOKEN>",
+#      "Accept-Language": "en",
+#      "platform": "dashboard",
+#      "appid": "331d9376652d7ad1f2bcfd"
+#    }
+# 4. Copy ONE operation below into the query panel.
+# 5. Paste matching variables from graphql/test-variables.json (Query Variables panel).
+#
+# Staging shortcut: Postman without Authorization auto-logs in as mohamedali.runprof@gmail.com
+#
+# Seed IDs (scripts/seed):
+#   brand: seed_brand_tomoga | product: seed_product_opal_sofa
+#   variant: seed_variant_opal_default | customer: seed_customer_ahmed_ali
+#   order: seed_order_csr_2024_0832 | voucher: seed_voucher_tomogavip10
+# ──────────────────────────────────────────────────────────────────────────────
+
+# ═══════════════════════════════════════════════════════════════════════════
+# QUERIES
+# ═══════════════════════════════════════════════════════════════════════════
+
+# --- query_auditLogList ---
+query query_auditLogList($filter: [FilterInput!], $limit: Int, $offset: Int, $orderBy: AuditLogListOrderByEnum) {
+  auditLogList(filter: $filter, limit: $limit, offset: $offset, orderBy: $orderBy){ rows { id action entityType entityId createdAt } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_authIsEmailConfigured ---
+query query_authIsEmailConfigured {
+  authIsEmailConfigured
+}
+
+# --- query_authStorageToken ---
+query query_authStorageToken {
+  authStorageToken
+}
+
+# --- query_authCustomToken ---
+query query_authCustomToken($uid: String!) {
+  authCustomToken(uid: $uid)
+}
+
+# --- query_authMe ---
+query query_authMe {
+  authMe{ id email firstName lastName fullName phoneNumber roles accountType }
+}
+
+# --- query_authMeAdmin ---
+query query_authMeAdmin {
+  authMeAdmin{ id email firstName lastName fullName phoneNumber roles accountType }
+}
+
+# --- query_iamFind ---
+query query_iamFind($id: String!) {
+  iamFind(id: $id){ id email firstName lastName fullName phoneNumber roles accountType }
+}
+
+# --- query_adminList ---
+query query_adminList($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  adminList(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id email firstName lastName fullName phoneNumber roles accountType } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_customerList ---
+query query_customerList($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  customerList(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id email firstName lastName fullName phoneNumber roles accountType } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_customerFind ---
+query query_customerFind($id: String!) {
+  customerFind(id: $id){ id email firstName lastName fullName phoneNumber roles accountType }
+}
+
+# --- query_addressList ---
+query query_addressList($customerId: String!, $filter: [ FilterInput! ], $orderBy: String, $sortBy: SortByEnum) {
+  addressList(customerId: $customerId, filter: $filter, orderBy: $orderBy, sortBy: $sortBy){ id firstName lastName city country phoneNumber isDefault }
+}
+
+# --- query_addressFind ---
+query query_addressFind($customerId: String!, $addressId: String!) {
+  addressFind(customerId: $customerId, addressId: $addressId){ id firstName lastName city country phoneNumber isDefault }
+}
+
+# --- query_addressAutocomplete ---
+query query_addressAutocomplete($customerId: String!, $fieldName: AddressFieldNameSearchEnum!, $search: String, $limit: Int, $lang: String) {
+  addressAutocomplete(customerId: $customerId, fieldName: $fieldName, search: $search, limit: $limit, lang: $lang){ label value }
+}
+
+# --- query_findMyDefaultAddress ---
+query query_findMyDefaultAddress {
+  findMyDefaultAddress{ id firstName lastName city country phoneNumber isDefault }
+}
+
+# --- query_listMyAddresses ---
+query query_listMyAddresses($filter: [ FilterInput! ], $orderBy: String, $sortBy: SortByEnum) {
+  listMyAddresses(filter: $filter, orderBy: $orderBy, sortBy: $sortBy){ id firstName lastName city country phoneNumber isDefault }
+}
+
+# --- query_listCustomerAddresses ---
+query query_listCustomerAddresses($customerId: String!, $filter: [ FilterInput! ], $orderBy: String, $sortBy: SortByEnum) {
+  listCustomerAddresses(customerId: $customerId, filter: $filter, orderBy: $orderBy, sortBy: $sortBy){ id firstName lastName city country phoneNumber isDefault }
+}
+
+# --- query_findMyWishlist ---
+query query_findMyWishlist {
+  findMyWishlist
+}
+
+# --- query_wishlistFindById ---
+query query_wishlistFindById($id: String!) {
+  wishlistFindById(id: $id){ id productNo main_title { en ar } brand_id category_id rating reviews_count }
+}
+
+# --- query_isExistsInMyWishlist ---
+query query_isExistsInMyWishlist($variant_id: String!) {
+  isExistsInMyWishlist(variant_id: $variant_id)
+}
+
+# --- query_wishlistByShareToken ---
+query query_wishlistByShareToken($token: String!) {
+  wishlistByShareToken(token: $token){ token items { id main_title { en ar } } }
+}
+
+# --- query_myCustomerSettings ---
+query query_myCustomerSettings {
+  myCustomerSettings{ id language darkMode notificationsEnabled }
+}
+
+# --- query_listMyPaymentMethods ---
+query query_listMyPaymentMethods {
+  listMyPaymentMethods{ id type last4 isDefault }
+}
+
+# --- query_myBillingHistory ---
+query query_myBillingHistory($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  myBillingHistory(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id userID orderStatus financialStatus paymentMethod subTotalPrice totalPrice items { quantity price product { id main_title { en ar } } variant { id sku price } } } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_myCustomRequests ---
+query query_myCustomRequests($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  myCustomRequests(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id status customerId productTitle createdAt } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_customRequestList ---
+query query_customRequestList($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  customRequestList(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id status customerId productTitle createdAt } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_sliderFind ---
+query query_sliderFind($id: String!) {
+  sliderFind(id: $id){ id title image { publicUrl name } isActive }
+}
+
+# --- query_sliderList ---
+query query_sliderList {
+  sliderList{ rows { id title image { publicUrl name } isActive } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_sliderActiveList ---
+query query_sliderActiveList {
+  sliderActiveList{ rows { id title image { publicUrl name } isActive } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_notificationFind ---
+query query_notificationFind($id: String!) {
+  notificationFind(id: $id){ id title body read createdAt }
+}
+
+# --- query_listMyNotifications ---
+query query_listMyNotifications($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  listMyNotifications(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id title body read createdAt } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_notificationUnread ---
+query query_notificationUnread($id: String!) {
+  notificationUnread(id: $id){ count }
+}
+
+# --- query_brandFind ---
+query query_brandFind($id: String!) {
+  brandFind(id: $id){ id name { en ar } isActive imageUrl }
+}
+
+# --- query_brandList ---
+query query_brandList($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  brandList(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id name { en ar } isActive } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_brandListAll ---
+query query_brandListAll {
+  brandListAll{ rows { id name { en ar } isActive } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_brandActiveList ---
+query query_brandActiveList {
+  brandActiveList{ rows { id name { en ar } isActive } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_categoryFind ---
+query query_categoryFind($id: Int!, $withChildren: Boolean) {
+  categoryFind(id: $id, withChildren: $withChildren){ id name { en ar } level parent_id isActive product_count }
+}
+
+# --- query_categoryList ---
+query query_categoryList($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  categoryList(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id name { en ar } level parent_id isActive product_count } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_retrievingCategoriesTree ---
+query query_retrievingCategoriesTree {
+  retrievingCategoriesTree{ id name { en ar } level parent_id isActive product_count }
+}
+
+# --- query_optionFind ---
+query query_optionFind($id: String!) {
+  optionFind(id: $id){ id name { en ar } }
+}
+
+# --- query_optionList ---
+query query_optionList($orderBy: String, $sortBy: SortByEnum) {
+  optionList(orderBy: $orderBy, sortBy: $sortBy){ id name { en ar } }
+}
+
+# --- query_verifyBarcodeUsage ---
+query query_verifyBarcodeUsage($barcode: String!) {
+  verifyBarcodeUsage(barcode: $barcode)
+}
+
+# --- query_verifySkuUsage ---
+query query_verifySkuUsage($sku: String!) {
+  verifySkuUsage(sku: $sku)
+}
+
+# --- query_inventoryFind ---
+query query_inventoryFind($variant_id: String!) {
+  inventoryFind(variant_id: $variant_id){ product_id variant_id sku main_title { en ar } price inventory_quantity brand_id category_id }
+}
+
+# --- query_inventoryList ---
+query query_inventoryList($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  inventoryList(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { product_id variant_id sku main_title { en ar } price inventory_quantity brand_id category_id } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_inventoryListArchivedItems ---
+query query_inventoryListArchivedItems($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  inventoryListArchivedItems(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { product_id variant_id sku main_title { en ar } price inventory_quantity brand_id category_id } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_reviewFind ---
+query query_reviewFind($productId: String!, $reviewId: String!) {
+  reviewFind(productId: $productId, reviewId: $reviewId){ id productId rating title body reviewer createdAt }
+}
+
+# --- query_reviewList ---
+query query_reviewList($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  reviewList(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id productId rating title body reviewer createdAt } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_reviewAutocomplete ---
+query query_reviewAutocomplete($entityName: ReviewalTypeEnum!, $entityId: String!, $search: String, $limit: Int, $lang: String) {
+  reviewAutocomplete(entityName: $entityName, entityId: $entityId, search: $search, limit: $limit, lang: $lang){ label value }
+}
+
+# --- query_findProductReviews ---
+query query_findProductReviews($productId: String!, $filter: [ FilterInput! ], $orderBy: String, $sortBy: SortByEnum) {
+  findProductReviews(productId: $productId, filter: $filter, orderBy: $orderBy, sortBy: $sortBy){ id productId rating title body reviewer createdAt }
+}
+
+# --- query_listCustomerReviews ---
+query query_listCustomerReviews($customerId: String!, $filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  listCustomerReviews(customerId: $customerId, filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id productId rating title body reviewer createdAt } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_contactUsFind ---
+query query_contactUsFind($id: String!) {
+  contactUsFind(id: $id){ id name email message createdAt }
+}
+
+# --- query_contactUsList ---
+query query_contactUsList($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  contactUsList(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id name email message createdAt } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_contactUsListAll ---
+query query_contactUsListAll {
+  contactUsListAll{ rows { id name email message createdAt } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_orderFind ---
+query query_orderFind($id: String!) {
+  orderFind(id: $id){ id userID orderStatus financialStatus paymentMethod subTotalPrice totalPrice items { quantity price product { id main_title { en ar } } variant { id sku price } } }
+}
+
+# --- query_orderList ---
+query query_orderList($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  orderList(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id userID orderStatus financialStatus paymentMethod subTotalPrice totalPrice items { quantity price product { id main_title { en ar } } variant { id sku price } } } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_orderFindUser ---
+query query_orderFindUser($userID: String!) {
+  orderFindUser(userID: $userID){ id userID orderStatus financialStatus paymentMethod subTotalPrice totalPrice items { quantity price product { id main_title { en ar } } variant { id sku price } } }
+}
+
+# --- query_orderTimelineFetch ---
+query query_orderTimelineFetch($orderId: String!) {
+  orderTimelineFetch(orderId: $orderId){ status date note }
+}
+
+# --- query_listCustomerOrders ---
+query query_listCustomerOrders($customerId: String!, $filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  listCustomerOrders(customerId: $customerId, filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id userID orderStatus financialStatus paymentMethod subTotalPrice totalPrice items { quantity price product { id main_title { en ar } } variant { id sku price } } } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_findMyCart ---
+query query_findMyCart {
+  findMyCart{ id userID items { quantity variant { id sku price } product { id main_title { en ar } } } sub_total total_price totalQty }
+}
+
+# --- query_fetchCheckoutDetails ---
+query query_fetchCheckoutDetails($cashOnDelivery: Boolean) {
+  fetchCheckoutDetails(cashOnDelivery: $cashOnDelivery){ subTotalPrice shippingCost vatAmount totalPrice totalQty items { quantity variant { id sku } } }
+}
+
+# --- query_fetchCartItemCount ---
+query query_fetchCartItemCount {
+  fetchCartItemCount
+}
+
+# --- query_findTermsAndConditions ---
+query query_findTermsAndConditions {
+  findTermsAndConditions{ id content { en ar } }
+}
+
+# --- query_findReturnAndRefund ---
+query query_findReturnAndRefund {
+  findReturnAndRefund{ id content { en ar } }
+}
+
+# --- query_findAboutUs ---
+query query_findAboutUs {
+  findAboutUs{ id content { en ar } }
+}
+
+# --- query_findFAQs ---
+query query_findFAQs {
+  findFAQs{ id content { en ar } }
+}
+
+# --- query_findPrivacyPolicy ---
+query query_findPrivacyPolicy {
+  findPrivacyPolicy{ id content { en ar } }
+}
+
+# --- query_viewWallet ---
+query query_viewWallet {
+  viewWallet{ id balance voucher_balance currency user { id email } }
+}
+
+# --- query_viewWalletById ---
+query query_viewWalletById($id: String!) {
+  viewWalletById(id: $id){ id balance voucher_balance currency user { id email } }
+}
+
+# --- query_walletList ---
+query query_walletList($filter: [ WalletFilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  walletList(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id balance voucher_balance currency user { id email } } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_viewVoucher ---
+query query_viewVoucher($id: String!) {
+  viewVoucher(id: $id){ id voucher_code voucher_type voucher_amount startDate endDate user_count }
+}
+
+# --- query_voucherList ---
+query query_voucherList($filter: [ VoucherFilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  voucherList(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id voucher_code voucher_type voucher_amount startDate endDate user_count } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_viewMyWithdrawalRequests ---
+query query_viewMyWithdrawalRequests {
+  viewMyWithdrawalRequests{ id amount status createdAt }
+}
+
+# --- query_withdrawalRequestsList ---
+query query_withdrawalRequestsList($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  withdrawalRequestsList(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id amount status createdAt } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_viewTransactionById ---
+query query_viewTransactionById($id: String!) {
+  viewTransactionById(id: $id){ id amount type userID note description createdAt }
+}
+
+# --- query_transactionList ---
+query query_transactionList($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  transactionList(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id amount type userID note description createdAt } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_viewMyWalletTransactions ---
+query query_viewMyWalletTransactions {
+  viewMyWalletTransactions{ id amount type userID note description createdAt }
+}
+
+# --- query_listMyTransactions ---
+query query_listMyTransactions($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  listMyTransactions(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id amount type userID note description createdAt } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_listDecoopaAccountTransactions ---
+query query_listDecoopaAccountTransactions($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  listDecoopaAccountTransactions(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id amount type userID note description createdAt } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_findShipment ---
+query query_findShipment($id: String!) {
+  findShipment(id: $id){ id status trackingNumber carrier }
+}
+
+# --- query_viewMyReturnRequests ---
+query query_viewMyReturnRequests {
+  viewMyReturnRequests{ __typename }
+}
+
+# --- query_viewReturnRequests ---
+query query_viewReturnRequests($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  viewReturnRequests(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id orderId status reason createdAt } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_settingsFind ---
+query query_settingsFind {
+  settingsFind{ id vatPercentage shippingCost currency }
+}
+
+# --- query_dealFind ---
+query query_dealFind($id: String!) {
+  dealFind(id: $id){ id name status discountAmount discountType startDate endDate }
+}
+
+# --- query_dealList ---
+query query_dealList($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  dealList(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id name status discountAmount discountType startDate endDate } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_dealListAll ---
+query query_dealListAll($status: DealStatusEnum) {
+  dealListAll(status: $status)
+}
+
+# --- query_dealListItems ---
+query query_dealListItems($dealId: String!, $pagination: PaginationInput) {
+  dealListItems(dealId: $dealId, pagination: $pagination){ rows { product_id variant_id price } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_inventoryWithoutDealItems ---
+query query_inventoryWithoutDealItems($id: String!, $pagination: PaginationInput) {
+  inventoryWithoutDealItems(id: $id, pagination: $pagination){ rows { id productNo main_title { en ar } brand_id category_id rating reviews_count } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_bannerContainerFind ---
+query query_bannerContainerFind {
+  bannerContainerFind{ id ads { id title } }
+}
+
+# --- query_videoContainerFind ---
+query query_videoContainerFind {
+  videoContainerFind{ id videos { id url } }
+}
+
+# --- query_adFind ---
+query query_adFind($id: String!) {
+  adFind(id: $id){ id title image { publicUrl name } isActive }
+}
+
+# --- query_adList ---
+query query_adList($filter: [ FilterInput! ], $orderBy: String, $pagination: PaginationInput) {
+  adList(filter: $filter, orderBy: $orderBy, pagination: $pagination){ rows { id title image { publicUrl name } isActive } count pagination { totalCount pageSize pagesNumber isFirstPage isLastPage } }
+}
+
+# --- query_adListAll ---
+query query_adListAll {
+  adListAll
+}
+
+# --- query_findDecoopaAccount ---
+query query_findDecoopaAccount {
+  findDecoopaAccount{ id balance currency }
+}
+
+# --- query_fetchGeneralReport ---
+query query_fetchGeneralReport($filter: [FilterInput!]) {
+  fetchGeneralReport(filter: $filter){ totalOrders totalSales totalCustomers }
+}
+
+# --- query_exportExcel ---
+query query_exportExcel($collection: String!) {
+  exportExcel(collection: $collection, fields: $fields, ids: $ids){ url contentBase64 mimeType fileName }
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# MUTATIONS
+# ═══════════════════════════════════════════════════════════════════════════
+
+# --- mutation_authSendPasswordResetEmail ---
+mutation mutation_authSendPasswordResetEmail($email: String!) {
+  authSendPasswordResetEmail(email: $email)
+}
+
+# --- mutation_authSendEmailAddressVerificationEmail ---
+mutation mutation_authSendEmailAddressVerificationEmail {
+  authSendEmailAddressVerificationEmail
+}
+
+# --- mutation_authUpdateEmailVerification ---
+mutation mutation_authUpdateEmailVerification {
+  authUpdateEmailVerification
+}
+
+# --- mutation_authSendSignInWithEmailLink ---
+mutation mutation_authSendSignInWithEmailLink($email: String!) {
+  authSendSignInWithEmailLink(email: $email)
+}
+
+# --- mutation_authUpdateProfile ---
+mutation mutation_authUpdateProfile($profile: CombinedProfileInput!) {
+  authUpdateProfile(profile: $profile)
+}
+
+# --- mutation_changeMyPassword ---
+mutation mutation_changeMyPassword($oldPassword: String!, $newPassword: String!) {
+  changeMyPassword(oldPassword: $oldPassword, newPassword: $newPassword)
+}
+
+# --- mutation_createAppCheckToken ---
+mutation mutation_createAppCheckToken($appId: String!) {
+  createAppCheckToken(appId: $appId)
+}
+
+# --- mutation_customerCreateAccount ---
+mutation mutation_customerCreateAccount($data: CustomerInput!) {
+  customerCreateAccount(data: $data){ id email firstName lastName fullName phoneNumber roles accountType }
+}
+
+# --- mutation_adminInvite ---
+mutation mutation_adminInvite($data: IamInviteInput!) {
+  adminInvite(data: $data)
+}
+
+# --- mutation_customerDeleteMyAccount ---
+mutation mutation_customerDeleteMyAccount {
+  customerDeleteMyAccount
+}
+
+# --- mutation_iamEdit ---
+mutation mutation_iamEdit($data: IamEditInput!) {
+  iamEdit(data: $data)
+}
+
+# --- mutation_iamImport ---
+mutation mutation_iamImport($data: IamImportInput!, $importHash: String!) {
+  iamImport(data: $data, importHash: $importHash)
+}
+
+# --- mutation_iamCreate ---
+mutation mutation_iamCreate($data: IamCreateInput!) {
+  iamCreate(data: $data)
+}
+
+# --- mutation_iamDestroy ---
+mutation mutation_iamDestroy($id: String!) {
+  iamDestroy(id: $id)
+}
+
+# --- mutation_iamRemove ---
+mutation mutation_iamRemove($all: Boolean) {
+  iamRemove(emails: $emails, roles: $roles, all: $all)
+}
+
+# --- mutation_iamChangeStatus ---
+mutation mutation_iamChangeStatus($disabled: Boolean) {
+  iamChangeStatus(ids: $ids, disabled: $disabled)
+}
+
+# --- mutation_addDeviceToken ---
+mutation mutation_addDeviceToken($token: String!) {
+  addDeviceToken(token: $token)
+}
+
+# --- mutation_removeDeviceToken ---
+mutation mutation_removeDeviceToken($token: String!) {
+  removeDeviceToken(token: $token)
+}
+
+# --- mutation_addressCreate ---
+mutation mutation_addressCreate($customerId: String, $data: AddressInput!) {
+  addressCreate(customerId: $customerId, data: $data){ id firstName lastName city country phoneNumber isDefault }
+}
+
+# --- mutation_addressUpdate ---
+mutation mutation_addressUpdate($customerId: String, $id: String!, $data: AddressInput!) {
+  addressUpdate(customerId: $customerId, id: $id, data: $data){ id firstName lastName city country phoneNumber isDefault }
+}
+
+# --- mutation_addressDestroy ---
+mutation mutation_addressDestroy($customerId: String, $id: String!) {
+  addressDestroy(customerId: $customerId, id: $id)
+}
+
+# --- mutation_setMyDefaultAddress ---
+mutation mutation_setMyDefaultAddress($addressId: String!) {
+  setMyDefaultAddress(addressId: $addressId)
+}
+
+# --- mutation_verifyMyPhoneNumber ---
+mutation mutation_verifyMyPhoneNumber($addressId: String!) {
+  verifyMyPhoneNumber(addressId: $addressId)
+}
+
+# --- mutation_wishlistAddProduct ---
+mutation mutation_wishlistAddProduct {
+  wishlistAddProduct(variantIds: $variantIds)
+}
+
+# --- mutation_wishlistRemoveProduct ---
+mutation mutation_wishlistRemoveProduct {
+  wishlistRemoveProduct(variantIds: $variantIds)
+}
+
+# --- mutation_moveItemToCart ---
+mutation mutation_moveItemToCart($data: MoveItemInput!) {
+  moveItemToCart(data: $data){ id userID items { quantity variant { id sku price } product { id main_title { en ar } } } sub_total total_price totalQty }
+}
+
+# --- mutation_shareMyWishlist ---
+mutation mutation_shareMyWishlist {
+  shareMyWishlist{ __typename }
+}
+
+# --- mutation_updateMyCustomerSettings ---
+mutation mutation_updateMyCustomerSettings($data: CustomerSettingsInput!) {
+  updateMyCustomerSettings(data: $data){ id language darkMode notificationsEnabled }
+}
+
+# --- mutation_paymentMethodCreate ---
+mutation mutation_paymentMethodCreate($data: PaymentMethodInput!) {
+  paymentMethodCreate(data: $data){ id type last4 isDefault }
+}
+
+# --- mutation_paymentMethodUpdate ---
+mutation mutation_paymentMethodUpdate($id: String!, $data: PaymentMethodUpdateInput!) {
+  paymentMethodUpdate(id: $id, data: $data){ id type last4 isDefault }
+}
+
+# --- mutation_paymentMethodDestroy ---
+mutation mutation_paymentMethodDestroy($id: String!) {
+  paymentMethodDestroy(id: $id)
+}
+
+# --- mutation_setMyDefaultPaymentMethod ---
+mutation mutation_setMyDefaultPaymentMethod($id: String!) {
+  setMyDefaultPaymentMethod(id: $id){ id type last4 isDefault }
+}
+
+# --- mutation_customRequestCreate ---
+mutation mutation_customRequestCreate($data: CustomRequestInput!) {
+  customRequestCreate(data: $data){ id status customerId productTitle createdAt }
+}
+
+# --- mutation_sliderCreate ---
+mutation mutation_sliderCreate($data: SliderInput!) {
+  sliderCreate(data: $data)
+}
+
+# --- mutation_sliderUpdate ---
+mutation mutation_sliderUpdate($id: String!, $data: SliderInput!) {
+  sliderUpdate(id: $id, data: $data)
+}
+
+# --- mutation_sliderDestroy ---
+mutation mutation_sliderDestroy($id: String!) {
+  sliderDestroy(id: $id)
+}
+
+# --- mutation_notificationDestroy ---
+mutation mutation_notificationDestroy($id: String!) {
+  notificationDestroy(id: $id)
+}
+
+# --- mutation_markAsRead ---
+mutation mutation_markAsRead($id: String!) {
+  markAsRead(id: $id)
+}
+
+# --- mutation_notifyUser ---
+mutation mutation_notifyUser($usersId: String!, $data: NotificationInput!) {
+  notifyUser(usersId: $usersId, data: $data)
+}
+
+# --- mutation_sendToUsers ---
+mutation mutation_sendToUsers($data: NotificationInput!) {
+  sendToUsers(usersIds: $usersIds, data: $data)
+}
+
+# --- mutation_sendToAll ---
+mutation mutation_sendToAll($data: NotificationInput!) {
+  sendToAll(data: $data)
+}
+
+# --- mutation_brandCreate ---
+mutation mutation_brandCreate($data: BrandInput!) {
+  brandCreate(data: $data)
+}
+
+# --- mutation_brandUpdate ---
+mutation mutation_brandUpdate($id: String!, $data: BrandInput!) {
+  brandUpdate(id: $id, data: $data)
+}
+
+# --- mutation_brandDestroy ---
+mutation mutation_brandDestroy($id: String!) {
+  brandDestroy(id: $id)
+}
+
+# --- mutation_brandActivate ---
+mutation mutation_brandActivate($id: String!) {
+  brandActivate(id: $id)
+}
+
+# --- mutation_brandDeactivate ---
+mutation mutation_brandDeactivate($id: String!) {
+  brandDeactivate(id: $id)
+}
+
+# --- mutation_categoryCreate ---
+mutation mutation_categoryCreate($data: CategoryInput!) {
+  categoryCreate(data: $data){ id name { en ar } level parent_id isActive product_count }
+}
+
+# --- mutation_subcategoryCreate ---
+mutation mutation_subcategoryCreate($data: SubcategoryInput!) {
+  subcategoryCreate(data: $data){ id name { en ar } level parent_id isActive product_count }
+}
+
+# --- mutation_categoryUpdate ---
+mutation mutation_categoryUpdate($id: Int!, $data: CategoryUpdateInput!) {
+  categoryUpdate(id: $id, data: $data){ id name { en ar } level parent_id isActive product_count }
+}
+
+# --- mutation_categoryDestroy ---
+mutation mutation_categoryDestroy($id: Int!) {
+  categoryDestroy(id: $id)
+}
+
+# --- mutation_categoryRemove ---
+mutation mutation_categoryRemove($id: Int!) {
+  categoryRemove(id: $id)
+}
+
+# --- mutation_categoryActivate ---
+mutation mutation_categoryActivate($id: Int!) {
+  categoryActivate(id: $id)
+}
+
+# --- mutation_categoryDeactivate ---
+mutation mutation_categoryDeactivate($id: Int!) {
+  categoryDeactivate(id: $id)
+}
+
+# --- mutation_categoryMove ---
+mutation mutation_categoryMove($id: Int!, $parentId: Int!, $position: Int!) {
+  categoryMove(id: $id, parentId: $parentId, position: $position)
+}
+
+# --- mutation_optionCreate ---
+mutation mutation_optionCreate($data: ProductOptionInput!) {
+  optionCreate(data: $data)
+}
+
+# --- mutation_optionUpdate ---
+mutation mutation_optionUpdate($id: String!, $data: ProductOptionInput!) {
+  optionUpdate(id: $id, data: $data)
+}
+
+# --- mutation_productCreate ---
+mutation mutation_productCreate($data: ProductInput!) {
+  productCreate(data: $data){ id productNo main_title { en ar } brand_id category_id rating reviews_count }
+}
+
+# --- mutation_productChangeStatus ---
+mutation mutation_productChangeStatus($variant_id: String!, $status: ProductStatusEnum!) {
+  productChangeStatus(variant_id: $variant_id, status: $status)
+}
+
+# --- mutation_productVariantUpdate ---
+mutation mutation_productVariantUpdate($variant_id: String!, $data: ProductVariantInput!) {
+  productVariantUpdate(variant_id: $variant_id, data: $data)
+}
+
+# --- mutation_inventoryUpdate ---
+mutation mutation_inventoryUpdate($variant_id: String!, $data: InventoryInput!) {
+  inventoryUpdate(variant_id: $variant_id, data: $data)
+}
+
+# --- mutation_reviewCreate ---
+mutation mutation_reviewCreate($productId: String!, $data: ReviewInput!) {
+  reviewCreate(productId: $productId, data: $data){ id productId rating title body reviewer createdAt }
+}
+
+# --- mutation_reviewUpdate ---
+mutation mutation_reviewUpdate($productId: String!, $reviewId: String!, $data: ReviewInput!) {
+  reviewUpdate(productId: $productId, reviewId: $reviewId, data: $data){ id productId rating title body reviewer createdAt }
+}
+
+# --- mutation_reviewDestroy ---
+mutation mutation_reviewDestroy($productId: String!, $reviewId: String!) {
+  reviewDestroy(productId: $productId, reviewId: $reviewId)
+}
+
+# --- mutation_contactUsCreate ---
+mutation mutation_contactUsCreate($data: ContactUsInput!) {
+  contactUsCreate(data: $data)
+}
+
+# --- mutation_contactUsDestroy ---
+mutation mutation_contactUsDestroy($id: String!) {
+  contactUsDestroy(id: $id)
+}
+
+# --- mutation_orderCreate ---
+mutation mutation_orderCreate($data: OrderInput!) {
+  orderCreate(data: $data){ order { id userID orderStatus financialStatus paymentMethod subTotalPrice totalPrice items { quantity price product { id main_title { en ar } } variant { id sku price } } } paymentInfo }
+}
+
+# --- mutation_orderUpdate ---
+mutation mutation_orderUpdate($data: OrderUpdateInput!) {
+  orderUpdate(data: $data){ id userID orderStatus financialStatus paymentMethod subTotalPrice totalPrice items { quantity price product { id main_title { en ar } } variant { id sku price } } }
+}
+
+# --- mutation_userCancelOrder ---
+mutation mutation_userCancelOrder($id: String!, $cancelReason: String!) {
+  userCancelOrder(id: $id, cancelReason: $cancelReason, itemsID: $itemsID){ id userID orderStatus financialStatus paymentMethod subTotalPrice totalPrice items { quantity price product { id main_title { en ar } } variant { id sku price } } }
+}
+
+# --- mutation_orderReceivedCOD ---
+mutation mutation_orderReceivedCOD($id: String!) {
+  orderReceivedCOD(id: $id)
+}
+
+# --- mutation_orderReceivedVisa ---
+mutation mutation_orderReceivedVisa($id: String!) {
+  orderReceivedVisa(id: $id)
+}
+
+# --- mutation_orderPendingDelivery ---
+mutation mutation_orderPendingDelivery($id: String!) {
+  orderPendingDelivery(id: $id)
+}
+
+# --- mutation_orderShippedDecoopa ---
+mutation mutation_orderShippedDecoopa($data: OrderShippedDecoopaInput!) {
+  orderShippedDecoopa(data: $data)
+}
+
+# --- mutation_adminCancelOrder ---
+mutation mutation_adminCancelOrder($id: String!, $cancelReason: String!) {
+  adminCancelOrder(id: $id, cancelReason: $cancelReason, itemsID: $itemsID){ id userID orderStatus financialStatus paymentMethod subTotalPrice totalPrice items { quantity price product { id main_title { en ar } } variant { id sku price } } }
+}
+
+# --- mutation_generateKashierOrderHash ---
+mutation mutation_generateKashierOrderHash($amount: String!, $currency: String!, $merchantOrderId: String!, $customerId: String!) {
+  generateKashierOrderHash(amount: $amount, currency: $currency, merchantOrderId: $merchantOrderId, customerId: $customerId)
+}
+
+# --- mutation_calculateOrderPricing ---
+mutation mutation_calculateOrderPricing($paymentMethod: PaymentMethodEnum) {
+  calculateOrderPricing(paymentMethod: $paymentMethod){ subTotalPrice shippingCost vatAmount totalDiscount cashOnDeliveryFees totalPrice currency }
+}
+
+# --- mutation_orderReturnDecoopa ---
+mutation mutation_orderReturnDecoopa($data: OrderShippedDecoopaInput!) {
+  orderReturnDecoopa(data: $data)
+}
+
+# --- mutation_returnReceivedRequest ---
+mutation mutation_returnReceivedRequest($data: ReturnReceivedInput!) {
+  returnReceivedRequest(data: $data)
+}
+
+# --- mutation_orderShippedMylerz ---
+mutation mutation_orderShippedMylerz($data: OrderShippedDecoopaInput!) {
+  orderShippedMylerz(data: $data)
+}
+
+# --- mutation_orderReturnMylerz ---
+mutation mutation_orderReturnMylerz($data: OrderShippedDecoopaInput!) {
+  orderReturnMylerz(data: $data)
+}
+
+# --- mutation_cartAddItem ---
+mutation mutation_cartAddItem($item: CartItemInput!) {
+  cartAddItem(item: $item)
+}
+
+# --- mutation_cartRemoveItem ---
+mutation mutation_cartRemoveItem($data: CartRemoveItemInput!) {
+  cartRemoveItem(data: $data){ id userID items { quantity variant { id sku price } product { id main_title { en ar } } } sub_total total_price totalQty }
+}
+
+# --- mutation_cartEditQuantity ---
+mutation mutation_cartEditQuantity($item: CartItemInput!) {
+  cartEditQuantity(item: $item){ id userID items { quantity variant { id sku price } product { id main_title { en ar } } } sub_total total_price totalQty }
+}
+
+# --- mutation_clearMyCart ---
+mutation mutation_clearMyCart {
+  clearMyCart
+}
+
+# --- mutation_clearUserCart ---
+mutation mutation_clearUserCart($userId: String!) {
+  clearUserCart(userId: $userId)
+}
+
+# --- mutation_cartMoveToWishlist ---
+mutation mutation_cartMoveToWishlist($variantId: String!) {
+  cartMoveToWishlist(variantId: $variantId)
+}
+
+# --- mutation_applyVoucherToCart ---
+mutation mutation_applyVoucherToCart($id: String!) {
+  applyVoucherToCart(id: $id){ id userID items { quantity variant { id sku price } product { id main_title { en ar } } } sub_total total_price totalQty }
+}
+
+# --- mutation_cartRemoveVoucher ---
+mutation mutation_cartRemoveVoucher {
+  cartRemoveVoucher
+}
+
+# --- mutation_mergeAnonymousCartToUserCart ---
+mutation mutation_mergeAnonymousCartToUserCart($anonymousCartId: String!) {
+  mergeAnonymousCartToUserCart(anonymousCartId: $anonymousCartId){ id userID items { quantity variant { id sku price } product { id main_title { en ar } } } sub_total total_price totalQty }
+}
+
+# --- mutation_saveTermsAndConditions ---
+mutation mutation_saveTermsAndConditions($data: StaticPageInput!) {
+  saveTermsAndConditions(data: $data){ id content { en ar } }
+}
+
+# --- mutation_saveReturnAndRefund ---
+mutation mutation_saveReturnAndRefund($data: StaticPageInput!) {
+  saveReturnAndRefund(data: $data){ id content { en ar } }
+}
+
+# --- mutation_saveAboutUs ---
+mutation mutation_saveAboutUs($data: StaticPageInput!) {
+  saveAboutUs(data: $data){ id content { en ar } }
+}
+
+# --- mutation_saveFAQs ---
+mutation mutation_saveFAQs($data: StaticPageInput!) {
+  saveFAQs(data: $data){ id content { en ar } }
+}
+
+# --- mutation_savePrivacyPolicy ---
+mutation mutation_savePrivacyPolicy($data: StaticPageInput!) {
+  savePrivacyPolicy(data: $data){ id content { en ar } }
+}
+
+# --- mutation_addBalanceCard ---
+mutation mutation_addBalanceCard($data: WalletInput!) {
+  addBalanceCard(data: $data)
+}
+
+# --- mutation_addBalanceVoucher ---
+mutation mutation_addBalanceVoucher($data: WalletInput!) {
+  addBalanceVoucher(data: $data){ id balance voucher_balance currency user { id email } }
+}
+
+# --- mutation_createEmptyWallet ---
+mutation mutation_createEmptyWallet($id: String!) {
+  createEmptyWallet(id: $id){ id balance voucher_balance currency user { id email } }
+}
+
+# --- mutation_adminWalletDeduction ---
+mutation mutation_adminWalletDeduction($data: DeductWalletInput!) {
+  adminWalletDeduction(data: $data){ id balance voucher_balance currency user { id email } }
+}
+
+# --- mutation_adminWalletTopUp ---
+mutation mutation_adminWalletTopUp($data: WalletTopUpInput!) {
+  adminWalletTopUp(data: $data){ id balance voucher_balance currency user { id email } }
+}
+
+# --- mutation_initiateWalletRecharge ---
+mutation mutation_initiateWalletRecharge($walletId: String!, $amount: Float!, $currency: CurrencyEnum!) {
+  initiateWalletRecharge(walletId: $walletId, amount: $amount, currency: $currency)
+}
+
+# --- mutation_testCancel ---
+mutation mutation_testCancel($id: String!) {
+  testCancel(id: $id)
+}
+
+# --- mutation_voucherCreate ---
+mutation mutation_voucherCreate($data: VoucherInput!) {
+  voucherCreate(data: $data){ id voucher_code voucher_type voucher_amount startDate endDate user_count }
+}
+
+# --- mutation_voucherDelete ---
+mutation mutation_voucherDelete($id: String!) {
+  voucherDelete(id: $id)
+}
+
+# --- mutation_createWithdrawalRequest ---
+mutation mutation_createWithdrawalRequest($data: WithdrawalRequestInput!) {
+  createWithdrawalRequest(data: $data){ id amount status createdAt }
+}
+
+# --- mutation_rejectWithdrawalRequest ---
+mutation mutation_rejectWithdrawalRequest($data: WithdrawalRejectInput!) {
+  rejectWithdrawalRequest(data: $data){ id amount status createdAt }
+}
+
+# --- mutation_acceptWithdrawalRequest ---
+mutation mutation_acceptWithdrawalRequest($data: StatusChangeInput!) {
+  acceptWithdrawalRequest(data: $data){ id amount status createdAt }
+}
+
+# --- mutation_confirmWithdrawalRequest ---
+mutation mutation_confirmWithdrawalRequest($data: WithdrawalConfirmInput!) {
+  confirmWithdrawalRequest(data: $data){ id amount status createdAt }
+}
+
+# --- mutation_createTransaction ---
+mutation mutation_createTransaction($data: TransactionInput!) {
+  createTransaction(data: $data){ id amount type userID note description createdAt }
+}
+
+# --- mutation_createReturnRequest ---
+mutation mutation_createReturnRequest($data: ReturnRequestInput!) {
+  createReturnRequest(data: $data){ id orderId status reason createdAt }
+}
+
+# --- mutation_acceptReturnRequest ---
+mutation mutation_acceptReturnRequest($data: ReturnRequestStatusInput!) {
+  acceptReturnRequest(data: $data){ id orderId status reason createdAt }
+}
+
+# --- mutation_confirmReturnRequest ---
+mutation mutation_confirmReturnRequest($data: ReturnRequestStatusInput!) {
+  confirmReturnRequest(data: $data){ id orderId status reason createdAt }
+}
+
+# --- mutation_rejectReturnRequest ---
+mutation mutation_rejectReturnRequest($data: ReturnRequestStatusInput!) {
+  rejectReturnRequest(data: $data){ id orderId status reason createdAt }
+}
+
+# --- mutation_createFullyRefundRequest ---
+mutation mutation_createFullyRefundRequest($data: FullyRefundRequestInput!) {
+  createFullyRefundRequest(data: $data){ id orderId status reason createdAt }
+}
+
+# --- mutation_refundReturnOrder ---
+mutation mutation_refundReturnOrder($data: WalletReturnInput!) {
+  refundReturnOrder(data: $data){ id balance voucher_balance currency user { id email } }
+}
+
+# --- mutation_settingsSave ---
+mutation mutation_settingsSave($settings: SettingsInput!) {
+  settingsSave(settings: $settings){ id vatPercentage shippingCost currency }
+}
+
+# --- mutation_dealCreate ---
+mutation mutation_dealCreate($data: DealInput!) {
+  dealCreate(data: $data){ id name status discountAmount discountType startDate endDate }
+}
+
+# --- mutation_addItemsToDeal ---
+mutation mutation_addItemsToDeal($id: String!, $items: [DealItemInput!]) {
+  addItemsToDeal(id: $id, items: $items)
+}
+
+# --- mutation_removeItemsFromDeal ---
+mutation mutation_removeItemsFromDeal($id: String!, $items: [DealItemInput!]) {
+  removeItemsFromDeal(id: $id, items: $items)
+}
+
+# --- mutation_dealUpdate ---
+mutation mutation_dealUpdate($id: String!, $data: DealUpdateInput!) {
+  dealUpdate(id: $id, data: $data)
+}
+
+# --- mutation_dealDestroy ---
+mutation mutation_dealDestroy($id: String!) {
+  dealDestroy(id: $id)
+}
+
+# --- mutation_bannerContainerSave ---
+mutation mutation_bannerContainerSave($data: BannerAdInput!) {
+  bannerContainerSave(data: $data){ id ads { id title } }
+}
+
+# --- mutation_videoContainerSave ---
+mutation mutation_videoContainerSave($data: VideoAdInput!) {
+  videoContainerSave(data: $data){ id videos { id url } }
+}
+
+# --- mutation_adCreate ---
+mutation mutation_adCreate($data: AdInput!) {
+  adCreate(data: $data){ id title image { publicUrl name } isActive }
+}
+
+# --- mutation_adUpdate ---
+mutation mutation_adUpdate($id: String!, $data: AdInput!) {
+  adUpdate(id: $id, data: $data){ id title image { publicUrl name } isActive }
+}
+
+# --- mutation_adDestroy ---
+mutation mutation_adDestroy($id: String!) {
+  adDestroy(id: $id)
+}
+
+# --- mutation_accountAddFunds ---
+mutation mutation_accountAddFunds($amount: Float!) {
+  accountAddFunds(amount: $amount){ id balance currency }
+}
+
+# --- mutation_accountDeductFunds ---
+mutation mutation_accountDeductFunds($amount: Float!, $note: String) {
+  accountDeductFunds(amount: $amount, note: $note){ id balance currency }
+}
+
+# --- mutation_sendOTP ---
+mutation mutation_sendOTP($data: OTPInput!) {
+  sendOTP(data: $data)
+}
+
+# --- mutation_verifyOTP ---
+mutation mutation_verifyOTP($otp: String!) {
+  verifyOTP(otp: $otp)
+}
+
+# --- mutation_getPackageStatus ---
+mutation mutation_getPackageStatus($trackingNumber: String!) {
+  getPackageStatus(trackingNumber: $trackingNumber)
+}
+
+# --- mutation_getTrackingLink ---
+mutation mutation_getTrackingLink($trackingNumber: String!) {
+  getTrackingLink(trackingNumber: $trackingNumber)
+}
+
+# --- mutation_getTrackingNumber ---
+mutation mutation_getTrackingNumber($orderId: String!) {
+  getTrackingNumber(orderId: $orderId)
+}
+
+# --- mutation_getPackageStatusMylerz ---
+mutation mutation_getPackageStatusMylerz($trackingNumber: String!) {
+  getPackageStatusMylerz(trackingNumber: $trackingNumber)
+}
+
+# --- mutation_getPackageStatusByOrderId ---
+mutation mutation_getPackageStatusByOrderId($orderId: String!) {
+  getPackageStatusByOrderId(orderId: $orderId)
+}
+
+# --- mutation_getDetailedTrackingHistory ---
+mutation mutation_getDetailedTrackingHistory($trackingNumber: String!) {
+  getDetailedTrackingHistory(trackingNumber: $trackingNumber)
+}
+
+# --- mutation_savePackageStatus ---
+mutation mutation_savePackageStatus($trackingNumber: String!, $statusData: JSON!) {
+  savePackageStatus(trackingNumber: $trackingNumber, statusData: $statusData)
+}

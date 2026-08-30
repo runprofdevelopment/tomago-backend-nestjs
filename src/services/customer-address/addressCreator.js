@@ -98,11 +98,5 @@ module.exports = class AddressCreator {
         message: `There is no document related to this ID {"${this.customerId}"}`
       })
     }
-    if (user.isRemoved) {
-      throw new ErrorHandler({
-        errorCode: 'NOT_FOUND',
-        message: `This user has been removed from the system`
-      })
-    }
   }
 };
