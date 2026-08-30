@@ -1,0 +1,42 @@
+const SEED_COLLECTIONS = [
+  'brand',
+  'collection',
+  'category',
+  'product',
+  'product-variants',
+  'inventory',
+  'project',
+  'showRoom',
+  'slider',
+  'staticPages',
+  'voucher',
+  'user',
+  'customerSettings',
+  'paymentMethod',
+  'order',
+  'customRequest',
+  'returnRequest',
+];
+
+const SEED_ORDER = [
+  'brand',
+  'collection',
+  'category',
+  'product',
+  'product-variants',
+  'inventory',
+  'project',
+  'showRoom',
+  'slider',
+  'staticPages',
+  'voucher',
+  'user',
+  'addresses',
+  'customerSettings',
+  'paymentMethod',
+  'order',
+  'customRequest',
+  'returnRequest',
+];
+
+module.exports = { SEED_COLLECTIONS, SEED_ORDER };

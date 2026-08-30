@@ -30,7 +30,13 @@
     "deploy:cloudrun:production": "bash ./deploy-cloud-run.sh",
     "predeploy:cloudrun:staging": "gcloud config set project tomago-staging",
     "deploy:cloudrun:staging": "bash ./deploy-cloud-run-staging.sh",
-    "deploy:cloudrun:staging:v2": "npm run deploy:cloudrun:staging"
+    "deploy:cloudrun:staging:v2": "npm run deploy:cloudrun:staging",
+    "seed:firestore": "cross-env NODE_ENV=staging node scripts/seed/index.js",
+    "seed:firestore:dry": "cross-env NODE_ENV=staging node scripts/seed/index.js --dry-run",
+    "seed:firestore:clear": "cross-env NODE_ENV=staging node scripts/seed/index.js --clear-seed",
+    "seed:firestore:auth": "cross-env NODE_ENV=staging node scripts/seed/index.js --with-auth",
+    "seed:firestore:emulator": "cross-env NODE_ENV=development node scripts/seed/index.js --use-emulator --with-auth",
+    "seed:verify": "node scripts/seed/verify-datasets.js"
   },
   "engines": {
     "node": "20"

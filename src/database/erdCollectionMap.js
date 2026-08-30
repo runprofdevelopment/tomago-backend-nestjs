@@ -11,6 +11,8 @@ module.exports = {
   password_resets: null, // Firebase Auth / custom — TODO: confirm
   customer_addresses: 'user/{id}/addresses',
   customer_notifications: 'user/{id}/notification',
+  customer_settings: 'customerSettings',
+  payment_methods: 'paymentMethod',
   brands: 'brand',
   collections: 'collection',
   categories: 'category',
@@ -24,7 +26,7 @@ module.exports = {
   reviews: 'product/{id}/reviews',
   orders: 'order',
   order_items: null, // order.items[]
-  customer_requests: null, // TODO: confirm collection if separate from order flow
+  customer_requests: 'customRequest',
   request_messages: null,
   shipping_partners: null, // shipment.shipping_company string
   return_requests: 'returnRequest',
@@ -38,6 +40,7 @@ module.exports = {
   withdrawals: 'withdrawalRequest',
   projects: 'project',
   project_images: null, // project.images JsonArray
+  project_products: null, // project.featured_product_ids StringArray
   show_rooms: 'showRoom',
   vouchers: 'voucher',
   deals: 'deal',
@@ -51,5 +54,6 @@ module.exports = {
   about_us: 'staticPages',
   terms_and_conditions: 'staticPages',
   refund_policy: 'staticPages',
+  privacy_policy: 'staticPages',
   contact_messages: 'contactUs',
 };

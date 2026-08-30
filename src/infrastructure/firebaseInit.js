@@ -1,4 +1,5 @@
 const admin = require('firebase-admin');
+const { getFirestore } = require('firebase-admin/firestore');
 
 // Initialize Firebase Admin if not already initialized
 function normalizeBucketName(name) {
@@ -16,7 +17,8 @@ try {
       projectId: serviceAccount.project_id,
       storageBucket: storageBucket,
       env: config.env,
-      storageBucketName: config.storageBucketName
+      storageBucketName: config.storageBucketName,
+      databaseId: config.databaseId || 'default',
     });
     
     admin.initializeApp({
@@ -24,6 +26,13 @@ try {
       storageBucket: storageBucket,
       databaseURL: `https://${config.projectId}.firebaseio.com`
     });
+
+    const databaseId = config.databaseId || 'default';
+    admin.firestore = () => {
+      const db = getFirestore(admin.app(), databaseId);
+      db.settings({ ignoreUndefinedProperties: true });
+      return db;
+    };
     
     console.log('Firebase Admin initialized successfully with bucket:', storageBucket);
   } else {
@@ -34,4 +43,4 @@ try {
   console.error('This may cause storage operations to fail.');
 }
 
-module.exports = admin; 
+module.exports = admin;

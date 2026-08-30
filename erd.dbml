@@ -74,10 +74,17 @@ Table customers {
 Table customer_addresses {
   id int [pk, increment]
   customer_id int [not null, ref: > customers.id]
+  label varchar [note: 'Home | Office | custom']
   first_name varchar
+  full_name varchar
   phone varchar
-  country varchar [note: 'Egypt | Saudi Arabia | UAE | Kuwait']
+  email varchar
+  country varchar [note: 'Egypt | Saudi Arabia | UAE | Kuwait | Turkey | France']
   address_1 text
+  city varchar
+  province varchar
+  zip varchar
+  is_default boolean [default: false]
   created_at datetime [not null]
 }
 
@@ -108,7 +115,12 @@ Table collections {
   id int [pk, increment]
   name_en varchar [not null]
   name_ar varchar [not null]
+  subtitle_en varchar
+  subtitle_ar varchar
+  slug varchar [unique]
   image_url varchar
+  display_order int
+  is_featured boolean [default: false]
   status varchar [not null, note: 'active | inactive']
   created_at datetime [not null]
 }
@@ -305,10 +317,15 @@ Table customer_requests {
   order_id int [ref: > orders.id]
   product_id int [ref: > products.id]
   customer_id int [ref: > customers.id]
+  full_name varchar
+  email varchar
+  phone varchar
+  request_type varchar [note: 'Custom Size | Fabric | Configuration']
   product_description text
   dimensions varchar
   quantity int
   additional_notes text
+  image_urls text [note: 'JSON array of URLs']
   status varchar [not null, note: 'pending | replied | closed']
   estimated_price decimal
   estimated_delivery_time varchar
@@ -338,9 +355,40 @@ Table return_requests {
   shipping_partner_id int [ref: > shipping_partners.id]
   quantity int
   price decimal
+  return_reason varchar
+  comments text
+  photos text [note: 'JSON array of image URLs']
   status varchar [not null, note: 'accepted | refunded | ...']
   rejection_reason text
   created_at datetime [not null]
+}
+
+Table payment_methods {
+  id int [pk, increment]
+  customer_id int [not null, ref: > customers.id]
+  brand varchar [note: 'visa | mastercard | amex | paypal']
+  last_four varchar
+  expiry_month int
+  expiry_year int
+  cardholder_name varchar
+  is_default boolean [default: false]
+  provider_token varchar
+  created_at datetime
+}
+
+Table customer_settings {
+  id int [pk, increment]
+  customer_id int [not null, unique, ref: > customers.id]
+  order_updates_enabled boolean [default: true]
+  promotional_emails_enabled boolean [default: false]
+  new_collection_alerts_enabled boolean [default: true]
+  newsletter_enabled boolean [default: true]
+  preferred_language varchar
+  default_currency varchar
+  shipping_region varchar
+  two_factor_enabled boolean [default: false]
+  login_alerts_enabled boolean [default: true]
+  password_last_changed_at datetime
 }
 
 // ============================================================
@@ -443,15 +491,31 @@ Table projects {
   id int [pk, increment]
   public_id varchar [unique, note: 'PRJ-BGH-001']
   name varchar [not null]
+  slug varchar [unique]
+  tagline varchar
+  brief_title varchar
   client_name varchar [note: 'TODO: confirm FK to customers vs free text']
   start_date date
+  duration varchar
   location varchar
   scope text
   description text
+  pieces_delivered varchar
+  design_style varchar
+  category varchar [note: 'Hospitality | Residential']
   thumbnail_url varchar
+  hero_image_url varchar
+  is_featured boolean [default: false]
   status varchar [not null, note: 'Active | Draft | Inactive | Archived']
   created_at datetime
   updated_at datetime
+}
+
+Table project_products {
+  id int [pk, increment]
+  project_id int [not null, ref: > projects.id]
+  product_id int [not null, ref: > products.id]
+  sort_order int
 }
 
 Table project_images {
@@ -463,10 +527,18 @@ Table project_images {
 
 Table show_rooms {
   id int [pk, increment]
-  // TODO: confirm fields — only sidebar entry seen, no detail screen
-  name varchar
+  name_en varchar
+  name_ar varchar
+  description_en text
+  description_ar text
+  address text
+  phone varchar
+  email varchar
+  working_hours varchar
+  location varchar
+  image_url varchar
   project_id int [ref: > projects.id]
-  status varchar
+  status varchar [note: 'active | inactive']
   created_at datetime
 }
 
