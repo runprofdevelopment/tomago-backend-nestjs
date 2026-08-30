@@ -14,6 +14,7 @@ module.exports = class Address extends AbstractEntityModel {
       country_code: new types.String(),
       zip: new types.String(),
       address_label: new types.Enumerator(['home', 'work']),
+      label: new types.String(),
       lat: new types.Number(-90, 90),
       lng: new types.Number(-180, 180),
       center: new types.GeoPoint(),
@@ -26,6 +27,7 @@ module.exports = class Address extends AbstractEntityModel {
       last_name: new types.String(),
       phoneNumber: new types.String(),
       phoneVerified: new types.Boolean(false),
+      email: new types.String(),
       // company: new types.String(),
     //#endregion
 

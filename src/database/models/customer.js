@@ -29,6 +29,7 @@ module.exports = class User extends AbstractEntityModel {
       ),
       providerId: new types.String(),
       deviceTokens: new types.Json(),
+      wishlistShareToken: new types.String(),
       // wishlist: new types.StringArray(),
       // recently_viewed: new types.StringArray(),
       // importHash: new types.String(null, 255),

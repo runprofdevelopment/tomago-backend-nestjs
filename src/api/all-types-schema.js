@@ -6,6 +6,9 @@ const resorces = [
   'customer-deviceToken',
   'customer-address',
   'wishlist',
+  'customerSettings',
+  'paymentMethod',
+  'customRequest',
 
   'slider',
   'notification',

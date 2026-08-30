@@ -132,4 +132,63 @@ module.exports = class WishlistService {
       throw error;
     }
   }
+
+  async shareMyWishlist() {
+    if (!this.currentUser || !this.currentUser.id) {
+      throw new ErrorHandler({
+        errorCode: 'UNAUTHORIZED',
+        message: 'Authentication required',
+      });
+    }
+
+    const crypto = require('crypto');
+    const shareToken = crypto.randomBytes(16).toString('hex');
+    const userId = this.currentUser.id;
+
+    const batch = await FirebaseHelper.createBatch();
+    await this.repository.updateDocument(userId, { wishlistShareToken: shareToken }, {
+      batch,
+      currentUser: this.currentUser,
+      language: this.language,
+    });
+    await FirebaseHelper.commitBatch(batch);
+
+    const baseUrl = process.env.STOREFRONT_URL || process.env.FRONTEND_URL || '';
+    const shareUrl = baseUrl
+      ? `${baseUrl.replace(/\/$/, '')}/wishlist/shared/${shareToken}`
+      : `/wishlist/shared/${shareToken}`;
+
+    return { shareToken, shareUrl };
+  }
+
+  async findByShareToken(token) {
+    if (!token) {
+      throw new ErrorHandler({
+        errorCode: 'WISHLIST_NOT_FOUND',
+        message: 'The wishlist not found',
+      });
+    }
+
+    const snapshot = await admin
+      .firestore()
+      .collection(this.collectionName)
+      .where('wishlistShareToken', '==', token)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) {
+      throw new ErrorHandler({
+        errorCode: 'WISHLIST_NOT_FOUND',
+        message: 'The wishlist not found',
+      });
+    }
+
+    const customer = FirebaseHelper.mapDocument(snapshot.docs[0]);
+    const products = await this.findProducts(customer.wishlist || []);
+    return {
+      id: customer.id,
+      shareToken: token,
+      items: products,
+    };
+  }
 };

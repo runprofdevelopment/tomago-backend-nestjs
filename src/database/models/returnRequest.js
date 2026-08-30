@@ -14,6 +14,8 @@ module.exports = class ReturnRequest extends AbstractEntityModel {
       ]),
       returnReason: new types.String(),
       rejectReason: new types.String(),
+      comments: new types.String(),
+      photos: new types.StringArray(),
       orderID: new types.String(),
       userID: new types.String()
     });

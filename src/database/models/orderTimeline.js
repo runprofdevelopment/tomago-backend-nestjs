@@ -16,6 +16,8 @@ module.exports = class OrderTimeline extends AbstractEntityModel {
 //   orderCreated: 'Order was placed by the user.'
 //   paymentProcessed: 'Payment was successfully processed.',
 //   orderConfirmed: 'Order was confirmed by the system.',
+//   orderInProduction: 'Order is in production.',
+//   orderQualityCheck: 'Order is undergoing quality check.',
 //   orderPacked: 'Order was packed and ready for shipping.',
 //   orderShipped: 'Order was shipped via XYZ carrier.',
 //   outForDelivery: 'Order is out for delivery.'

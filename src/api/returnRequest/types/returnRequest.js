@@ -5,6 +5,8 @@ const schema = `
     status: ReturnRequestEnum
     returnReason: String
     rejectReason: String
+    comments: String
+    photos: [String]
     userID: String
     orderID: String
     user: User

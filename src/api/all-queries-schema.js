@@ -4,6 +4,9 @@ const resorces = [
   'iam',
   'customer-address',
   'wishlist',
+  'customerSettings',
+  'paymentMethod',
+  'customRequest',
 
   'slider',
   'notification',

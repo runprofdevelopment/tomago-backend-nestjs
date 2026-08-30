@@ -5,6 +5,7 @@ const schema = `
     name: String
     phoneNumber: String
     phoneVerified: Boolean
+    email: String
     address: String
     area: String
     city: String
@@ -13,6 +14,8 @@ const schema = `
     zip: String
     province_code: String
     country_code: String
+    address_label: String
+    label: String
     default: Boolean
   }
 `;

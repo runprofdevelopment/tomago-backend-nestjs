@@ -4,6 +4,8 @@ const schema = `
     status: ReturnRequestEnum
     returnReason: String!
     rejectReason: String
+    comments: String
+    photos: [String]
     userID: String
     items: [ CartItemInput! ]!
     orderID: String
@@ -13,6 +15,8 @@ const schema = `
   input FullyRefundRequestInput {
     orderID: String
     returnReason: String!
+    comments: String
+    photos: [String]
   }
 `;
 

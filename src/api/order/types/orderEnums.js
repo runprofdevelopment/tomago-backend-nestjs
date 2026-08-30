@@ -1,6 +1,9 @@
 const schema = `
   enum OrderStatusEnum {
     pendingAcceptance
+    confirmed
+    inProduction
+    qualityCheck
     pendingDelivery
     shipped
     received

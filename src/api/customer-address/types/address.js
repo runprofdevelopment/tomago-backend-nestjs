@@ -7,6 +7,7 @@ const schema = `
     name: String
     phoneNumber: String
     phoneVerified: Boolean
+    email: String
     company: String
     address: String
     area: String
@@ -17,6 +18,8 @@ const schema = `
     province_code: String
     country_code: String
     #country_name: String
+    address_label: String
+    label: String
     default: Boolean
 
     createdAt: DateTime

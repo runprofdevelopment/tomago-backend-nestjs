@@ -4,11 +4,15 @@ const AbstractEntityModel = require('./abstractEntityModel');
 const BILLING_INFORMATION = ['address', 'province', 'country', 'area', 'city', 'firstName', 'lastName', 'phoneNumber', 'zip'];
 const ORDER_STATUS = [
   'pendingAcceptance',
+  'confirmed',
+  'inProduction',
+  'qualityCheck',
   'pendingDelivery',
   'shipped',
   'received',
   'notreceived',
   'cancelled',
+  'failedDelivery',
   'waitingPaymentConfirmation',
 ];
 const FINANCIAL_STATUS = ['pending', 'refunded', 'partialRefund', 'pendingRefund', 'partialPaid', 'paid', 'unpaid'];

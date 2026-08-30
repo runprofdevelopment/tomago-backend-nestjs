@@ -1,4 +1,5 @@
 module.exports = [
   require('./wishlist'),
-  require('./moveItem')
+  require('./moveItem'),
+  require('./wishlistShare'),
 ];
