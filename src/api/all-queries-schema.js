@@ -31,6 +31,7 @@ const resorces = [
   'ad',
   'decoopaAccount',
   'report',
+  'export',
 ];
 
 const ALL_QUERIES = [];

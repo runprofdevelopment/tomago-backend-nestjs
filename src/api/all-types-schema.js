@@ -34,6 +34,7 @@ const resorces = [
   'decoopaAccount',
   'otp',
   'report',
+  'export',
 ];
 
 const ALL_TYPES = [];

@@ -36,9 +36,48 @@ const fs = require('fs');
 // const appCheckVerification = require('../../middleware/appCheckMiddleware');
 // const passingGraphQLMiddleware = require('../../middleware/passingGraphQLMiddleware');
 const authMiddleware = require('../../middleware/authMiddleware');
+const ExcelExportService = require('../../services/export/excelExportService');
 
 // Import auth routes
 const authRoutes = require('./auth');
+
+async function handleExcelExport(req, res) {
+  try {
+    const source = {
+      ...(req.query || {}),
+      ...(req.body || {}),
+    };
+
+    const result = await new ExcelExportService({
+      currentUser: req.currentUser,
+      language: req.language,
+    }).export({
+      collection: source.collection,
+      fields: source.fields,
+      ids: source.ids,
+    });
+
+    res.setHeader('Content-Type', result.mimeType);
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${result.fileName}"`,
+    );
+    res.send(Buffer.from(result.buffer));
+  } catch (error) {
+    console.error('Unable to export excel.', error);
+
+    const statusCode =
+      error.code === 400 || error.code === 403 || error.code === 404
+        ? error.code
+        : 500;
+
+    res.status(statusCode).send({
+      status: false,
+      result: null,
+      error: { code: error.code, message: error.message },
+    });
+  }
+}
 
 let routes = (app) => {
   router.post('/createAppCheckToken', multParse.none(), async (req, res) => {
@@ -66,6 +105,14 @@ let routes = (app) => {
         res.status(500).send({ status: false, result: null, error: { code: error.code, message: error.message } });
       }
     }
+  });
+
+  router.get('/export-excel', authMiddleware, async (req, res) => {
+    await handleExcelExport(req, res);
+  });
+
+  router.post('/export-excel', authMiddleware, async (req, res) => {
+    await handleExcelExport(req, res);
   });
 
   router.get('/exportSchema', multParse.none(), (req, res) => {
