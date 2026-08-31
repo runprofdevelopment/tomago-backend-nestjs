@@ -1,6 +1,6 @@
 const ar = {
     app: {
-      title: 'ديكوبا'
+      title: 'Tomago'
     },
   
     auth: {

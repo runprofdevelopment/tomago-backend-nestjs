@@ -2,6 +2,11 @@ const functions = require('firebase-functions');
 const ErrorHandler = require('../../errors/errorHandler');
 const EmailSender = require('../../infrastructure/email/emailSender');
 const GeneratingEmailActionLinks = require('../../infrastructure/generatingEmailActionLinks');
+const DynalinksService = require('../../infrastructure/dynalinks/dynalinksService');
+const AuthFirebaseService = require('../../infrastructure/auth/authFirebaseService');
+const EmailVerificationTokenService = require('../auth/emailVerificationTokenService');
+const AuthService = require('../auth/authService');
+const UserRepository = require('../../database/repositories/userRepository');
 // Initialize Firebase Admin
 require('../../infrastructure/firebaseInit');
 
@@ -47,8 +52,14 @@ module.exports = class EmailService {
     try {
       EmailSender._verifyEmailSenderConfigured();
       const link = await GeneratingEmailActionLinks.generatePasswordResetLink(email, language);
+      const finalLink = await DynalinksService.createLink({
+        name: 'Password Reset Link',
+        path: DynalinksService.buildPath('reset-password'),
+        url: link,
+        deepLinkValue: link,
+      });
       // const data = await Utils._getEmailData(email, accountType) ;
-      const Email_Template = new ResetPasswordEmail(language, email, link);
+      const Email_Template = new ResetPasswordEmail(language, email, finalLink);
       if (!Email_Template) {
         functions.logger.log(`There is no email template set up for this account type as '${accountType}'`)
         new ErrorHandler({
@@ -63,43 +74,111 @@ module.exports = class EmailService {
     }   
   }
 
-  static async sendEmailAddressVerification(email, language = 'en', accountType) {
+  static async sendEmailAddressVerification(email, language = 'en', currentUser) {
     try {
-      console.log({ email, language, accountType });
+      console.log({ email, language, userId: currentUser && currentUser.id });
       EmailSender._verifyEmailSenderConfigured();
-      // Generate the standard Firebase link first
-      const link = await GeneratingEmailActionLinks.generateEmailVerificationLink(email, language);
 
-      // Post-process the link so the main URL is locale-prefixed:
-      // https://www.decoopa.com/auth/action?... -> https://www.decoopa.com/{locale}/auth/action?...
-      let finalLink = link;
-      try {
-        const url = new URL(link);
-        const locale = (language || 'en').toLowerCase().startsWith('ar') ? 'egypt-ar' : 'egypt-en';
-
-        // Only rewrite when host is our production site and path is the generic /auth/action
-        if (url.hostname.endsWith('decoopa.com') && url.pathname === '/auth/action') {
-          url.pathname = `/${locale}/auth/action`;
-          finalLink = url.toString();
-        }
-      } catch (e) {
-        // If URL parsing fails, fall back to the original link
-        console.warn('Could not rewrite verification link, sending original:', e);
+      if (!currentUser || !currentUser.id) {
+        throw new ErrorHandler({
+          errorCode: 'USER_REQUIRED',
+          message:
+            language === 'ar'
+              ? 'المستخدم مطلوب لإرسال رابط التحقق'
+              : 'Authenticated user is required to send verification email',
+        });
       }
 
-      // const data = await Utils._getEmailData(email);
-      const Email_Template = new EmailAddressVerificationEmail(language, email, finalLink);
-      
+      if (currentUser.emailVerified === true) {
+        throw new ErrorHandler({
+          errorCode: 'EMAIL_VERIFIED',
+          message:
+            language === 'ar'
+              ? 'البريد الإلكتروني محقق بالفعل'
+              : 'Email is already verified',
+        });
+      }
+
+      try {
+        const authUser = await AuthFirebaseService.getUserByEmail(email);
+        if (authUser && authUser.emailVerified === true) {
+          throw new ErrorHandler({
+            errorCode: 'EMAIL_VERIFIED',
+            message:
+              language === 'ar'
+                ? 'البريد الإلكتروني محقق بالفعل'
+                : 'Email is already verified',
+          });
+        }
+      } catch (authError) {
+        if (authError && authError.code === 'EMAIL_VERIFIED') {
+          throw authError;
+        }
+        if (authError && authError.code !== 'auth/user-not-found') {
+          console.warn(
+            'sendEmailAddressVerification: Firebase Auth lookup failed:',
+            authError.message || authError,
+          );
+        }
+      }
+
+      let databaseUser =
+        (await UserRepository.findByEmail(email)) ||
+        (await UserRepository.findByAuthenticationUid(
+          currentUser.authenticationUid || currentUser.id,
+        ));
+
+      if (!databaseUser) {
+        databaseUser = await AuthService.findOrCreateFromAuth(
+          currentUser.authenticationUid || currentUser.id,
+          {
+            language,
+            accountType: currentUser.accountType || 'customer',
+          },
+        );
+      }
+
+      const rawToken = await EmailVerificationTokenService.createToken({
+        userId: databaseUser.id,
+        email,
+        authenticationUid:
+          databaseUser.authenticationUid ||
+          currentUser.authenticationUid ||
+          currentUser.id,
+      });
+
+      const getConfig = require('../../../config');
+      const cfg = getConfig();
+      const baseUrl = (
+        process.env.VERIFY_EMAIL_BASE_URL ||
+        cfg.baseUrl ||
+        'http://localhost:8080'
+      ).replace(/\/$/, '');
+      const destinationUrl = `${baseUrl}/api/auth/verify-email?token=${encodeURIComponent(rawToken)}`;
+
+      const finalLink = await DynalinksService.createLink({
+        name: 'Email Verification Link',
+        path: DynalinksService.buildPath('verify-email'),
+        url: destinationUrl,
+        deepLinkValue: destinationUrl,
+      });
+
+      const Email_Template = new EmailAddressVerificationEmail(
+        language,
+        email,
+        finalLink,
+      );
+
       if (!Email_Template) {
         new ErrorHandler({
           errorCode: 'EMAIL_TEMPLATE_NOT_FOUND',
-          message: `There is no email template set up for this account type as '${accountType}'`, 
-        })
+          message: `There is no email template set up for this account type`,
+        });
       }
 
       return new EmailSender(Email_Template).send();
     } catch (error) {
-      throw error
+      throw error;
     }
   }
  
@@ -107,8 +186,9 @@ module.exports = class EmailService {
     try {
       console.log({ email, language, accountType });
       EmailSender._verifyEmailSenderConfigured();
+      const config = require('../../../config')();
       const ActionCodeSettings = {
-        url: 'https://decoopa-admin.web.app/auth/login',
+        url: `${String(config.dashboardUrl || 'https://tomago-staging.firebaseapp.com').replace(/\/$/, '')}/auth/login`,
         handleCodeInApp: true, // This must be true.
         // iOS: {
         //   bundleId: 'com.example.ios'
@@ -121,8 +201,14 @@ module.exports = class EmailService {
         // dynamicLinkDomain: 'example.page.link'
       };
       const link = await GeneratingEmailActionLinks.generateSignInWithEmailLink(email, language, accountType, ActionCodeSettings)
+      const finalLink = await DynalinksService.createLink({
+        name: 'Sign In Link',
+        path: DynalinksService.buildPath('sign-in'),
+        url: link,
+        deepLinkValue: link,
+      });
       // const data = await Utils._getEmailData(email);
-      const Email_Template = new EmailAddressVerificationEmail(language, email, link);
+      const Email_Template = new EmailAddressVerificationEmail(language, email, finalLink);
       
       if (!Email_Template) {
         functions.logger.log(`There is no email template set up for this account type as '${accountType}'`)

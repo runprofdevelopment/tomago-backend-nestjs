@@ -1,6 +1,6 @@
 const en = {
   app: {
-    title: 'Decoopa'
+    title: 'Tomago'
   },
 
   auth: {

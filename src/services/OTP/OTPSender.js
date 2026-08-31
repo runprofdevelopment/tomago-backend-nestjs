@@ -36,7 +36,7 @@ module.exports = class OTPSender {
     //   This code expires in ${TTL} minutes.
     // `;
 
-    const message = `${OTP} is your OTP from decoopa, do not share it with anyone. It will expire in ${TTL} minutes.`;
+    const message = `${OTP} is your OTP from Tomago, do not share it with anyone. It will expire in ${TTL} minutes.`;
     const response = await smsService.sendSMS(message, mobile);
     console.log('SMS_RESPONSE =', response);
     

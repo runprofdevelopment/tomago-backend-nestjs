@@ -81,7 +81,7 @@ app.use('/graphql', (req, res, next) => {
     })(req, res, next);
   } else if (req.method === 'GET' && req.url === '/') {
     // This is the basic test endpoint
-    res.json({ message: 'Decoopa API is running', timestamp: new Date().toISOString() });
+    res.json({ message: 'Tomago API is running', timestamp: new Date().toISOString() });
   } else {
     next();
   }

@@ -39,7 +39,7 @@ const resolver = {
       await EmailService.sendEmailAddressVerification(
         context.currentUser.email,
         context.language || 'en',
-        // accountType,
+        context.currentUser,
       );
       
       console.log('authSendEmailAddressVerificationEmail: Email sent successfully');

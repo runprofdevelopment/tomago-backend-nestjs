@@ -100,7 +100,7 @@ app.use('/api', routes);
 // Default route handler for root path
 app.get('/', (req, res) => {
   res.json({ 
-    message: 'Decoopa API is running', 
+    message: 'Tomago API is running', 
     timestamp: new Date().toISOString(),
     endpoints: {
       health: '/health',

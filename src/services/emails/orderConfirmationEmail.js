@@ -18,7 +18,7 @@ module.exports = class OrderConfirmationEmail {
   get subject() {
     return i18n(
       this.language,
-      `Decoopa | Order Confirmation | Ref#${this.order.refNumber}`
+      `Tomago | Order Confirmation | Ref#${this.order.refNumber}`
     );
   }
 

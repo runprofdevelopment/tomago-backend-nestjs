@@ -7,8 +7,8 @@ module.exports = {
   projectNumber: '649000455905',
 
   /** Client URL used when sending emails. */
-  clientUrl: 'https://www.decoopa.com/auth/action',
-  dashboardUrl: 'https://seller.decoopa.com',
+  clientUrl: 'https://tomago-fdaa6.firebaseapp.com/auth/action',
+  dashboardUrl: 'https://tomago-fdaa6.firebaseapp.com',
   bundleId: '',
   packageName: '',
   dynamicLinkDomain: '',
@@ -55,4 +55,14 @@ module.exports = {
    */
   userAutoAuthenticatedEmailForTests: 'mohamedali.runprof@gmail.com',
   defaultUser: 'mohamedali.runprof@gmail.com',
+
+  dynalinks: {
+    apiKey: process.env.DYNALINKS_API_KEY,
+    apiUrl:
+      process.env.DYNALINKS_API_URL ||
+      'https://dynalinks.app/api/v1/links',
+    subdomain: process.env.DYNALINKS_SUBDOMAIN || 'tomago',
+    iosAppId: process.env.DYNALINKS_IOS_APP_ID,
+    androidAppId: process.env.DYNALINKS_ANDROID_APP_ID,
+  },
 };

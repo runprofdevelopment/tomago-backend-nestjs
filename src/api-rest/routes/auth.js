@@ -747,4 +747,44 @@ router.post('/force-sync-verification', multParse.none(), async (req, res) => {
   }
 });
 
+// Custom email verification page (Dynalinks destination — no Firebase action link)
+router.get('/verify-email', async (req, res) => {
+  const EmailVerificationTokenService = require('../../services/auth/emailVerificationTokenService');
+  const language =
+    (req.query.lang || req.headers['accept-language'] || 'en')
+      .toString()
+      .toLowerCase()
+      .startsWith('ar')
+      ? 'ar'
+      : 'en';
+  const token = req.query.token;
+
+  try {
+    await EmailVerificationTokenService.confirmToken(token, language);
+    const html = EmailVerificationTokenService.renderResultPage({
+      success: true,
+      language,
+      title: language === 'ar' ? 'تم التحقق' : 'Email verified',
+      message:
+        language === 'ar'
+          ? 'تم التحقق من بريدك الإلكتروني بنجاح. يمكنك إغلاق هذه الصفحة.'
+          : 'Your email has been verified successfully. You can close this page.',
+    });
+    return res.status(200).type('html').send(html);
+  } catch (error) {
+    const message =
+      (error && error.message) ||
+      (language === 'ar'
+        ? 'تعذر التحقق من البريد الإلكتروني'
+        : 'Could not verify your email');
+    const html = EmailVerificationTokenService.renderResultPage({
+      success: false,
+      language,
+      title: language === 'ar' ? 'فشل التحقق' : 'Verification failed',
+      message,
+    });
+    return res.status(400).type('html').send(html);
+  }
+});
+
 module.exports = router; 

@@ -24,7 +24,7 @@ gcloud run deploy "$SERVICE_NAME" \
   --platform managed \
   --allow-unauthenticated \
   --quiet \
-  --set-env-vars "^|^NODE_ENV=staging|ENV=staging|WALLET_BALANCE_KEY=JaQqWoh88onGaq+m5AfUu9TtddQULIYz|MYLERZ_USERNAME=Decoopa|MYLERZ_PASSWORD=CVBIUfWj8YG\$1a|EMAIL_PROVIDER=nodemailer|EMAIL_SMTP_HOST=smtp.gmail.com|EMAIL_SMTP_PORT=465|EMAIL_SECURE=true|EMAIL_FROM=Tomago <mohamedelnemr.runprof@gmail.com>|EMAIL_USER=mohamedelnemr.runprof@gmail.com|EMAIL_PASSWORD=rwkm vuqx plce wppq" \
+  --set-env-vars "^|^NODE_ENV=staging|ENV=staging|WALLET_BALANCE_KEY=JaQqWoh88onGaq+m5AfUu9TtddQULIYz|MYLERZ_USERNAME=Decoopa|MYLERZ_PASSWORD=CVBIUfWj8YG\$1a|EMAIL_PROVIDER=nodemailer|EMAIL_SMTP_HOST=smtp.gmail.com|EMAIL_SMTP_PORT=465|EMAIL_SECURE=true|EMAIL_FROM=Tomago <mohamedelnemr.runprof@gmail.com>|EMAIL_USER=mohamedelnemr.runprof@gmail.com|EMAIL_PASSWORD=rwkm vuqx plce wppq|DYNALINKS_API_KEY=6gw1mfNBDx4Fs7QyXe4tJnLQ|DYNALINKS_API_URL=https://dynalinks.app/api/v1/links|DYNALINKS_SUBDOMAIN=tomago|VERIFY_EMAIL_BASE_URL=https://tomago-staging-7125900076.europe-west3.run.app" \
   --memory 1Gi \
   --cpu 1 \
   --max-instances 5 \
