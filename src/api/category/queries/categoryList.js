@@ -4,7 +4,7 @@ const CategoryViewer = require('../../../services/category/categoryViewer');
 const graphqlSelectRequestedAttributes = require('../../shared/utils/graphqlSelectRequestedAttributes');
 
 const schema = `
-  categoryList(filter: [ FilterInput! ], orderBy: String, pagination: PaginationInput): CategoryPage!
+  categoryList(filter: [ FilterInput! ], sort: [SortInput!], pagination: PaginationInput): CategoryPage!
 `;
 
 const resolver = {

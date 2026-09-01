@@ -3,7 +3,7 @@ const PermissionChecker = require('../../../security/permissionChecker');
 const permissions = require('../../../security/permissions').values;
 
 const schema = `
-  listMyAddresses(filter: [ FilterInput! ], orderBy: String, sortBy: SortByEnum): [ Address! ]
+  listMyAddresses(filter: [ FilterInput! ], sort: [SortInput!]): [ Address! ]
 `;
 
 const resolver = {

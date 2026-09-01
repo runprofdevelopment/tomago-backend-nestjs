@@ -1,7 +1,7 @@
 const TransactionViewer = require('../../../services/transaction/transcationViewer');
 
 const schema = `
-transactionList(filter: [ FilterInput! ], orderBy: String, pagination: PaginationInput): TransactionPage!
+transactionList(filter: [ FilterInput! ], sort: [SortInput!], pagination: PaginationInput): TransactionPage!
 `;
 
 const resolver = {

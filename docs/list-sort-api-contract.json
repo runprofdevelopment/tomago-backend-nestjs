@@ -1,0 +1,1487 @@
+{
+  "version": "2.0.0",
+  "generatedAt": "2026-09-01T14:51:10.090Z",
+  "transport": {
+    "endpoint": "POST /graphql",
+    "auth": "Authorization: Bearer <Firebase ID token>"
+  },
+  "defaultSort": [
+    {
+      "field": "createdAt",
+      "order": "asc"
+    }
+  ],
+  "sliderDefaultSort": [
+    {
+      "field": "createdAt",
+      "order": "desc"
+    }
+  ],
+  "sortInput": {
+    "field": "String!",
+    "order": "SortByEnum (asc | desc, default asc)"
+  },
+  "enums": {
+    "SortByEnum": [
+      "asc",
+      "desc"
+    ],
+    "ActionTypeEnum": [
+      "next",
+      "prev",
+      "current"
+    ]
+  },
+  "paginationInput": {
+    "limit": "Int",
+    "offset": "Int",
+    "page": "Int",
+    "doc": "JSON",
+    "action": "ActionTypeEnum"
+  },
+  "endpoints": [
+    {
+      "query": "adList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "body_html",
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "id",
+        "title",
+        "updatedAt"
+      ],
+      "collection": "ads"
+    },
+    {
+      "query": "brandList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "id",
+        "imageUrl",
+        "isActive",
+        "updatedAt"
+      ],
+      "collection": "brand"
+    },
+    {
+      "query": "categoryList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "id",
+        "isActive",
+        "level",
+        "parent_id",
+        "position",
+        "updatedAt"
+      ],
+      "collection": "category"
+    },
+    {
+      "query": "collectionList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "display_order",
+        "id",
+        "isActive",
+        "is_featured",
+        "slug",
+        "updatedAt"
+      ],
+      "collection": "collection"
+    },
+    {
+      "query": "contactUsList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "email",
+        "firstName",
+        "fullName",
+        "id",
+        "lastName",
+        "message",
+        "orderId",
+        "phoneNumber",
+        "updatedAt"
+      ],
+      "collection": "contactUs"
+    },
+    {
+      "query": "customRequestList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "createdAt",
+        "customer_id",
+        "deletedAt",
+        "deletedBy",
+        "description",
+        "email",
+        "full_name",
+        "id",
+        "phone",
+        "product_id",
+        "request_type",
+        "status",
+        "updatedAt"
+      ],
+      "collection": "customRequest"
+    },
+    {
+      "query": "myCustomRequests",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "createdAt",
+        "customer_id",
+        "deletedAt",
+        "deletedBy",
+        "description",
+        "email",
+        "full_name",
+        "id",
+        "phone",
+        "product_id",
+        "request_type",
+        "status",
+        "updatedAt"
+      ],
+      "collection": "customRequest"
+    },
+    {
+      "query": "dealList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "createdAt",
+        "currency",
+        "deletedAt",
+        "deletedBy",
+        "discountAmount",
+        "discountType",
+        "endDate",
+        "id",
+        "name",
+        "ribbonBackground",
+        "ribbonColor",
+        "ribbonName",
+        "startDate",
+        "status",
+        "updatedAt"
+      ],
+      "collection": "deal"
+    },
+    {
+      "query": "adminList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "accountType",
+        "authenticationUid",
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "disabled",
+        "email",
+        "emailVerified",
+        "firstName",
+        "fullName",
+        "id",
+        "lang",
+        "lastName",
+        "phoneNumber",
+        "providerId",
+        "updatedAt"
+      ],
+      "collection": "user"
+    },
+    {
+      "query": "customerList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "accountType",
+        "authenticationUid",
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "disabled",
+        "email",
+        "emailVerified",
+        "firstName",
+        "fullName",
+        "id",
+        "lang",
+        "lastName",
+        "phoneNumber",
+        "providerId",
+        "updatedAt"
+      ],
+      "collection": "user"
+    },
+    {
+      "query": "inventoryList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "DID",
+        "cost",
+        "createdAt",
+        "currency",
+        "current_price",
+        "deletedAt",
+        "deletedBy",
+        "id",
+        "inventory_quantity",
+        "main_image",
+        "max_order_qty",
+        "onSale",
+        "price",
+        "product_height",
+        "product_height_unit",
+        "product_length",
+        "product_length_unit",
+        "product_limit",
+        "product_weight",
+        "product_weight_unit",
+        "product_width_Depth",
+        "product_width_unit",
+        "ribbon_background",
+        "ribbon_color",
+        "ribbon_name",
+        "sale_end_date",
+        "sale_price",
+        "sale_start_date",
+        "sku",
+        "status",
+        "updatedAt",
+        "warranty"
+      ],
+      "collection": "product-variants"
+    },
+    {
+      "query": "inventoryListArchivedItems",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "DID",
+        "cost",
+        "createdAt",
+        "currency",
+        "current_price",
+        "deletedAt",
+        "deletedBy",
+        "id",
+        "inventory_quantity",
+        "main_image",
+        "max_order_qty",
+        "onSale",
+        "price",
+        "product_height",
+        "product_height_unit",
+        "product_length",
+        "product_length_unit",
+        "product_limit",
+        "product_weight",
+        "product_weight_unit",
+        "product_width_Depth",
+        "product_width_unit",
+        "ribbon_background",
+        "ribbon_color",
+        "ribbon_name",
+        "sale_end_date",
+        "sale_price",
+        "sale_start_date",
+        "sku",
+        "status",
+        "updatedAt",
+        "warranty"
+      ],
+      "collection": "product-variants"
+    },
+    {
+      "query": "listMyNotifications",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "id",
+        "imageUrl",
+        "isNew",
+        "isRead",
+        "updatedAt"
+      ],
+      "collection": "notification"
+    },
+    {
+      "query": "orderList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "addressId",
+        "cancelReason",
+        "cashOnDeliveryFees",
+        "createdAt",
+        "currency",
+        "deletedAt",
+        "deletedBy",
+        "financialStatus",
+        "id",
+        "ipAddress",
+        "isCanceled",
+        "isReturned",
+        "orderStatus",
+        "partialAmountPaid",
+        "paymentMethod",
+        "serverWebhook",
+        "sessionId",
+        "sessionUrl",
+        "shippingCost",
+        "shippingId",
+        "subTotalPrice",
+        "totalDiscount",
+        "totalPrice",
+        "totalQuantity",
+        "transactionId",
+        "updatedAt",
+        "useWallet",
+        "userID",
+        "vatAmount",
+        "vatPercentage"
+      ],
+      "collection": "order"
+    },
+    {
+      "query": "listCustomerOrders",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "addressId",
+        "cancelReason",
+        "cashOnDeliveryFees",
+        "createdAt",
+        "currency",
+        "deletedAt",
+        "deletedBy",
+        "financialStatus",
+        "id",
+        "ipAddress",
+        "isCanceled",
+        "isReturned",
+        "orderStatus",
+        "partialAmountPaid",
+        "paymentMethod",
+        "serverWebhook",
+        "sessionId",
+        "sessionUrl",
+        "shippingCost",
+        "shippingId",
+        "subTotalPrice",
+        "totalDiscount",
+        "totalPrice",
+        "totalQuantity",
+        "transactionId",
+        "updatedAt",
+        "useWallet",
+        "userID",
+        "vatAmount",
+        "vatPercentage"
+      ],
+      "collection": "order"
+    },
+    {
+      "query": "myBillingHistory",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "addressId",
+        "cancelReason",
+        "cashOnDeliveryFees",
+        "createdAt",
+        "currency",
+        "deletedAt",
+        "deletedBy",
+        "financialStatus",
+        "id",
+        "ipAddress",
+        "isCanceled",
+        "isReturned",
+        "orderStatus",
+        "partialAmountPaid",
+        "paymentMethod",
+        "serverWebhook",
+        "sessionId",
+        "sessionUrl",
+        "shippingCost",
+        "shippingId",
+        "subTotalPrice",
+        "totalDiscount",
+        "totalPrice",
+        "totalQuantity",
+        "transactionId",
+        "updatedAt",
+        "useWallet",
+        "userID",
+        "vatAmount",
+        "vatPercentage"
+      ],
+      "collection": "order"
+    },
+    {
+      "query": "projectList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "brief_title",
+        "category",
+        "client_name",
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "description",
+        "design_style",
+        "duration",
+        "id",
+        "is_featured",
+        "location",
+        "name",
+        "pieces_delivered",
+        "public_id",
+        "scope",
+        "slug",
+        "start_date",
+        "status",
+        "tagline",
+        "updatedAt"
+      ],
+      "collection": "project"
+    },
+    {
+      "query": "reviewList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "body",
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "email",
+        "id",
+        "rating",
+        "title",
+        "updatedAt",
+        "userName"
+      ],
+      "collection": "reviews"
+    },
+    {
+      "query": "listCustomerReviews",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "body",
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "email",
+        "id",
+        "rating",
+        "title",
+        "updatedAt",
+        "userName"
+      ],
+      "collection": "reviews"
+    },
+    {
+      "query": "showRoomList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "address",
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "email",
+        "id",
+        "isActive",
+        "location",
+        "phone",
+        "updatedAt",
+        "working_hours"
+      ],
+      "collection": "showRoom"
+    },
+    {
+      "query": "transactionList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "amount",
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "description",
+        "id",
+        "note",
+        "orderId",
+        "payeeId",
+        "payee_name",
+        "payerId",
+        "payer_name",
+        "type",
+        "updatedAt",
+        "userID"
+      ],
+      "collection": "transaction"
+    },
+    {
+      "query": "listMyTransactions",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "amount",
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "description",
+        "id",
+        "note",
+        "orderId",
+        "payeeId",
+        "payee_name",
+        "payerId",
+        "payer_name",
+        "type",
+        "updatedAt",
+        "userID"
+      ],
+      "collection": "transaction"
+    },
+    {
+      "query": "listDecoopaAccountTransactions",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "amount",
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "description",
+        "id",
+        "note",
+        "orderId",
+        "payeeId",
+        "payee_name",
+        "payerId",
+        "payer_name",
+        "type",
+        "updatedAt",
+        "userID"
+      ],
+      "collection": "transaction"
+    },
+    {
+      "query": "voucherList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "endDate",
+        "id",
+        "search",
+        "startDate",
+        "status",
+        "total_uses",
+        "updatedAt",
+        "use_per_user",
+        "userID",
+        "user_count",
+        "voucher_amount",
+        "voucher_amount_type",
+        "voucher_code",
+        "voucher_type"
+      ],
+      "collection": "voucher"
+    },
+    {
+      "query": "walletList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "balance",
+        "createdAt",
+        "currency",
+        "deletedAt",
+        "deletedBy",
+        "id",
+        "recharged_balance",
+        "search",
+        "updatedAt",
+        "voucher_balance"
+      ],
+      "collection": "wallet"
+    },
+    {
+      "query": "withdrawalRequestsList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "account_name",
+        "account_number",
+        "bank_name",
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "id",
+        "note",
+        "reason",
+        "referenceId",
+        "rejection_reason",
+        "status",
+        "swift_code",
+        "transactionId",
+        "updatedAt",
+        "userID",
+        "withdrawal_amount"
+      ],
+      "collection": "withdrawalRequest"
+    },
+    {
+      "query": "viewReturnRequests",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "comments",
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "id",
+        "orderID",
+        "rejectReason",
+        "returnReason",
+        "status",
+        "type",
+        "updatedAt",
+        "userID"
+      ],
+      "collection": "returnRequest"
+    },
+    {
+      "query": "addressList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": null,
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "address",
+        "address_label",
+        "area",
+        "city",
+        "country",
+        "country_code",
+        "createdAt",
+        "customer_id",
+        "default",
+        "deletedAt",
+        "deletedBy",
+        "email",
+        "first_name",
+        "id",
+        "label",
+        "last_name",
+        "lat",
+        "lng",
+        "name",
+        "phoneNumber",
+        "phoneVerified",
+        "province",
+        "province_code",
+        "updatedAt",
+        "zip"
+      ],
+      "collection": "addresses"
+    },
+    {
+      "query": "listMyAddresses",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": null,
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "address",
+        "address_label",
+        "area",
+        "city",
+        "country",
+        "country_code",
+        "createdAt",
+        "customer_id",
+        "default",
+        "deletedAt",
+        "deletedBy",
+        "email",
+        "first_name",
+        "id",
+        "label",
+        "last_name",
+        "lat",
+        "lng",
+        "name",
+        "phoneNumber",
+        "phoneVerified",
+        "province",
+        "province_code",
+        "updatedAt",
+        "zip"
+      ],
+      "collection": "addresses"
+    },
+    {
+      "query": "listCustomerAddresses",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": null,
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "address",
+        "address_label",
+        "area",
+        "city",
+        "country",
+        "country_code",
+        "createdAt",
+        "customer_id",
+        "default",
+        "deletedAt",
+        "deletedBy",
+        "email",
+        "first_name",
+        "id",
+        "label",
+        "last_name",
+        "lat",
+        "lng",
+        "name",
+        "phoneNumber",
+        "phoneVerified",
+        "province",
+        "province_code",
+        "updatedAt",
+        "zip"
+      ],
+      "collection": "addresses"
+    },
+    {
+      "query": "optionList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": null,
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "id",
+        "updatedAt"
+      ],
+      "collection": "variants_options"
+    },
+    {
+      "query": "findProductReviews",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": null,
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "asc"
+        }
+      ],
+      "allowedSortFields": [
+        "body",
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "email",
+        "id",
+        "rating",
+        "title",
+        "updatedAt",
+        "userName"
+      ],
+      "collection": "reviews"
+    },
+    {
+      "query": "sliderList",
+      "sortArg": "sort: [SortInput!]",
+      "paginationArg": "pagination: PaginationInput",
+      "defaultSort": [
+        {
+          "field": "createdAt",
+          "order": "desc"
+        }
+      ],
+      "allowedSortFields": [
+        "button_color",
+        "button_text",
+        "button_url",
+        "content",
+        "createdAt",
+        "deletedAt",
+        "deletedBy",
+        "endDate",
+        "id",
+        "startDate",
+        "targetId",
+        "targetView",
+        "title",
+        "updatedAt"
+      ],
+      "collection": "slider"
+    }
+  ],
+  "excludedEndpoints": [
+    {
+      "query": "auditLogList",
+      "reason": "Uses AuditLogListOrderByEnum (field_ASC / field_DESC)"
+    },
+    {
+      "query": "iamListRoles",
+      "reason": "Uses RoleWithUsersOrderByEnum (field_ASC / field_DESC)"
+    },
+    {
+      "query": "iamListUsers",
+      "reason": "Uses UserWithRolesOrderByEnum (field_ASC / field_DESC)"
+    },
+    {
+      "query": "brandListAll",
+      "reason": "Non-paginated dump list — no sort arg"
+    },
+    {
+      "query": "dealListAll",
+      "reason": "Non-paginated dump list — no sort arg"
+    },
+    {
+      "query": "adListAll",
+      "reason": "Non-paginated dump list — no sort arg"
+    },
+    {
+      "query": "contactUsListAll",
+      "reason": "Non-paginated dump list — no sort arg"
+    }
+  ],
+  "collections": {
+    "brand": [
+      "createdAt",
+      "deletedAt",
+      "deletedBy",
+      "id",
+      "imageUrl",
+      "isActive",
+      "updatedAt"
+    ],
+    "order": [
+      "addressId",
+      "cancelReason",
+      "cashOnDeliveryFees",
+      "createdAt",
+      "currency",
+      "deletedAt",
+      "deletedBy",
+      "financialStatus",
+      "id",
+      "ipAddress",
+      "isCanceled",
+      "isReturned",
+      "orderStatus",
+      "partialAmountPaid",
+      "paymentMethod",
+      "serverWebhook",
+      "sessionId",
+      "sessionUrl",
+      "shippingCost",
+      "shippingId",
+      "subTotalPrice",
+      "totalDiscount",
+      "totalPrice",
+      "totalQuantity",
+      "transactionId",
+      "updatedAt",
+      "useWallet",
+      "userID",
+      "vatAmount",
+      "vatPercentage"
+    ],
+    "category": [
+      "createdAt",
+      "deletedAt",
+      "deletedBy",
+      "id",
+      "isActive",
+      "level",
+      "parent_id",
+      "position",
+      "updatedAt"
+    ],
+    "reviews": [
+      "body",
+      "createdAt",
+      "deletedAt",
+      "deletedBy",
+      "email",
+      "id",
+      "rating",
+      "title",
+      "updatedAt",
+      "userName"
+    ],
+    "product-variants": [
+      "DID",
+      "cost",
+      "createdAt",
+      "currency",
+      "current_price",
+      "deletedAt",
+      "deletedBy",
+      "id",
+      "inventory_quantity",
+      "main_image",
+      "max_order_qty",
+      "onSale",
+      "price",
+      "product_height",
+      "product_height_unit",
+      "product_length",
+      "product_length_unit",
+      "product_limit",
+      "product_weight",
+      "product_weight_unit",
+      "product_width_Depth",
+      "product_width_unit",
+      "ribbon_background",
+      "ribbon_color",
+      "ribbon_name",
+      "sale_end_date",
+      "sale_price",
+      "sale_start_date",
+      "sku",
+      "status",
+      "updatedAt",
+      "warranty"
+    ],
+    "wallet": [
+      "balance",
+      "createdAt",
+      "currency",
+      "deletedAt",
+      "deletedBy",
+      "id",
+      "recharged_balance",
+      "search",
+      "updatedAt",
+      "voucher_balance"
+    ],
+    "voucher": [
+      "createdAt",
+      "deletedAt",
+      "deletedBy",
+      "endDate",
+      "id",
+      "search",
+      "startDate",
+      "status",
+      "total_uses",
+      "updatedAt",
+      "use_per_user",
+      "userID",
+      "user_count",
+      "voucher_amount",
+      "voucher_amount_type",
+      "voucher_code",
+      "voucher_type"
+    ],
+    "ads": [
+      "body_html",
+      "createdAt",
+      "deletedAt",
+      "deletedBy",
+      "id",
+      "title",
+      "updatedAt"
+    ],
+    "deal": [
+      "createdAt",
+      "currency",
+      "deletedAt",
+      "deletedBy",
+      "discountAmount",
+      "discountType",
+      "endDate",
+      "id",
+      "name",
+      "ribbonBackground",
+      "ribbonColor",
+      "ribbonName",
+      "startDate",
+      "status",
+      "updatedAt"
+    ],
+    "contactUs": [
+      "createdAt",
+      "deletedAt",
+      "deletedBy",
+      "email",
+      "firstName",
+      "fullName",
+      "id",
+      "lastName",
+      "message",
+      "orderId",
+      "phoneNumber",
+      "updatedAt"
+    ],
+    "user": [
+      "accountType",
+      "authenticationUid",
+      "createdAt",
+      "deletedAt",
+      "deletedBy",
+      "disabled",
+      "email",
+      "emailVerified",
+      "firstName",
+      "fullName",
+      "id",
+      "lang",
+      "lastName",
+      "phoneNumber",
+      "providerId",
+      "updatedAt"
+    ],
+    "transaction": [
+      "amount",
+      "createdAt",
+      "deletedAt",
+      "deletedBy",
+      "description",
+      "id",
+      "note",
+      "orderId",
+      "payeeId",
+      "payee_name",
+      "payerId",
+      "payer_name",
+      "type",
+      "updatedAt",
+      "userID"
+    ],
+    "notification": [
+      "createdAt",
+      "deletedAt",
+      "deletedBy",
+      "id",
+      "imageUrl",
+      "isNew",
+      "isRead",
+      "updatedAt"
+    ],
+    "returnRequest": [
+      "comments",
+      "createdAt",
+      "deletedAt",
+      "deletedBy",
+      "id",
+      "orderID",
+      "rejectReason",
+      "returnReason",
+      "status",
+      "type",
+      "updatedAt",
+      "userID"
+    ],
+    "withdrawalRequest": [
+      "account_name",
+      "account_number",
+      "bank_name",
+      "createdAt",
+      "deletedAt",
+      "deletedBy",
+      "id",
+      "note",
+      "reason",
+      "referenceId",
+      "rejection_reason",
+      "status",
+      "swift_code",
+      "transactionId",
+      "updatedAt",
+      "userID",
+      "withdrawal_amount"
+    ],
+    "addresses": [
+      "address",
+      "address_label",
+      "area",
+      "city",
+      "country",
+      "country_code",
+      "createdAt",
+      "customer_id",
+      "default",
+      "deletedAt",
+      "deletedBy",
+      "email",
+      "first_name",
+      "id",
+      "label",
+      "last_name",
+      "lat",
+      "lng",
+      "name",
+      "phoneNumber",
+      "phoneVerified",
+      "province",
+      "province_code",
+      "updatedAt",
+      "zip"
+    ],
+    "variants_options": [
+      "createdAt",
+      "deletedAt",
+      "deletedBy",
+      "id",
+      "updatedAt"
+    ],
+    "collection": [
+      "createdAt",
+      "deletedAt",
+      "deletedBy",
+      "display_order",
+      "id",
+      "isActive",
+      "is_featured",
+      "slug",
+      "updatedAt"
+    ],
+    "project": [
+      "brief_title",
+      "category",
+      "client_name",
+      "createdAt",
+      "deletedAt",
+      "deletedBy",
+      "description",
+      "design_style",
+      "duration",
+      "id",
+      "is_featured",
+      "location",
+      "name",
+      "pieces_delivered",
+      "public_id",
+      "scope",
+      "slug",
+      "start_date",
+      "status",
+      "tagline",
+      "updatedAt"
+    ],
+    "showRoom": [
+      "address",
+      "createdAt",
+      "deletedAt",
+      "deletedBy",
+      "email",
+      "id",
+      "isActive",
+      "location",
+      "phone",
+      "updatedAt",
+      "working_hours"
+    ],
+    "customRequest": [
+      "createdAt",
+      "customer_id",
+      "deletedAt",
+      "deletedBy",
+      "description",
+      "email",
+      "full_name",
+      "id",
+      "phone",
+      "product_id",
+      "request_type",
+      "status",
+      "updatedAt"
+    ],
+    "slider": [
+      "button_color",
+      "button_text",
+      "button_url",
+      "content",
+      "createdAt",
+      "deletedAt",
+      "deletedBy",
+      "endDate",
+      "id",
+      "startDate",
+      "targetId",
+      "targetView",
+      "title",
+      "updatedAt"
+    ],
+    "paymentMethod": [
+      "brand",
+      "cardholder_name",
+      "createdAt",
+      "customer_id",
+      "deletedAt",
+      "deletedBy",
+      "expiry_month",
+      "expiry_year",
+      "id",
+      "is_default",
+      "last_four",
+      "provider_token",
+      "updatedAt"
+    ],
+    "product": [
+      "createdAt",
+      "deletedAt",
+      "deletedBy",
+      "dimension_diagram",
+      "id",
+      "productNo",
+      "product_height",
+      "product_height_unit",
+      "product_length",
+      "product_length_unit",
+      "product_weight",
+      "product_weight_unit",
+      "product_width_Depth",
+      "product_width_unit",
+      "rating",
+      "reviews_count",
+      "shipping_height",
+      "shipping_height_unit",
+      "shipping_length",
+      "shipping_length_unit",
+      "shipping_price",
+      "shipping_weight",
+      "shipping_weight_unit",
+      "shipping_width_Depth",
+      "shipping_width_unit",
+      "technical_depth",
+      "technical_dimension_unit",
+      "technical_height",
+      "technical_width",
+      "type",
+      "updatedAt",
+      "warranty",
+      "warranty_returns_eligible"
+    ]
+  },
+  "errors": {
+    "invalidSortField": "Invalid orderBy \"{field}\" for collection \"{collection}\". Allowed fields: {allowedList}",
+    "missingSortField": "Sort field is required"
+  }
+}

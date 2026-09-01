@@ -3,7 +3,7 @@ const InventoryViewer = require('../../../services/inventory/inventoryViewer');
 // const permissions = require('../../../security/permissions').values;
 
 const schema = `
-  inventoryListArchivedItems(filter: [ FilterInput! ], orderBy: String, pagination: PaginationInput): InventoryPage!
+  inventoryListArchivedItems(filter: [ FilterInput! ], sort: [SortInput!], pagination: PaginationInput): InventoryPage!
 `;
 
 const resolver = {

@@ -4,7 +4,6 @@ const schema = `
     offset: Int
     page: Int
     doc: JSON
-    sortBy: SortByEnum
     action: ActionTypeEnum
   }
 

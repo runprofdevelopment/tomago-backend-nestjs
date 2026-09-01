@@ -2,6 +2,18 @@ const lodash = require('lodash');
 const types = require('./types');
 
 module.exports = class AbstractEntityModel {
+  static get SORTABLE_FIELD_TYPES() {
+    return new Set([
+      'string',
+      'number',
+      'boolean',
+      'date',
+      'dateTime',
+      'enumerator',
+      'url',
+    ]);
+  }
+
   constructor(modelName, collectionName, fields) {
     this.modelName = modelName;
     this.collectionName = collectionName;
@@ -10,6 +22,23 @@ module.exports = class AbstractEntityModel {
       deletedAt: new types.DateTime(),
       deletedBy: new types.String(),
     };
+  }
+
+  /**
+   * Returns field names that can be used with Firestore orderBy for this model.
+   * @returns {string[]}
+   */
+  getSortableFields() {
+    const sortable = Object.keys(this.fields).filter((key) => {
+      const fieldType = this.fields[key];
+      const typeName =
+        fieldType &&
+        fieldType.constructor &&
+        fieldType.constructor.TYPE;
+      return AbstractEntityModel.SORTABLE_FIELD_TYPES.has(typeName);
+    });
+
+    return [...new Set([...sortable, 'id', 'createdAt', 'updatedAt'])].sort();
   }
   
   cast(data) {

@@ -3,7 +3,7 @@ const PermissionChecker = require('../../../security/permissionChecker');
 const permissions = require('../../../security/permissions').values;
 
 const schema = `
-  listCustomerAddresses(customerId: String!, filter: [ FilterInput! ], orderBy: String, sortBy: SortByEnum): [ Address! ]
+  listCustomerAddresses(customerId: String!, filter: [ FilterInput! ], sort: [SortInput!]): [ Address! ]
 `;
 
 const resolver = {
@@ -13,8 +13,7 @@ const resolver = {
     
     return new AddressViewer(context).listAddresses(args.customerId, {
       filter: args.filter,
-      orderBy: args.orderBy,
-      sortBy: args.sortBy,
+      sort: args.sort,
     });
   },
 };

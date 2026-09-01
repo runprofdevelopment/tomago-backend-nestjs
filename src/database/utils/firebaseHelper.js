@@ -660,17 +660,14 @@ module.exports = class FirebaseHelper {
    * @param {*} filter 
    * @returns 
    */
-  static _generateRef(collectionPath, filter = [], orderBy = '', sortBy = 'asc', queryType) {
+  static _generateRef(collectionPath, filter = [], sorts = [], queryType) {
     const FirestoreFilterHelper = require('./firestoreFilterHelper');
     console.log('Filter = ', filter);
-    let ref = queryType === 'group' 
+    let ref = queryType === 'group'
       ? admin.firestore().collectionGroup(collectionPath)
       : admin.firestore().collection(collectionPath);
 
-    const response = FirestoreFilterHelper.applyFilter(ref, filter, orderBy, sortBy);
-    // this.hasFilterConstraint = response.hasFilterConstraint
-    // ref = response.ref || ref
-    // return ref
+    const response = FirestoreFilterHelper.applyFilter(ref, filter, sorts);
     return {
       ref: response.ref || ref,
       hasFilterConstraint: !!response.hasFilterConstraint
@@ -726,39 +723,38 @@ module.exports = class FirebaseHelper {
   }
 
   /**
-   * @param {Object} param 
-   * @param {String} param.collectionPath 
-   * @param {{ field: String, operator: String, value: any }[]} param.filter 
-   * @param {String} param.orderBy 
-   * @param {Object} param.pagination 
-   * @param {Number} param.pagination.page 
-   * @param {Number} param.pagination.offset 
-   * @param {Number} param.pagination.limit 
-   * @param {'asc'|'desc'} param.pagination.sortBy 
-   * @param {'current'|'next'|'prev'} param.pagination.action 
-   * @param {JSON} param.pagination.doc 
-   * @param {'single'|'group'} param.queryType 
-   * @returns 
+   * @param {Object} param
+   * @param {String} param.collectionPath
+   * @param {{ field: String, operator: String, value: any }[]} param.filter
+   * @param {Array<{ field: string, order?: string }>} [param.sort]
+   * @param {Object} param.pagination
+   * @param {'single'|'group'} param.queryType
+   * @param {Boolean} [param.includeDeleted]
+   * @returns
    */
-  static async listWithPagination({ collectionPath, filter, orderBy, pagination, queryType, includeDeleted = false }) {
+  static async listWithPagination({ collectionPath, filter, sort, pagination, queryType, includeDeleted = false }) {
     try {
       const filters = this.appendSoftDeleteFilter(filter, { includeDeleted })
       const GROUP_TYPE = queryType || 'single'
       pagination = new Pagination().cast(pagination)
+
+      const { resolveFirestoreSorts } = require('./sort.util');
+      const sorts = resolveFirestoreSorts({ sort }, { collectionPath });
+      const primarySort = sorts[0];
+
       let collection, paginationModel
-  
+
       if (pagination && pagination.limit > 0) {
         const FirestorePaginationHelper = require('./firestorePaginationHelper');
         const FirestorePagination = new FirestorePaginationHelper({
           collectionName: collectionPath,
           pageSize: pagination.limit,
-          field: orderBy,
-          orderBy: orderBy,
-          sortBy: pagination.sortBy,
+          field: primarySort.field,
+          sorts,
           filter: filters,
           queryType: GROUP_TYPE
         })
-          
+
         switch (pagination.action) {
           case 'next':
             collection = await (await FirestorePagination.nextPage(pagination)).get()
@@ -773,20 +769,19 @@ module.exports = class FirebaseHelper {
             collection = await (await FirestorePagination.firstPage()).get()
             break;
         }
-  
+
         paginationModel = await FirestorePagination.getPagination(
           this.mapCollection(collection)
         )
       } else {
-        const SORT_BY = pagination.sortBy || 'asc'
-        let { ref } = this._generateRef(collectionPath, filters, orderBy, SORT_BY, GROUP_TYPE)
+        let { ref } = this._generateRef(collectionPath, filters, sorts, GROUP_TYPE)
         collection = await ref.get()
       }
-      
+
       const all = this.mapCollection(collection);
       const rows = all
       const count = rows.length;
-      
+
       return {
         rows,
         count,
@@ -798,19 +793,21 @@ module.exports = class FirebaseHelper {
   }
 
   /**
-   * @param {String} collectionPath 
-   * @param {{ field: String, operator: String, value: any }[]} filter 
-   * @param {String} [orderBy] 
-   * @param {'asc'|'desc'} [sortBy] 
-   * @param {'single'|'group'} [queryType] 
+   * @param {String} collectionPath
+   * @param {{ field: String, operator: String, value: any }[]} filter
+   * @param {Array<{ field: string, order?: string }>} [sort]
+   * @param {'single'|'group'} [queryType]
+   * @param {Boolean} [includeDeleted]
    * @returns {Promise<JSON[]>}
    */
-  static async listCollection(collectionPath, filter, orderBy, sortBy, queryType, includeDeleted = false) {
+  static async listCollection(collectionPath, filter, sort, queryType = 'single', includeDeleted = false) {
     const filters = this.appendSoftDeleteFilter(filter, { includeDeleted })
-    const SORT_BY = sortBy || 'asc'
     const GROUP_TYPE = queryType || 'single'
 
-    let { ref } = this._generateRef(collectionPath, filters, orderBy, SORT_BY, GROUP_TYPE)
+    const { resolveFirestoreSorts } = require('./sort.util');
+    const sorts = resolveFirestoreSorts({ sort }, { collectionPath });
+
+    let { ref } = this._generateRef(collectionPath, filters, sorts, GROUP_TYPE)
     const collection = this.mapCollection(
       await ref.get()
     );

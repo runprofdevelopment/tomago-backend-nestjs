@@ -32,8 +32,7 @@ module.exports = class CollectionViewer {
     const records = await FirebaseHelper.listCollection(
       this.collectionName,
       filter,
-      'display_order',
-      'asc',
+[{ field: 'display_order', order: 'asc' }],
     );
     return await Promise.all(
       records.map((record) => this.populateActive(record)),

@@ -45,8 +45,7 @@ module.exports = class BrandViewer {
     const records = await FirebaseHelper.listCollection(
       this.collectionName,
       filter,
-      'createdAt',
-      'desc',
+[{ field: 'createdAt', order: 'desc' }],
     );
     return await Promise.all(
       records.map((record) => this.populateActive(record)),
@@ -71,8 +70,7 @@ module.exports = class BrandViewer {
     const response = await FirebaseHelper.listCollection(
       this.collectionName,
       filter,
-      'createdAt',
-      'desc',
+      [{ field: 'createdAt', order: 'desc' }],
     );
     return await this.populateAll(response); // Find Relations
   }

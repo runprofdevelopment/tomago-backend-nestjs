@@ -4,7 +4,7 @@ const permissions = require('../../../security/permissions').values;
 const graphqlSelectRequestedAttributes = require('../../../api/shared/utils/graphqlSelectRequestedAttributes');
 
 const schema = `
-  customerList(filter: [ FilterInput! ], orderBy: String, pagination: PaginationInput): UserPage!
+  customerList(filter: [ FilterInput! ], sort: [SortInput!], pagination: PaginationInput): UserPage!
 `;
 
 const resolver = {

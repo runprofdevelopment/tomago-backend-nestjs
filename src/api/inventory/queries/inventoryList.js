@@ -4,7 +4,7 @@ const InventoryViewer = require('../../../services/inventory/inventoryViewer');
 const graphqlSelectRequestedAttributes = require('../../shared/utils/graphqlSelectRequestedAttributes');
 
 const schema = `
-  inventoryList(filter: [ FilterInput! ], orderBy: String, pagination: PaginationInput): InventoryPage!
+  inventoryList(filter: [ FilterInput! ], sort: [SortInput!], pagination: PaginationInput): InventoryPage!
 `;
 
 const resolver = {

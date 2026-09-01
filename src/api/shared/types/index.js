@@ -16,6 +16,7 @@ module.exports = [
   require('./GeoPoint'),
   require('./GeoPointInput'),
   require('./paginationInput'),
+  require('./sortInput'),
   require('./pagination'),
   require('./hexColor'),
   require('./filterInput'),

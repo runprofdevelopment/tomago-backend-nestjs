@@ -3,7 +3,7 @@ const ReviewViewer = require('../../../services/review/reviewViewer');
 // const permissions = require('../../../security/permissions').values;
 
 const schema = `
-  findProductReviews(productId: String!, filter: [ FilterInput! ], orderBy: String, sortBy: SortByEnum): [ Review! ]
+  findProductReviews(productId: String!, filter: [ FilterInput! ], sort: [SortInput!]): [ Review! ]
 `;
 
 const resolver = {

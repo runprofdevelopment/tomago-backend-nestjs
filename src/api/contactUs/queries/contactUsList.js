@@ -3,7 +3,7 @@ const PermissionChecker = require('../../../security/permissionChecker');
 const permissions = require('../../../security/permissions').values;
 
 const schema = `
-  contactUsList(filter: [ FilterInput! ], orderBy: String, pagination: PaginationInput): ContactUsPage!
+  contactUsList(filter: [ FilterInput! ], sort: [SortInput!], pagination: PaginationInput): ContactUsPage!
 `;
 
 const resolver = {

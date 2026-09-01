@@ -3,7 +3,7 @@ const PermissionChecker = require('../../../security/permissionChecker');
 const permissions = require('../../../security/permissions').values;
 
 const schema = `
-  listMyNotifications(filter: [ FilterInput! ], orderBy: String, pagination: PaginationInput): NotificationPage!
+  listMyNotifications(filter: [ FilterInput! ], sort: [SortInput!], pagination: PaginationInput): NotificationPage!
 `;
 
 const resolver = {

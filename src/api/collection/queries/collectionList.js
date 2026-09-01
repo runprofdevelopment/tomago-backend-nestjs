@@ -1,7 +1,7 @@
 const CollectionViewer = require('../../../services/collection/collectionViewer');
 
 const schema = `
-  collectionList(filter: [ FilterInput! ], orderBy: String, pagination: PaginationInput): CollectionPage!
+  collectionList(filter: [ FilterInput! ], sort: [SortInput!], pagination: PaginationInput): CollectionPage!
 `;
 
 const resolver = {

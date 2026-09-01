@@ -1,7 +1,7 @@
 const WalletViewer = require('../../../services/wallet/walletViewer');
 
 const schema = `
-walletList(filter: [ WalletFilterInput! ], orderBy: String, pagination: PaginationInput): WalletPage!
+walletList(filter: [ WalletFilterInput! ], sort: [SortInput!], pagination: PaginationInput): WalletPage!
 `;
 
 const resolver = {

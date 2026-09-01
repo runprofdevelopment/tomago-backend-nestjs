@@ -37,8 +37,7 @@ module.exports = class ProjectViewer {
     const records = await FirebaseHelper.listCollection(
       this.collectionName,
       filter,
-      'createdAt',
-      'desc',
+[{ field: 'createdAt', order: 'desc' }],
     );
     const record = records && records.length ? records[0] : null;
     return await this.populate(record);

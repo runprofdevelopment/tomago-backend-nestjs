@@ -3,8 +3,7 @@ const PaymentMethodService = require('../../../services/payment-method/paymentMe
 const schema = `
   myBillingHistory(
     filter: [ FilterInput! ],
-    orderBy: String,
-    pagination: PaginationInput
+    sort: [SortInput!], pagination: PaginationInput
   ): OrderPage!
 `;
 

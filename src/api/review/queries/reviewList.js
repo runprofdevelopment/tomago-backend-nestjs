@@ -4,7 +4,7 @@ const ReviewViewer = require('../../../services/review/reviewViewer');
 // const graphqlSelectRequestedAttributes = require('../../shared/utils/graphqlSelectRequestedAttributes');
 
 const schema = `
-  reviewList(filter: [ FilterInput! ], orderBy: String, pagination: PaginationInput): ReviewPage!
+  reviewList(filter: [ FilterInput! ], sort: [SortInput!], pagination: PaginationInput): ReviewPage!
 `;
 
 const resolver = {

@@ -1,7 +1,7 @@
 const ProjectViewer = require('../../../services/project/projectViewer');
 
 const schema = `
-  projectList(filter: [ FilterInput! ], orderBy: String, pagination: PaginationInput): ProjectPage!
+  projectList(filter: [ FilterInput! ], sort: [SortInput!], pagination: PaginationInput): ProjectPage!
 `;
 
 const resolver = {

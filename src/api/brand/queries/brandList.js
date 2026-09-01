@@ -3,7 +3,7 @@ const PermissionChecker = require('../../../security/permissionChecker');
 const permissions = require('../../../security/permissions').values;
 
 const schema = `
-  brandList(filter: [ FilterInput! ], orderBy: String, pagination: PaginationInput): BrandPage!
+  brandList(filter: [ FilterInput! ], sort: [SortInput!], pagination: PaginationInput): BrandPage!
 `;
 
 const resolver = {

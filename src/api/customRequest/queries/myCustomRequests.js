@@ -3,8 +3,7 @@ const CustomRequestService = require('../../../services/custom-request/customReq
 const schema = `
   myCustomRequests(
     filter: [ FilterInput! ],
-    orderBy: String,
-    pagination: PaginationInput
+    sort: [SortInput!], pagination: PaginationInput
   ): CustomRequestPage!
 `;
 

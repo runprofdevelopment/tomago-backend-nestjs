@@ -5,8 +5,7 @@ const permissions = require('../../../security/permissions').values;
 const schema = `
   dealList(
     filter: [ FilterInput! ], 
-    orderBy: String,
-    pagination: PaginationInput
+    sort: [SortInput!], pagination: PaginationInput
   ): DealPage!
 `;
 

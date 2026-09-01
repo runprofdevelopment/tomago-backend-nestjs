@@ -1,7 +1,7 @@
 const WithdrawalService = require('../../../services/wallet-withdrawal/withdrawalService')
 
 const schema = `
-withdrawalRequestsList(filter: [ FilterInput! ], orderBy: String, pagination: PaginationInput): WithdrawalPage!
+withdrawalRequestsList(filter: [ FilterInput! ], sort: [SortInput!], pagination: PaginationInput): WithdrawalPage!
 `;
 
 const resolver = {

@@ -43,11 +43,11 @@ module.exports = class AddressViewer {
    * @param {'asc'|'desc'} args.sortBy
    * @returns {Promise<JSON[]>}
    */
-  async listAddresses(customerId, { filter, orderBy, sortBy }) {
+  async listAddresses(customerId, { filter, sort }) {
     this.customerId = customerId || this.currentUser.id;
 
     const Filter = filter || [];
-    const records = await FirebaseHelper.listCollection(this.collectionPath, Filter, orderBy, sortBy);
+    const records = await FirebaseHelper.listCollection(this.collectionPath, Filter, sort);
      
     return await Promise.all(
       records.map((record) => this.populate(record))

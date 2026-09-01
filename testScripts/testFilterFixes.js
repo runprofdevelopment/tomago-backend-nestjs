@@ -93,13 +93,13 @@ async function testOrderDateRange(token) {
       { field: 'createdAt', operator: 'greaterEqual', value: '2020-01-01T00:00:00Z' },
       { field: 'createdAt', operator: 'lessEqual', value: '2026-12-31T23:59:59Z' },
     ],
-    orderBy: 'createdAt',
-    pagination: { limit: 10, page: 1, action: 'current', sortBy: 'desc' },
+    sort: [{ field: 'createdAt', order: 'desc' }],
+    pagination: { limit: 10, page: 1, action: 'current' },
   };
 
   const response = await graphql(token, `
-    query ORDERS_LIST($filter: [FilterInput!], $orderBy: String, $pagination: PaginationInput) {
-      orderList(filter: $filter, orderBy: $orderBy, pagination: $pagination) {
+    query ORDERS_LIST($filter: [FilterInput!], $sort: [SortInput!], $pagination: PaginationInput) {
+      orderList(filter: $filter, sort: $sort, pagination: $pagination) {
         count
         rows { id createdAt orderStatus }
         pagination { totalCount isFirstPage isLastPage }
@@ -131,13 +131,13 @@ async function testInventoryArchived(token) {
 
   const variables = {
     filter: [{ field: 'status', operator: 'equal', value: 'archived' }],
-    orderBy: 'createdAt',
-    pagination: { limit: 10, page: 1, action: 'current', sortBy: 'desc' },
+    sort: [{ field: 'createdAt', order: 'desc' }],
+    pagination: { limit: 10, page: 1, action: 'current' },
   };
 
   const response = await graphql(token, `
-    query INVENTORY_ARCHIVED($filter: [FilterInput!], $orderBy: String, $pagination: PaginationInput) {
-      inventoryList(filter: $filter, orderBy: $orderBy, pagination: $pagination) {
+    query INVENTORY_ARCHIVED($filter: [FilterInput!], $sort: [SortInput!], $pagination: PaginationInput) {
+      inventoryList(filter: $filter, sort: $sort, pagination: $pagination) {
         count
         rows { variant_id status title { en } }
         pagination { totalCount isFirstPage isLastPage }

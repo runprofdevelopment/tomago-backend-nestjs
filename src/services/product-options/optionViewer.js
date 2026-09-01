@@ -26,11 +26,9 @@ module.exports = class OptionViewer {
    * @param {'asc'|'desc'} sortBy
    * @returns {Promise<JSON[]>}
    */
-  async listAll(orderBy, sortBy) {
+  async listAll(sort) {
     const filter = [];
-    const ORDER_BY = orderBy || 'createdAt';
-    const SORT_BY = sortBy || 'desc';
-    const records = await FirebaseHelper.listCollection(this.collectionName, filter, ORDER_BY, SORT_BY);
+    const records = await FirebaseHelper.listCollection(this.collectionName, filter, sort);
     return records;
   }
 

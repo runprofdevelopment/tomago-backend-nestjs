@@ -32,8 +32,7 @@ module.exports = class ShowRoomViewer {
     const records = await FirebaseHelper.listCollection(
       this.collectionName,
       filter,
-      'createdAt',
-      'desc',
+[{ field: 'createdAt', order: 'desc' }],
     );
     return await Promise.all(
       records.map((record) => this.populateActive(record)),

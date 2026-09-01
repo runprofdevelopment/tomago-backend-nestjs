@@ -5,8 +5,7 @@ const schema = `
   listCustomerOrders(
     customerId: String!, 
     filter: [ FilterInput! ], 
-    orderBy: String, 
-    pagination: PaginationInput
+    sort: [SortInput!], pagination: PaginationInput
   ): OrderPage!
 `;
 

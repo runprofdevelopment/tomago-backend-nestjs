@@ -24,8 +24,8 @@ async function main() {
   const orders = await FirebaseHelper.listWithPagination({
     collectionPath: orderModel.collectionName,
     filter: dateFilter,
-    orderBy: 'createdAt',
-    pagination: { limit: 5, page: 1, action: 'current', sortBy: 'desc' },
+    sort: [{ field: 'createdAt', order: 'desc' }],
+    pagination: { limit: 5, page: 1, action: 'current' },
     queryType: 'single',
   });
 
@@ -40,8 +40,8 @@ async function main() {
   const archived = await FirebaseHelper.listWithPagination({
     collectionPath: variantModel.collectionName,
     filter: archivedFilter,
-    orderBy: 'createdAt',
-    pagination: { limit: 5, page: 1, action: 'current', sortBy: 'desc' },
+    sort: [{ field: 'createdAt', order: 'desc' }],
+    pagination: { limit: 5, page: 1, action: 'current' },
     queryType: 'single',
   });
 
@@ -59,8 +59,8 @@ async function main() {
     filter: [
       { field: 'status', operator: 'in', value: ['active', 'inactive', 'draft'] },
     ],
-    orderBy: 'createdAt',
-    pagination: { limit: 5, page: 1, action: 'current', sortBy: 'desc' },
+    sort: [{ field: 'createdAt', order: 'desc' }],
+    pagination: { limit: 5, page: 1, action: 'current' },
     queryType: 'single',
   });
   console.log('inventory default (active/inactive/draft):');

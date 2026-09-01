@@ -36,7 +36,7 @@ module.exports = class ContactUsViewer {
    */
   async listAll() {
     const filter = [];
-    const response = await FirebaseHelper.listCollection(this.collectionName, filter, 'createdAt', 'desc');
+    const response = await FirebaseHelper.listCollection(this.collectionName, filter, [{ field: 'createdAt', order: 'desc' }]);
     return await this.populateAll(response); // Find Relations
   }
 

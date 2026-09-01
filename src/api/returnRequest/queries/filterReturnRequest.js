@@ -2,7 +2,7 @@ const ReturnService = require('../../../services/order-return/returnService');
 const graphqlSelectRequestedAttributes = require('../../shared/utils/graphqlSelectRequestedAttributes');
 
 const schema = `
-viewReturnRequests(filter: [ FilterInput! ], orderBy: String, pagination: PaginationInput): ReturnPage!
+viewReturnRequests(filter: [ FilterInput! ], sort: [SortInput!], pagination: PaginationInput): ReturnPage!
 `;
 
 const resolver = {

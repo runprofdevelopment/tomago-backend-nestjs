@@ -164,22 +164,22 @@ class FirestoreRepository {
     return record
   }
 
-  async listCollection({ filter, orderBy, pagination, includeDeleted = false }) {
+  async listCollection({ filter, sort, pagination, includeDeleted = false }) {
     return await FirebaseHelper.listWithPagination({
       collectionPath: this._collectionName,
       filter: filter,
-      orderBy,
+      sort,
       pagination,
       queryType: 'single',
       includeDeleted,
     })
   }
 
-  async listCollectionGroup(collectionName, { filter, orderBy, pagination, includeDeleted = false }) {
+  async listCollectionGroup(collectionName, { filter, sort, pagination, includeDeleted = false }) {
     return await FirebaseHelper.listWithPagination({
       collectionPath: collectionName,
       filter: filter,
-      orderBy,
+      sort,
       pagination,
       queryType: 'group',
       includeDeleted,

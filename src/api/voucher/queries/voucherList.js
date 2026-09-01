@@ -1,7 +1,7 @@
 const VoucherViewer = require('../../../services/voucher/voucherViewer');
 
 const schema = `
-voucherList(filter: [ VoucherFilterInput! ], orderBy: String, pagination: PaginationInput): VoucherPage!
+voucherList(filter: [ VoucherFilterInput! ], sort: [SortInput!], pagination: PaginationInput): VoucherPage!
 `;
 
 const resolver = {

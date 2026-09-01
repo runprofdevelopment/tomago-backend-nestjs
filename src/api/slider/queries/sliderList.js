@@ -3,13 +3,16 @@ const PermissionChecker = require('../../../security/permissionChecker');
 const permissions = require('../../../security/permissions').values;
 
 const schema = `
-  sliderList: SliderPage!
+  sliderList(pagination: PaginationInput, sort: [SortInput!]): SliderPage!
 `;
 
 const resolver = {
   sliderList: async (root, args, context, info) => {
     // new PermissionChecker(context).validateHas(permissions.sliderRead);
-    return new SliderService(context).list();
+    return new SliderService(context).listWithPagination({
+      pagination: args.pagination,
+      sort: args.sort,
+    });
   },
 };
 

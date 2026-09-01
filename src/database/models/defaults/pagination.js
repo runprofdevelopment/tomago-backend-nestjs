@@ -7,7 +7,6 @@ module.exports = class Pagination extends AbstractEntityModel {
       page: new types.Number(null, null, 0),
       offset: new types.Number(null, null, 0),
       limit: new types.Number(null, null, 0),
-      sortBy: new types.Enumerator(['asc', 'desc'], 'asc'),
       action: new types.Enumerator([
         "current",
         "next",

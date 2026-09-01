@@ -151,6 +151,10 @@ module.exports = class SliderService {
    * @returns {Promise}
    */
   async listWithPagination(args) {
+    args = args || {};
+    if (!args.sort || !args.sort.length) {
+      args.sort = [{ field: 'createdAt', order: 'desc' }];
+    }
     args['filter'] = args.filter || []
     args['filter'].push({ field: 'accountType', operator: 'in', value: ['admin', 'owner'] });
 

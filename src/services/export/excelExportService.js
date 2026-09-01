@@ -203,7 +203,7 @@ module.exports = class ExcelExportService {
       return FirebaseHelper.findDocuments(collectionName, ids);
     }
 
-    return FirebaseHelper.listCollection(collectionName, [], '', 'asc');
+    return FirebaseHelper.listCollection(collectionName, [], [{ field: 'createdAt', order: 'asc' }]);
   }
 
   _resolveColumns(records, fields) {

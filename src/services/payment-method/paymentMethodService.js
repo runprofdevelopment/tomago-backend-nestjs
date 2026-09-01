@@ -52,8 +52,8 @@ module.exports = class PaymentMethodService {
     const customerId = this._requireAuth();
     const args = {
       filter: [{ field: 'customer_id', operator: 'equal', value: customerId }],
-      orderBy: 'createdAt',
-      pagination: { limit: 100, sortBy: 'desc', action: 'current' },
+      sort: [{ field: 'createdAt', order: 'desc' }],
+      pagination: { limit: 100, action: 'current' },
     };
     const response = await this.repository.listCollection(args);
     return response.rows || [];

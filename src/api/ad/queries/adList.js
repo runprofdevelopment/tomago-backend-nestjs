@@ -5,8 +5,7 @@ const permissions = require('../../../security/permissions').values;
 const schema = `
   adList(
     filter: [ FilterInput! ], 
-    orderBy: String,
-    pagination: PaginationInput
+    sort: [SortInput!], pagination: PaginationInput
   ): AdPage!
 `;
 
