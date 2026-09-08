@@ -45,7 +45,25 @@ const schema = `
   }
 `;
 
-const resolver = {};
+const RETURN_REQUEST_TYPE_BY_STORED_VALUE = {
+  partialrefund: 'partialRefund',
+  fullrefund: 'fullRefund',
+};
+
+function toReturnRequestType(value) {
+  if (value == null || value === '') {
+    return null;
+  }
+
+  const stored = String(value).trim().toLowerCase();
+  return RETURN_REQUEST_TYPE_BY_STORED_VALUE[stored] || value;
+}
+
+const resolver = {
+  ReturnRequest: {
+    type: (record) => toReturnRequestType(record && record.type),
+  },
+};
 
 exports.schema = schema;
 exports.resolver = resolver;

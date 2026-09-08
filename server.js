@@ -25,12 +25,20 @@ colors.enable();
 
 const port = process.env.PORT || 8080;
 
+// Chrome blocks public sites (Apollo Sandbox) from calling localhost unless
+// the preflight includes this header.
+function allowPrivateNetworkAccess(req, res, next) {
+  res.setHeader('Access-Control-Allow-Private-Network', 'true');
+  next();
+}
+
 // Start with a basic Express app
 const express = require('express');
 const cors = require('cors');
 const app = express();
 
 // Basic middleware
+app.use(allowPrivateNetworkAccess);
 app.use(cors({ origin: true }));
 app.use(express.json());
 
@@ -102,6 +110,7 @@ function replaceGraphQLSchema() {
     app._router = express.Router();
     
     // Add basic middleware
+    app.use(allowPrivateNetworkAccess);
     app.use(cors({ origin: true }));
     app.use(express.json());
     

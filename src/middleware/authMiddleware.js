@@ -40,6 +40,8 @@ module.exports = async (req, res, next) => {
     // Utils.verifyPlatform(req.platform);
 
     const operationNames = req.operationNames || [];
+    if (isIntrospectionRequest(req)) return next();
+
     if (operationNames.length && !idToken) {
       const isPublicEndpoints = Utils.checkEndpointIsPublic(operationNames);
       if (isPublicEndpoints) return next();
@@ -69,11 +71,7 @@ module.exports = async (req, res, next) => {
 
     return next();
   } catch (error) {
-    const isIntrospection =
-      req.body?.operationName === 'IntrospectionQuery' ||
-      (req.operationNames || []).includes('__schema');
-
-    if (!isIntrospection) {
+    if (!isIntrospectionRequest(req)) {
       console.error(colors.red('\nError while verifying Firebase ID token:'), {
         code: error.code,
         message: error.message,
@@ -143,6 +141,16 @@ async function authenticateWithTestUserIfExists(req, res, next) {
     console.error(colors.red(`Error while authenticating with default user: ${userAutoAuthenticatedEmailForTests}:`), error, '\n');
     handlerError(error, res);
   }
+}
+
+function isIntrospectionRequest(req) {
+  if (req.body?.operationName === 'IntrospectionQuery') return true;
+
+  const names = req.operationNames || [];
+  if (names.includes('__schema') || names.includes('__type')) return true;
+
+  const query = typeof req.body?.query === 'string' ? req.body.query : '';
+  return query.includes('__schema') || query.includes('__type');
 }
 
 async function handlerError(error, res) {

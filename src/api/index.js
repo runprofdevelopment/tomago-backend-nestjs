@@ -18,6 +18,13 @@ const uploadFileRoutes = require('./upload-file');
 //   middleware: databaseMiddleware,
 // } = require('../../database/databaseInit');
 
+// Chrome Private Network Access: Apollo Sandbox (https://studio.apollographql.com)
+// is a public origin calling localhost. Preflight must allow that, or the browser
+// reports "Unable to reach server".
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Private-Network', 'true');
+  next();
+});
 app.use(cors({ origin: true })); // Enables CORS
 app.use(helmet()); // Enables Helmet, a set of tools to increase security.
 app.use(express.json()); // Ensure that the body can be parsed as JSON
