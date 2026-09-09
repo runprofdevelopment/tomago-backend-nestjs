@@ -5087,14 +5087,14 @@
         ]
       }
     },
-    "/graphql/listDecoopaAccountTransactions": {
+    "/graphql/listTomagoAccountTransactions": {
       "post": {
         "tags": [
           "Wallet & Finance"
         ],
-        "summary": "listDecoopaAccountTransactions",
-        "operationId": "admin_listDecoopaAccountTransactions",
-        "description": "Requires Firebase ID token (Admin).\n\nquery `listDecoopaAccountTransactions`: `TransactionPage!`\n\n**Send to:** `POST /graphql`",
+        "summary": "listTomagoAccountTransactions",
+        "operationId": "admin_listTomagoAccountTransactions",
+        "description": "Requires Firebase ID token (Admin).\n\nquery `listTomagoAccountTransactions`: `TransactionPage!`\n\n**Send to:** `POST /graphql`",
         "security": [
           {
             "bearerAuth": []
@@ -5127,7 +5127,7 @@
                 "default": {
                   "summary": "Example",
                   "value": {
-                    "query": "query ListDecoopaAccountTransactions($filter: [ FilterInput! ], $sort: [SortInput!], $pagination: PaginationInput) {\n  listDecoopaAccountTransactions(filter: $filter, sort: $sort, pagination: $pagination) { __typename }\n}",
+                    "query": "query ListTomagoAccountTransactions($filter: [ FilterInput! ], $sort: [SortInput!], $pagination: PaginationInput) {\n  listTomagoAccountTransactions(filter: $filter, sort: $sort, pagination: $pagination) { __typename }\n}",
                     "variables": {
                       "filter": [],
                       "sort": [],
@@ -5155,7 +5155,7 @@
                     "summary": "Success",
                     "value": {
                       "data": {
-                        "listDecoopaAccountTransactions": {
+                        "listTomagoAccountTransactions": {
                           "__typename": "Object"
                         }
                       }
@@ -5190,10 +5190,10 @@
         "x-apidog-actual-path": "/graphql",
         "x-apidog-testcases": [
           {
-            "name": "TC01 — listDecoopaAccountTransactions",
+            "name": "TC01 — listTomagoAccountTransactions",
             "request": {
               "body": {
-                "query": "query ListDecoopaAccountTransactions($filter: [ FilterInput! ], $sort: [SortInput!], $pagination: PaginationInput) {\n  listDecoopaAccountTransactions(filter: $filter, sort: $sort, pagination: $pagination) { __typename }\n}",
+                "query": "query ListTomagoAccountTransactions($filter: [ FilterInput! ], $sort: [SortInput!], $pagination: PaginationInput) {\n  listTomagoAccountTransactions(filter: $filter, sort: $sort, pagination: $pagination) { __typename }\n}",
                 "variables": {
                   "filter": [],
                   "sort": [],
@@ -6021,14 +6021,14 @@
         ]
       }
     },
-    "/graphql/findDecoopaAccount": {
+    "/graphql/findTomagoAccount": {
       "post": {
         "tags": [
           "Other"
         ],
-        "summary": "findDecoopaAccount",
-        "operationId": "admin_findDecoopaAccount",
-        "description": "Requires Firebase ID token (Admin).\n\nquery `findDecoopaAccount`: `Account`\n\n**Send to:** `POST /graphql`",
+        "summary": "findTomagoAccount",
+        "operationId": "admin_findTomagoAccount",
+        "description": "Requires Firebase ID token (Admin).\n\nquery `findTomagoAccount`: `Account`\n\n**Send to:** `POST /graphql`",
         "security": [
           {
             "bearerAuth": []
@@ -6061,7 +6061,7 @@
                 "default": {
                   "summary": "Example",
                   "value": {
-                    "query": "query FindDecoopaAccount {\n  findDecoopaAccount { __typename }\n}",
+                    "query": "query FindTomagoAccount {\n  findTomagoAccount { __typename }\n}",
                     "variables": {}
                   }
                 }
@@ -6082,7 +6082,7 @@
                     "summary": "Success",
                     "value": {
                       "data": {
-                        "findDecoopaAccount": {
+                        "findTomagoAccount": {
                           "__typename": "Object"
                         }
                       }
@@ -6117,10 +6117,10 @@
         "x-apidog-actual-path": "/graphql",
         "x-apidog-testcases": [
           {
-            "name": "TC01 — findDecoopaAccount",
+            "name": "TC01 — findTomagoAccount",
             "request": {
               "body": {
-                "query": "query FindDecoopaAccount {\n  findDecoopaAccount { __typename }\n}",
+                "query": "query FindTomagoAccount {\n  findTomagoAccount { __typename }\n}",
                 "variables": {}
               }
             },

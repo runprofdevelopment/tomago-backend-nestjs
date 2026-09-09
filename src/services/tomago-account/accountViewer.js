@@ -1,7 +1,7 @@
 const FirestoreRepository = require('../../database/repositories/firestoreRepository');
 const FirebaseHelper = require('../../database/utils/firebaseHelper');
 const AccountManager = require('./accountManager');
-const { COLLECTION_NAME, DEFAULT_ACCOUNT_ID, DECOOPA_ACCOUNT } = require('./model');
+const { COLLECTION_NAME, DEFAULT_ACCOUNT_ID } = require('./model');
 
 module.exports = class AccountViewer {
   constructor(context) {

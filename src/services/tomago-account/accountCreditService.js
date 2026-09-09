@@ -2,9 +2,9 @@ const FirestoreRepository = require('../../database/repositories/firestoreReposi
 const FirebaseHelper = require('../../database/utils/firebaseHelper');
 const AccountManager = require('./accountManager');
 const AccountTransactionService = require('../transaction/accountTransactionService');
-const { COLLECTION_NAME, DEFAULT_ACCOUNT_ID, DECOOPA_ACCOUNT } = require('./model');
+const { COLLECTION_NAME, DEFAULT_ACCOUNT_ID } = require('./model');
 
-module.exports = class AccountDebitService {
+module.exports = class AccountCreditService {
   constructor(context) {
     this.context = context;
     this.currentUser = context && context.currentUser;
@@ -12,7 +12,7 @@ module.exports = class AccountDebitService {
     this.repository = new FirestoreRepository(COLLECTION_NAME);
   }
 
-  async deductFunds(amount, note) {
+  async addFunds(amount) {
     try {
       const data = await this._preSave(amount);
 
@@ -24,10 +24,9 @@ module.exports = class AccountDebitService {
         language: this.language,
       });
 
-      await new AccountTransactionService(this.context).accountDebitTransaction({
+      await new AccountTransactionService(this.context).accountCreditTransaction({
         accountId: DEFAULT_ACCOUNT_ID, 
         amount: amount,
-        note,
       }, batch);
 
       await FirebaseHelper.commitBatch(batch);
@@ -44,15 +43,8 @@ module.exports = class AccountDebitService {
       account = await AccountManager.initAccount(this.context);
     }
 
-
-    if (account.balance < amount) {
-      throw new Error(
-        `The account balance is not enough to debit. Account Balance: ${account.balance}. Debit Amount: ${amount}`
-      )
-    }
-
     const data = {
-      balance: account.balance - amount,
+      balance: account.balance + amount,
     };
 
     return data;

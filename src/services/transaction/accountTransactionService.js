@@ -2,6 +2,7 @@ const FirestoreRepository = require('../../database/repositories/firestoreReposi
 const FirebaseHelper = require('../../database/utils/firebaseHelper');
 const Transaction = require('../../database/models/transaction');
 const EncryptionService = require('../encryptionService');
+const { ACCOUNT_USER_ID, ACCOUNT_OPERATION } = require('../tomago-account/model');
 
 module.exports = class AccountTransactionService {
   constructor(context) {
@@ -23,11 +24,11 @@ module.exports = class AccountTransactionService {
         type: 'accountCredit',
         amount: amount,
         // userID: accountId,
-        userID: 'decoopa',
+        userID: ACCOUNT_USER_ID,
         payerId: '1',
         payeeId: '1',
         operation_details: {
-          operation: 'decoopa-account',
+          operation: ACCOUNT_OPERATION,
           id: accountId,
         }
       });
@@ -54,12 +55,12 @@ module.exports = class AccountTransactionService {
         type: 'accountDebit',
         amount: amount,
         // userID: accountId,
-        userID: 'decoopa',
+        userID: ACCOUNT_USER_ID,
         payerId: '1',
         payeeId: '1',
         note,
         operation_details: {
-          operation: 'decoopa-account',
+          operation: ACCOUNT_OPERATION,
           id: accountId,
         },
       });
@@ -85,12 +86,12 @@ module.exports = class AccountTransactionService {
         id: FirebaseHelper.newIdNumber(),
         type: 'accountTransfer',
         amount: amount,
-        userID: 'decoopa',
+        userID: ACCOUNT_USER_ID,
         // userID: accountId,
         payerId: from,
         payeeId: to,
         operation_details: {
-          operation: 'decoopa-account',
+          operation: ACCOUNT_OPERATION,
           id: accountId,
         }
       });

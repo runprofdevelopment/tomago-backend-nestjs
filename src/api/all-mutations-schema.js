@@ -12,6 +12,7 @@ const resorces = [
   'slider',
   'notification',
   'brand',
+  'collection',
   'category',
   'product',
   'inventory',
@@ -30,7 +31,7 @@ const resorces = [
   'deal',
   'adContainer',
   'ad',
-  'decoopaAccount',
+  'tomagoAccount',
   'otp',
   'mylerz',
 ];

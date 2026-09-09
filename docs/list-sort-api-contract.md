@@ -53,7 +53,7 @@ Pagination stays in `PaginationInput` — **without** `sortBy`.
 | `showRoomList` | `showRoom` |
 | `transactionList` | `transaction` |
 | `listMyTransactions` | `transaction` |
-| `listDecoopaAccountTransactions` | `transaction` |
+| `listTomagoAccountTransactions` | `transaction` |
 | `voucherList` | `voucher` |
 | `walletList` | `wallet` |
 | `withdrawalRequestsList` | `withdrawalRequest` |

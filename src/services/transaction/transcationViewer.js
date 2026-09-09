@@ -2,6 +2,7 @@ const admin = require('firebase-admin');
 const FirestoreRepository = require('../../database/repositories/firestoreRepository');
 const FirebaseHelper = require('../../database/utils/firebaseHelper');
 const Transaction = require('../../database/models/transaction');
+const { ACCOUNT_USER_ID, ACCOUNT_OPERATION } = require('../tomago-account/model');
 
 module.exports = class TransactionViewer {
   constructor(context) {
@@ -53,12 +54,19 @@ module.exports = class TransactionViewer {
     return response
   }
 
-  async listDecoopaAccountTransactions(args) {
+  async listTomagoAccountTransactions(args) {
     args['filter'] = args.filter || [];
-    args['filter'].push({ field: 'userID', operator: 'equal', value: 'decoopa' });
+    // Include legacy userID so existing history still appears after the rename.
+    args['filter'].push({ field: 'userID', operator: 'in', value: [ACCOUNT_USER_ID, 'decoopa'] });
 
     const response = await this.repository.listCollection(args);
     response.rows = await this.populateAll(response.rows);
+    response.rows = response.rows.map((row) => {
+      if (row?.operation_details?.operation === 'decoopa-account') {
+        row.operation_details = { ...row.operation_details, operation: ACCOUNT_OPERATION };
+      }
+      return row;
+    });
     return response
   }
 

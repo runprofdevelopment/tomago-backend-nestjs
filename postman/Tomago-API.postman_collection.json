@@ -6846,7 +6846,7 @@
                   "response": []
                 },
                 {
-                  "name": "findDecoopaAccount",
+                  "name": "findTomagoAccount",
                   "request": {
                     "method": "POST",
                     "header": [
@@ -6866,7 +6866,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"query\": \"query FindDecoopaAccount {\\n  findDecoopaAccount { __typename }\\n}\"\n}",
+                      "raw": "{\n  \"query\": \"query FindTomagoAccount {\\n  findTomagoAccount { __typename }\\n}\"\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -6874,7 +6874,7 @@
                       }
                     },
                     "url": "{{baseUrl}}/graphql",
-                    "description": "query: `findDecoopaAccount` → `Account`"
+                    "description": "query: `findTomagoAccount` → `Account`"
                   },
                   "response": []
                 },
@@ -7478,7 +7478,7 @@
                   "response": []
                 },
                 {
-                  "name": "listDecoopaAccountTransactions",
+                  "name": "listTomagoAccountTransactions",
                   "request": {
                     "method": "POST",
                     "header": [
@@ -7498,7 +7498,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"query\": \"query ListDecoopaAccountTransactions($filter: [ FilterInput! ], $sort: [SortInput!], $pagination: PaginationInput) {\\n  listDecoopaAccountTransactions(filter: $filter, sort: $sort, pagination: $pagination) { __typename }\\n}\",\n  \"variables\": {\n    \"filter\": [],\n    \"sort\": [],\n    \"pagination\": {\n      \"limit\": 10,\n      \"offset\": 0\n    }\n  }\n}",
+                      "raw": "{\n  \"query\": \"query ListTomagoAccountTransactions($filter: [ FilterInput! ], $sort: [SortInput!], $pagination: PaginationInput) {\\n  listTomagoAccountTransactions(filter: $filter, sort: $sort, pagination: $pagination) { __typename }\\n}\",\n  \"variables\": {\n    \"filter\": [],\n    \"sort\": [],\n    \"pagination\": {\n      \"limit\": 10,\n      \"offset\": 0\n    }\n  }\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -7506,7 +7506,7 @@
                       }
                     },
                     "url": "{{baseUrl}}/graphql",
-                    "description": "query: `listDecoopaAccountTransactions` → `TransactionPage!`"
+                    "description": "query: `listTomagoAccountTransactions` → `TransactionPage!`"
                   },
                   "response": []
                 },

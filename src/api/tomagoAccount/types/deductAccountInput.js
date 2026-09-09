@@ -1,5 +1,5 @@
 const schema = `
-  input DeductDecoopaAccountInput {
+  input DeductTomagoAccountInput {
     amount: Float!
     note: String
   }

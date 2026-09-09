@@ -710,7 +710,7 @@
       "collection": "transaction"
     },
     {
-      "query": "listDecoopaAccountTransactions",
+      "query": "listTomagoAccountTransactions",
       "sortArg": "sort: [SortInput!]",
       "paginationArg": "pagination: PaginationInput",
       "defaultSort": [

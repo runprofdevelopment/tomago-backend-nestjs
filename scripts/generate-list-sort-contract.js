@@ -33,7 +33,7 @@ const ENDPOINTS = [
   { query: 'showRoomList', collection: 'showRoom' },
   { query: 'transactionList', collection: 'transaction' },
   { query: 'listMyTransactions', collection: 'transaction' },
-  { query: 'listDecoopaAccountTransactions', collection: 'transaction' },
+  { query: 'listTomagoAccountTransactions', collection: 'transaction' },
   { query: 'voucherList', collection: 'voucher' },
   { query: 'walletList', collection: 'wallet' },
   { query: 'withdrawalRequestsList', collection: 'withdrawalRequest' },

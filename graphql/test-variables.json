@@ -293,7 +293,7 @@
       "perPage": 10
     }
   },
-  "query_listDecoopaAccountTransactions": {
+  "query_listTomagoAccountTransactions": {
     "filter": "REPLACE_ME",
     "orderBy": "REPLACE_ME",
     "pagination": {

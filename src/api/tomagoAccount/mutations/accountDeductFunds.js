@@ -1,5 +1,5 @@
-const AccountDebitService = require('../../../services/decoopa-account/accountDebitService');
-const AccountViewer = require('../../../services/decoopa-account/accountViewer');
+const AccountDebitService = require('../../../services/tomago-account/accountDebitService');
+const AccountViewer = require('../../../services/tomago-account/accountViewer');
 
 const schema = `
   accountDeductFunds(amount: Float!, note: String): Account!
