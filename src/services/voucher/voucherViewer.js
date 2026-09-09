@@ -15,7 +15,9 @@ module.exports = class VoucherViewer {
     try {
       const key = process.env.WALLET_BALANCE_KEY
       let voucher = await this.repository.findDocumentById(id);
-      voucher['voucher_amount'] = parseFloat(await EncryptionService.decryptData(voucher['voucher_amount'], key))
+      voucher['voucher_amount'] = parseFloat(
+        await EncryptionService.decryptData(voucher['voucher_amount'], key),
+      );
       return voucher
     }
     catch (error) {
@@ -44,7 +46,18 @@ module.exports = class VoucherViewer {
   async populate(record) {
     if (!record) return record;
     const key = process.env.WALLET_BALANCE_KEY;
-    record['voucher_amount'] = parseFloat(await EncryptionService.decryptData(record.voucher_amount, key));
+    try {
+      record['voucher_amount'] = parseFloat(
+        await EncryptionService.decryptData(record.voucher_amount, key),
+      );
+    } catch (error) {
+      console.error(
+        `Failed to decrypt voucher_amount for ${record.id || record.voucher_code}:`,
+        error.message,
+      );
+      const plain = parseFloat(record.voucher_amount);
+      record['voucher_amount'] = Number.isNaN(plain) ? 0 : plain;
+    }
     return record;
   }
 };
