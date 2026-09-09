@@ -127,7 +127,7 @@
     }
   },
   "query_categoryFind": {
-    "id": 1,
+    "id": "seed_category_sofas",
     "withChildren": true
   },
   "query_categoryList": {
@@ -550,26 +550,26 @@
     }
   },
   "mutation_categoryUpdate": {
-    "id": 1,
+    "id": "seed_category_sofas",
     "data": {
       "_replace": "Fill required input fields from schema"
     }
   },
   "mutation_categoryDestroy": {
-    "id": 1
+    "id": "seed_category_sofas"
   },
   "mutation_categoryRemove": {
-    "id": 1
+    "id": "seed_category_sofas"
   },
   "mutation_categoryActivate": {
-    "id": 1
+    "id": "seed_category_sofas"
   },
   "mutation_categoryDeactivate": {
-    "id": 1
+    "id": "seed_category_sofas"
   },
   "mutation_categoryMove": {
-    "id": 1,
-    "parentId": "seed_customer_ahmed_ali",
+    "id": "seed_category_sofas",
+    "parentId": "0",
     "position": 1
   },
   "mutation_optionCreate": {

@@ -6,7 +6,7 @@ const schema = `
   }
 
   input SubcategoryInput {
-    parent_id: Int!
+    parent_id: String!
     level: Int!
     position: Int!
     name: LocalizationInput!

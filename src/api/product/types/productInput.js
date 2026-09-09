@@ -1,7 +1,7 @@
 const schema = `
   input ProductInput {
     brand_id: String!
-    category_id: Int!
+    category_id: String!
     main_title: LocalizationInput!
     description: LocalizationInput!
     features: [ JSON! ]

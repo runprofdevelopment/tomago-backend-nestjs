@@ -3,7 +3,7 @@ const CategoryViewer = require('../../../services/category/categoryViewer');
 // const permissions = require('../../../security/permissions').values;
 
 const schema = `
-  categoryFind(id: Int!, withChildren: Boolean): Category
+  categoryFind(id: String!, withChildren: Boolean): Category
 `;
 
 const resolver = {

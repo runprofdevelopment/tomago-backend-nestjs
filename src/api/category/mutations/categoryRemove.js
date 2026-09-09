@@ -3,7 +3,7 @@ const CategoryRemover = require('../../../services/category/categoryRemover');
 // const permissions = require('../../../security/permissions').values;
 
 const schema = `
-  categoryRemove(id: Int!): Boolean
+  categoryRemove(id: String!): Boolean
 `;
 
 const resolver = {

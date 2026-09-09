@@ -2438,9 +2438,9 @@
                 "default": {
                   "summary": "Example",
                   "value": {
-                    "query": "query CategoryFind($id: Int!, $withChildren: Boolean) {\n  categoryFind(id: $id, withChildren: $withChildren) { __typename }\n}",
+                    "query": "query CategoryFind($id: String!, $withChildren: Boolean) {\n  categoryFind(id: $id, withChildren: $withChildren) { __typename }\n}",
                     "variables": {
-                      "id": 10,
+                      "id": "seed_category_sofas",
                       "withChildren": true
                     }
                   }
@@ -2500,9 +2500,9 @@
             "name": "TC01 — categoryFind",
             "request": {
               "body": {
-                "query": "query CategoryFind($id: Int!, $withChildren: Boolean) {\n  categoryFind(id: $id, withChildren: $withChildren) { __typename }\n}",
+                "query": "query CategoryFind($id: String!, $withChildren: Boolean) {\n  categoryFind(id: $id, withChildren: $withChildren) { __typename }\n}",
                 "variables": {
-                  "id": 10,
+                  "id": "seed_category_sofas",
                   "withChildren": true
                 }
               }
@@ -9191,9 +9191,9 @@
                 "default": {
                   "summary": "Example",
                   "value": {
-                    "query": "mutation CategoryUpdate($id: Int!, $data: CategoryUpdateInput!) {\n  categoryUpdate(id: $id, data: $data) { __typename }\n}",
+                    "query": "mutation CategoryUpdate($id: String!, $data: CategoryUpdateInput!) {\n  categoryUpdate(id: $id, data: $data) { __typename }\n}",
                     "variables": {
-                      "id": 10,
+                      "id": "seed_category_sofas",
                       "data": {}
                     }
                   }
@@ -9251,9 +9251,9 @@
             "name": "TC01 — categoryUpdate",
             "request": {
               "body": {
-                "query": "mutation CategoryUpdate($id: Int!, $data: CategoryUpdateInput!) {\n  categoryUpdate(id: $id, data: $data) { __typename }\n}",
+                "query": "mutation CategoryUpdate($id: String!, $data: CategoryUpdateInput!) {\n  categoryUpdate(id: $id, data: $data) { __typename }\n}",
                 "variables": {
-                  "id": 10,
+                  "id": "seed_category_sofas",
                   "data": {}
                 }
               }
@@ -9304,9 +9304,9 @@
                 "default": {
                   "summary": "Example",
                   "value": {
-                    "query": "mutation CategoryDestroy($id: Int!) {\n  categoryDestroy(id: $id)\n}",
+                    "query": "mutation CategoryDestroy($id: String!) {\n  categoryDestroy(id: $id)\n}",
                     "variables": {
-                      "id": 10
+                      "id": "seed_category_sofas"
                     }
                   }
                 }
@@ -9363,9 +9363,9 @@
             "name": "TC01 — categoryDestroy",
             "request": {
               "body": {
-                "query": "mutation CategoryDestroy($id: Int!) {\n  categoryDestroy(id: $id)\n}",
+                "query": "mutation CategoryDestroy($id: String!) {\n  categoryDestroy(id: $id)\n}",
                 "variables": {
-                  "id": 10
+                  "id": "seed_category_sofas"
                 }
               }
             },
@@ -9415,9 +9415,9 @@
                 "default": {
                   "summary": "Example",
                   "value": {
-                    "query": "mutation CategoryRemove($id: Int!) {\n  categoryRemove(id: $id)\n}",
+                    "query": "mutation CategoryRemove($id: String!) {\n  categoryRemove(id: $id)\n}",
                     "variables": {
-                      "id": 10
+                      "id": "seed_category_sofas"
                     }
                   }
                 }
@@ -9474,9 +9474,9 @@
             "name": "TC01 — categoryRemove",
             "request": {
               "body": {
-                "query": "mutation CategoryRemove($id: Int!) {\n  categoryRemove(id: $id)\n}",
+                "query": "mutation CategoryRemove($id: String!) {\n  categoryRemove(id: $id)\n}",
                 "variables": {
-                  "id": 10
+                  "id": "seed_category_sofas"
                 }
               }
             },
@@ -9526,9 +9526,9 @@
                 "default": {
                   "summary": "Example",
                   "value": {
-                    "query": "mutation CategoryActivate($id: Int!) {\n  categoryActivate(id: $id)\n}",
+                    "query": "mutation CategoryActivate($id: String!) {\n  categoryActivate(id: $id)\n}",
                     "variables": {
-                      "id": 10
+                      "id": "seed_category_sofas"
                     }
                   }
                 }
@@ -9585,9 +9585,9 @@
             "name": "TC01 — categoryActivate",
             "request": {
               "body": {
-                "query": "mutation CategoryActivate($id: Int!) {\n  categoryActivate(id: $id)\n}",
+                "query": "mutation CategoryActivate($id: String!) {\n  categoryActivate(id: $id)\n}",
                 "variables": {
-                  "id": 10
+                  "id": "seed_category_sofas"
                 }
               }
             },
@@ -9637,9 +9637,9 @@
                 "default": {
                   "summary": "Example",
                   "value": {
-                    "query": "mutation CategoryDeactivate($id: Int!) {\n  categoryDeactivate(id: $id)\n}",
+                    "query": "mutation CategoryDeactivate($id: String!) {\n  categoryDeactivate(id: $id)\n}",
                     "variables": {
-                      "id": 10
+                      "id": "seed_category_sofas"
                     }
                   }
                 }
@@ -9696,9 +9696,9 @@
             "name": "TC01 — categoryDeactivate",
             "request": {
               "body": {
-                "query": "mutation CategoryDeactivate($id: Int!) {\n  categoryDeactivate(id: $id)\n}",
+                "query": "mutation CategoryDeactivate($id: String!) {\n  categoryDeactivate(id: $id)\n}",
                 "variables": {
-                  "id": 10
+                  "id": "seed_category_sofas"
                 }
               }
             },
@@ -9748,10 +9748,10 @@
                 "default": {
                   "summary": "Example",
                   "value": {
-                    "query": "mutation CategoryMove($id: Int!, $parentId: Int!, $position: Int!) {\n  categoryMove(id: $id, parentId: $parentId, position: $position)\n}",
+                    "query": "mutation CategoryMove($id: String!, $parentId: String!, $position: Int!) {\n  categoryMove(id: $id, parentId: $parentId, position: $position)\n}",
                     "variables": {
-                      "id": 10,
-                      "parentId": 10,
+                      "id": "seed_category_sofas",
+                      "parentId": "0",
                       "position": 10
                     }
                   }
@@ -9809,10 +9809,10 @@
             "name": "TC01 — categoryMove",
             "request": {
               "body": {
-                "query": "mutation CategoryMove($id: Int!, $parentId: Int!, $position: Int!) {\n  categoryMove(id: $id, parentId: $parentId, position: $position)\n}",
+                "query": "mutation CategoryMove($id: String!, $parentId: String!, $position: Int!) {\n  categoryMove(id: $id, parentId: $parentId, position: $position)\n}",
                 "variables": {
-                  "id": 10,
-                  "parentId": 10,
+                  "id": "seed_category_sofas",
+                  "parentId": "0",
                   "position": 10
                 }
               }

@@ -5064,7 +5064,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"query\": \"query CategoryFind($id: Int!, $withChildren: Boolean) {\\n  categoryFind(id: $id, withChildren: $withChildren) { __typename }\\n}\",\n  \"variables\": {\n    \"id\": 10,\n    \"withChildren\": true\n  }\n}",
+                      "raw": "{\n  \"query\": \"query CategoryFind($id: String!, $withChildren: Boolean) {\\n  categoryFind(id: $id, withChildren: $withChildren) { __typename }\\n}\",\n  \"variables\": {\n    \"id\": \"seed_category_sofas\",\n    \"withChildren\": true\n  }\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -5394,7 +5394,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"query\": \"mutation CategoryUpdate($id: Int!, $data: CategoryUpdateInput!) {\\n  categoryUpdate(id: $id, data: $data) { __typename }\\n}\",\n  \"variables\": {\n    \"id\": 10,\n    \"data\": {}\n  }\n}",
+                      "raw": "{\n  \"query\": \"mutation CategoryUpdate($id: String!, $data: CategoryUpdateInput!) {\\n  categoryUpdate(id: $id, data: $data) { __typename }\\n}\",\n  \"variables\": {\n    \"id\": \"seed_category_sofas\",\n    \"data\": {}\n  }\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -5427,7 +5427,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"query\": \"mutation CategoryDestroy($id: Int!) {\\n  categoryDestroy(id: $id)\\n}\",\n  \"variables\": {\n    \"id\": 10\n  }\n}",
+                      "raw": "{\n  \"query\": \"mutation CategoryDestroy($id: String!) {\\n  categoryDestroy(id: $id)\\n}\",\n  \"variables\": {\n    \"id\": \"seed_category_sofas\"\n  }\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -5460,7 +5460,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"query\": \"mutation CategoryRemove($id: Int!) {\\n  categoryRemove(id: $id)\\n}\",\n  \"variables\": {\n    \"id\": 10\n  }\n}",
+                      "raw": "{\n  \"query\": \"mutation CategoryRemove($id: String!) {\\n  categoryRemove(id: $id)\\n}\",\n  \"variables\": {\n    \"id\": \"seed_category_sofas\"\n  }\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -5493,7 +5493,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"query\": \"mutation CategoryActivate($id: Int!) {\\n  categoryActivate(id: $id)\\n}\",\n  \"variables\": {\n    \"id\": 10\n  }\n}",
+                      "raw": "{\n  \"query\": \"mutation CategoryActivate($id: String!) {\\n  categoryActivate(id: $id)\\n}\",\n  \"variables\": {\n    \"id\": \"seed_category_sofas\"\n  }\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -5526,7 +5526,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"query\": \"mutation CategoryDeactivate($id: Int!) {\\n  categoryDeactivate(id: $id)\\n}\",\n  \"variables\": {\n    \"id\": 10\n  }\n}",
+                      "raw": "{\n  \"query\": \"mutation CategoryDeactivate($id: String!) {\\n  categoryDeactivate(id: $id)\\n}\",\n  \"variables\": {\n    \"id\": \"seed_category_sofas\"\n  }\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -5559,7 +5559,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"query\": \"mutation CategoryMove($id: Int!, $parentId: Int!, $position: Int!) {\\n  categoryMove(id: $id, parentId: $parentId, position: $position)\\n}\",\n  \"variables\": {\n    \"id\": 10,\n    \"parentId\": 10,\n    \"position\": 10\n  }\n}",
+                      "raw": "{\n  \"query\": \"mutation CategoryMove($id: String!, $parentId: String!, $position: Int!) {\\n  categoryMove(id: $id, parentId: $parentId, position: $position)\\n}\",\n  \"variables\": {\n    \"id\": \"seed_category_sofas\",\n    \"parentId\": \"0\",\n    \"position\": 10\n  }\n}",
                       "options": {
                         "raw": {
                           "language": "json"

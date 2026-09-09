@@ -3,7 +3,7 @@ const CategoryStatusChanger = require('../../../services/category/categoryStatus
 // const permissions = require('../../../security/permissions').values;
 
 const schema = `
-  categoryDeactivate(id: Int!): Boolean
+  categoryDeactivate(id: String!): Boolean
 `;
 
 const resolver = {

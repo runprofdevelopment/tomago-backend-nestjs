@@ -12,6 +12,7 @@ const resorces = [
   'notification',
   'brand',
   'collection',
+  'project',
   'category',
   'product',
   'inventory',

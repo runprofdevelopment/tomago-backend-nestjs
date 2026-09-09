@@ -3,7 +3,7 @@ const CategoryEditor = require('../../../services/category/categoryEditor');
 // const permissions = require('../../../security/permissions').values;
 
 const schema = `
-  categoryMove(id: Int!, parentId: Int!, position: Int!): Boolean
+  categoryMove(id: String!, parentId: String!, position: Int!): Boolean
 `;
 
 const resolver = {

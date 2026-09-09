@@ -202,7 +202,7 @@ query query_brandActiveList {
 }
 
 # --- query_categoryFind ---
-query query_categoryFind($id: Int!, $withChildren: Boolean) {
+query query_categoryFind($id: String!, $withChildren: Boolean) {
   categoryFind(id: $id, withChildren: $withChildren){ id name { en ar } level parent_id isActive product_count }
 }
 
@@ -747,32 +747,32 @@ mutation mutation_subcategoryCreate($data: SubcategoryInput!) {
 }
 
 # --- mutation_categoryUpdate ---
-mutation mutation_categoryUpdate($id: Int!, $data: CategoryUpdateInput!) {
+mutation mutation_categoryUpdate($id: String!, $data: CategoryUpdateInput!) {
   categoryUpdate(id: $id, data: $data){ id name { en ar } level parent_id isActive product_count }
 }
 
 # --- mutation_categoryDestroy ---
-mutation mutation_categoryDestroy($id: Int!) {
+mutation mutation_categoryDestroy($id: String!) {
   categoryDestroy(id: $id)
 }
 
 # --- mutation_categoryRemove ---
-mutation mutation_categoryRemove($id: Int!) {
+mutation mutation_categoryRemove($id: String!) {
   categoryRemove(id: $id)
 }
 
 # --- mutation_categoryActivate ---
-mutation mutation_categoryActivate($id: Int!) {
+mutation mutation_categoryActivate($id: String!) {
   categoryActivate(id: $id)
 }
 
 # --- mutation_categoryDeactivate ---
-mutation mutation_categoryDeactivate($id: Int!) {
+mutation mutation_categoryDeactivate($id: String!) {
   categoryDeactivate(id: $id)
 }
 
 # --- mutation_categoryMove ---
-mutation mutation_categoryMove($id: Int!, $parentId: Int!, $position: Int!) {
+mutation mutation_categoryMove($id: String!, $parentId: String!, $position: Int!) {
   categoryMove(id: $id, parentId: $parentId, position: $position)
 }
 

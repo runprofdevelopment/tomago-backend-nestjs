@@ -1,13 +1,13 @@
 const schema = `
   type Category {
-    id: Int
+    id: String
     name: Localization
     image: Avatar
     isActive: Boolean
     deletedAt: DateTime
     deletedBy: String
 
-    parent_id: Int
+    parent_id: String
     level: Int
     position: Int
 
@@ -22,7 +22,16 @@ const schema = `
   }
 `;
 
-const resolver = {};
+function asId(value) {
+  return value == null ? value : String(value);
+}
+
+const resolver = {
+  Category: {
+    id: (category) => asId(category.id),
+    parent_id: (category) => asId(category.parent_id),
+  },
+};
 
 exports.schema = schema;
 exports.resolver = resolver;
