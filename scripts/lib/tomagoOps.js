@@ -75,7 +75,7 @@ const ADMIN_PATTERNS = [
   /^(authMeAdmin|admin|iam)/i,
   /^(auditLog|adminList|customerList|customerFind)$/i,
   /^(addressList|addressFind|listCustomerAddresses)$/i,
-  /^(customRequestList|sliderCreate|sliderUpdate|sliderDestroy|sliderFind|sliderList)$/i,
+  /^(customRequestList|replyCustomerRequest|acceptCustomerRequest|cancelCustomerRequest|closeCustomerRequest|sliderCreate|sliderUpdate|sliderDestroy|sliderFind|sliderList)$/i,
   /^(notificationFind|notificationDestroy|notifyUser|sendToUsers|sendToAll)$/i,
   /^(brandFind|brandList|brandCreate|brandUpdate|brandDestroy|brandActivate|brandDeactivate)$/i,
   /^(categoryFind|categoryCreate|subcategoryCreate|categoryUpdate|categoryDestroy|categoryRemove|categoryActivate|categoryDeactivate|categoryMove)$/i,

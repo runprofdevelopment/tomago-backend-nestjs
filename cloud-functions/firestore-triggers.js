@@ -1,12 +1,15 @@
 const { logger } = require("firebase-functions");
 const handler = require('./controller/triggers-handler');
+const notificationHandler = require('./controller/notification-triggers-handler');
 const { 
   onDocumentCreated, 
   onDocumentWritten, 
   onDocumentDeleted 
 } = require("firebase-functions/v2/firestore");
 
+// Firestore Enterprise DB id is `default` (not the classic `(default)`).
 const TriggersRuntimeOpts = {
+  database: 'default',
   memory: "256Mi",              // Memory allocation (128MB to 16GB)
   timeoutSeconds: 540,          // Timeout in seconds (max 540)
   cpu: 0.5,                     // CPU allocation (0.5 to 4)
@@ -26,31 +29,41 @@ exports.createProductReview = onDocumentWritten({ document: 'product/{productId}
     const productId = event.params.productId;
     const reviewId = event.params.reviewId;
 
-    // const reviewSnapshot = event.data; // Assuming `event.data` is the snapshot
-    // const reviewData = reviewSnapshot.data();
-    // const productId = reviewData.productId;
     console.log({ productId, reviewId });
     
     await updateRatingAfterEachReview('product', productId, reviewId);
   }
 );
 
-exports.orderReport = onDocumentWritten({ document: 'order/{orderId}', ...TriggersRuntimeOpts }, 
-  async (event) => {
-    const orderId = event.params.orderId;
-    const reviewId = event.params.reviewId;
+// ---- Domain notification triggers ----
 
-    // const reviewSnapshot = event.data; // Assuming `event.data` is the snapshot
-    // const reviewData = reviewSnapshot.data();
-    // const orderId = reviewData.orderId;
-    console.log({ orderId, reviewId });
-    
-    await updateRatingAfterEachReview('order', orderId, reviewId);
-  }
+exports.orderNotifications = onDocumentWritten(
+  { document: 'order/{orderId}', ...TriggersRuntimeOpts },
+  notificationHandler.handleOrderNotification,
+);
+
+exports.returnNotifications = onDocumentWritten(
+  { document: 'returnRequest/{returnId}', ...TriggersRuntimeOpts },
+  notificationHandler.handleReturnNotification,
+);
+
+exports.withdrawalNotifications = onDocumentWritten(
+  { document: 'withdrawalRequest/{withdrawalId}', ...TriggersRuntimeOpts },
+  notificationHandler.handleWithdrawalNotification,
+);
+
+exports.walletCreditNotifications = onDocumentWritten(
+  { document: 'wallet/{walletId}', ...TriggersRuntimeOpts },
+  notificationHandler.handleWalletCreditNotification,
+);
+
+exports.customRequestNotifications = onDocumentWritten(
+  { document: 'customRequest/{requestId}', ...TriggersRuntimeOpts },
+  notificationHandler.handleCustomRequestNotification,
 );
 
 exports.helperTriggers = {
-  deleteSharedInfo: onDocumentDeleted('--SharedInfo--/{id}', async (event) => {
+  deleteSharedInfo: onDocumentDeleted({ document: '--SharedInfo--/{id}', database: 'default' }, async (event) => {
     const documentId = event.params.id;
     const snapshot = event.data;
     const document = snapshot.data();

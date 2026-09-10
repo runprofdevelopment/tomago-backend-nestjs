@@ -6,6 +6,9 @@ const schema = `
     collection
     staticOccasion
     staticCollection
+    return
+    wallet
+    customRequest
   }
 `;
 

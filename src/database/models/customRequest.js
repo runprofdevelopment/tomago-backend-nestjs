@@ -13,6 +13,15 @@ module.exports = class CustomRequest extends AbstractEntityModel {
       product_id: new types.String(),
       status: new types.Enumerator(['pending', 'replied', 'closed'], 'pending'),
       customer_id: new types.String(),
+      estimated_price: new types.Number(),
+      estimated_delivery_time: new types.String(),
+      messages: new types.JsonArray([
+        'id',
+        'sender_type',
+        'sender_name',
+        'body',
+        'created_at',
+      ]),
     });
   }
 };

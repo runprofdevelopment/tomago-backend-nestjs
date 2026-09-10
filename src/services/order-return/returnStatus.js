@@ -29,7 +29,7 @@ module.exports = class ReturnStatus {
       this.requestClosed(request);
       const status_update = {
         status: 'rejected',
-        reason: data.rejectReason
+        rejectReason: data.rejectReason
       }
       const batch = await FirebaseHelper.createBatch();
       const record = await this.repository.updateDocument(data.id, status_update, {

@@ -38,7 +38,7 @@ module.exports = class ReturnService {
       this.requestClosed(request);
       const status_update = {
         status: 'rejected',
-        reason: data.rejectReason,
+        rejectReason: data.rejectReason,
       };
       const order = FirebaseHelper.mapDocument(
         await admin
