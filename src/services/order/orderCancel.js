@@ -107,10 +107,20 @@ module.exports = class OrderCancel {
 
       order.cancelReason = args.cancelReason;
 
+      const isGatewayMethod = [
+        'credit',
+        'installment',
+        'e_wallet',
+      ].includes(order.paymentMethod);
+
       if (order.financialStatus === 'paid') {
-        if (order.paymentMethod === 'visa') {
+        if (
+          order.paymentMethod === 'visa' ||
+          isGatewayMethod
+        ) {
           return await this.cancelOrderVisa(order, itemsID);
-        } else if (order.paymentMethod === 'wallet') {
+        }
+        if (order.paymentMethod === 'wallet') {
           return await this.cancelItemsinOrderWallet(
             order,
             itemsID,
@@ -119,15 +129,30 @@ module.exports = class OrderCancel {
       }
 
       if (
+        order.financialStatus === 'partialPaid' &&
+        (order.paymentMethod === 'wallet' || isGatewayMethod)
+      ) {
+        return await this.cancelItemsinOrderWallet(
+          order,
+          itemsID,
+        );
+      }
+
+      if (
         (order.financialStatus === 'unpaid' ||
           order.financialStatus === 'pending') &&
         (order.paymentMethod === 'cod' ||
-          order.paymentMethod === 'visa')
+          order.paymentMethod === 'visa' ||
+          isGatewayMethod)
       ) {
         return await this._executeCancel(order, itemsID, {
           cancelReason: order.cancelReason,
         });
       }
+
+      throw new Error(
+        `Cannot cancel order with financialStatus=${order.financialStatus} and paymentMethod=${order.paymentMethod}`,
+      );
     } catch (error) {
       throw error;
     }
